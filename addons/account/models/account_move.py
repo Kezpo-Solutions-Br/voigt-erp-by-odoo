@@ -993,8 +993,8 @@ class AccountMove(models.Model):
 
     @api.depends('company_id', 'invoice_filter_type_domain')
     def _compute_suitable_journal_ids(self):
-        for m in self:
-            m.suitable_journal_ids = self._get_suitable_journal_ids(m.move_type, m.company_id)
+        for (move_type, company), moves in self.grouped(lambda m: (m.move_type, m.company_id)).items():
+            moves.suitable_journal_ids = self._get_suitable_journal_ids(move_type, company)
 
     @api.depends('posted_before', 'state', 'journal_id', 'date', 'move_type', 'origin_payment_id')
     def _compute_name(self):
@@ -1503,7 +1503,7 @@ class AccountMove(models.Model):
         for move in self:
             move.show_journal = (
                 len(move.suitable_journal_ids) > 1
-                or move.journal_id and move.journal_id not in move.suitable_journal_ids
+                or move.journal_id and move.journal_id not in move.suitable_journal_ids._origin
             )
 
     @api.depends('reversal_move_ids')
@@ -4797,9 +4797,14 @@ class AccountMove(models.Model):
             ('journal_id', '=', journal.id),
             ('sequence_prefix', '=', last_move_in_chain.sequence_prefix),
         ]
+
+        sequence_number_reset = last_move_in_chain._deduce_sequence_number_reset(last_move_in_chain.name)
+        date_start, date_end, _, _ = last_move_in_chain._get_sequence_date_range(sequence_number_reset)
         last_move_hashed = self.env['account.move'].search_fetch([
             *common_domain,
             ('inalterable_hash', '!=', False),
+            ('date', '>=', date_start),
+            ('date', '<=', date_end),
         ], ['sequence_number', 'inalterable_hash'], order='sequence_number desc', limit=1)
 
         domain = self.env['account.move']._get_move_hash_domain([
@@ -6269,6 +6274,14 @@ class AccountMove(models.Model):
                 validation_msgs.add(self.env._(
                     "The entry is using accounts (%(accounts_codes_names)s) from a different company.",
                     accounts_codes_names=format_list(self.env, mismatched_accounts.mapped('display_name'))
+                ))
+
+            move_taxes = move.line_ids.tax_ids | move.line_ids.tax_line_id
+            mismatched_taxes = move_taxes.filtered(lambda tax: tax.sudo().company_id not in move_company_and_parents)
+            if mismatched_taxes:
+                validation_msgs.add(self.env._(
+                    "The entry is using taxes (%(tax_names)s) from a different company.",
+                    tax_names=format_list(self.env, mismatched_taxes.mapped('display_name'))
                 ))
 
         if validation_msgs:
@@ -8053,8 +8066,9 @@ class AccountMove(models.Model):
         # Dispatch the attachments into groups, and create a new invoice for each group beyond the first.
         valid_files_data = []
         extra_files_data = []
+        is_email = new_message.message_type == 'email'
         for file_data in files_data:
-            if self._should_attach_to_record(file_data['attachment']) or file_data['xml_tree'] is not None:
+            if self.with_context(from_email=is_email)._should_attach_to_record(file_data['attachment']) or file_data['xml_tree'] is not None:
                 valid_files_data.append(file_data)
             else:
                 extra_files_data.append(file_data)

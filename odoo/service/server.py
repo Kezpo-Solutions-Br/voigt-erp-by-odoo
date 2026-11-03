@@ -681,9 +681,14 @@ class GeventServer(CommonServer):
             gevent.sleep(beat)
 
     def http_client_greenlet(self, client, address, prelude=b''):
+        from gevent import GreenletExit  # noqa: PLC0415
+
         try:
             http_socket = HTTPSocket(client, address, prelude=prelude)
             http_socket.process_request()
+        except GreenletExit:
+            # Killed by the server, e.g. once the stop timeout is reached.
+            _logger.warning("Connection from %s:%s killed", address[0], address[1])
         except BaseException:  # noqa: BLE001
             _logger.critical(
                 "Uncaught error in longpolling greenlet, processing request from %s:%s",
@@ -1050,12 +1055,10 @@ class PreforkServer(CommonServer):
             if respawn_time:
                 # gevent servers take a bit longer to start so sleep a bit as a best effort to avoid downtime
                 time.sleep(respawn_time + 1)
-                for pid in self.servers_gevent:
-                    self.worker_kill(pid, signal.SIGINT)
+            for pid in self.servers_gevent:
+                self.worker_kill(pid, signal.SIGINT)
 
-        timeout_gevent = time.monotonic()
-        if respawn_time:
-            timeout_gevent += config['limit_time_real']
+        timeout_gevent = time.monotonic() + config['limit_time_real']
 
         self.beat = 0.1
         while self.workers or self.servers_gevent:

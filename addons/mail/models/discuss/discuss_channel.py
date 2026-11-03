@@ -594,6 +594,8 @@ class DiscussChannel(models.Model):
             channel._bus_send("discuss.channel/delete", {"id": channel.id})
 
     def write(self, vals):
+        if "name" in vals and not vals["name"] and set(self.mapped("channel_type")) == {"group"}:
+            vals = {**vals, "name": ""}
         if 'channel_type' in vals:
             failing_channels = self.filtered(lambda channel: channel.channel_type != vals.get('channel_type'))
             if failing_channels:
@@ -842,7 +844,7 @@ class DiscussChannel(models.Model):
             store.add(member.channel_id, "_store_channel_fields").add(
                 member,
                 lambda res: (
-                    res.from_method("_store_persona_default_fields"),
+                    res.from_method("_store_member_fields"),
                     res.attr("unpin_dt"),
                 ),
             )
@@ -1360,7 +1362,19 @@ class DiscussChannel(models.Model):
         ).add(message, "_store_message_fields")
         if message.channel_id.parent_channel_id:
             store.add(message.channel_id, ["message_count"])
+        self._bus_send_attachment_ownership(message)
         return rdata
+
+    def _bus_send_attachment_ownership(self, message):
+        if not message.attachment_ids:
+            return
+        users = message.author_id.user_ids
+        if message.author_guest_id or any(not user._is_public() for user in users):
+            for bus_channel in (message.author_guest_id or message.author_id)._bus_channels():
+                Store(bus_channel=bus_channel).add(
+                    message.attachment_ids,
+                    "_store_ownership_fields",
+                )
 
     def _notify_by_web_push_prepare_payload(self, message, force_record_name=False):
         payload = super()._notify_by_web_push_prepare_payload(message, force_record_name=force_record_name)
@@ -1480,6 +1494,7 @@ class DiscussChannel(models.Model):
         if partner_ids:
             kwargs["partner_ids"] = self._get_allowed_message_partner_ids(partner_ids)
         super()._message_update_content(message, **kwargs)
+        self._bus_send_attachment_ownership(message)
 
     def _check_can_update_message_content(self, message):
         # Don't call super in this override as we want to ignore the mail.thread behavior completely
@@ -1948,6 +1963,11 @@ class DiscussChannel(models.Model):
             partners=message.author_id,
             post_joined_message=False,
         )
+        if message:
+            Store(bus_channel=self).add(
+                message,
+                lambda res: res.one("linkedSubChannel", [], value=sub_channel),
+            )
         notification = Markup('<div class="o_mail_notification" data-oe-type="thread_creation" data-oe-id="%s"></div>') % sub_channel.id
         self.message_post(
             body=notification, message_type="notification", subtype_xmlid="mail.mt_comment"
