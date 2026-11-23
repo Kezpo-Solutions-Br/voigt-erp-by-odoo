@@ -110,6 +110,8 @@ flock -n 9 || die 'A preparação das dependências nativas locais já está em 
 stage_dir=""
 cache_dir=""
 link_tmp=""
+# Remove arquivos temporários de extração, cache APT e troca de symlink ao encerrar a preparação.
+# Resultado: deixa o prefixo ativo intacto e descarta somente os caminhos temporários registrados.
 cleanup_stage() {
   [[ -z "$stage_dir" || ! -d "$stage_dir" ]] || rm -rf -- "$stage_dir"
   [[ -z "$cache_dir" || ! -d "$cache_dir" ]] || rm -rf -- "$cache_dir"
@@ -156,6 +158,9 @@ if ((${#pending_groups[@]} > 0)); then
   sudo apt-get update
 fi
 
+# Verifica se o APT resolveria um pacote sem remover pacotes e usando somente a distribuição do host.
+# Parâmetros: nome do pacote candidato.
+# Resultado: retorna 0 para um plano compatível; retorna diferente de zero se a simulação falhar ou divergir.
 simulate_local_download() {
   local package="$1" output line
   output="$(apt-get -s -t "$release_codename" --reinstall install --no-install-recommends "$package" 2>&1)" || return 1

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create ignored, permission-restricted credentials for the local IDE runner."""
+"""Prepara credenciais locais com permissões restritas para o runner da IDE."""
 
 from __future__ import annotations
 
@@ -9,6 +9,17 @@ import sys
 
 
 def load_compose_env(path: pathlib.Path) -> dict[str, str]:
+    """Lê as variáveis do arquivo de ambiente usado pelo Compose.
+
+    Args:
+        path: Caminho do arquivo `.env` local.
+
+    Returns:
+        Mapeamento das chaves e valores encontrados no arquivo.
+
+    Raises:
+        RuntimeError: Se o arquivo não existir.
+    """
     values: dict[str, str] = {}
     if not path.is_file():
         raise RuntimeError(f"Arquivo ausente: {path}. Execute local-infra/scripts/setup.sh.")
@@ -30,6 +41,24 @@ def prepare_ide_files(
     odoo_config: pathlib.Path,
     data_dir: pathlib.Path,
 ) -> dict[str, str]:
+    """Gera os arquivos privados de acesso ao banco e a configuração local do Odoo.
+
+    Valida as senhas, prepara os diretórios com permissões restritas e substitui os
+    arquivos de configuração de forma atômica.
+
+    Args:
+        env_file: Arquivo `.env` que contém as credenciais locais.
+        pgpass_file: Destino do arquivo de senha do PostgreSQL.
+        odoo_config: Destino do arquivo de configuração do runner Odoo.
+        data_dir: Diretório de dados exclusivo do processo Odoo executado pela IDE.
+
+    Returns:
+        Variáveis lidas do arquivo de ambiente.
+
+    Raises:
+        RuntimeError: Se faltarem senhas locais válidas.
+        OSError: Se não for possível criar ou proteger os arquivos e diretórios.
+    """
     values = load_compose_env(env_file)
     password = values.get("POSTGRES_PASSWORD", "")
     admin_password = values.get("ODOO_ADMIN_PASSWD", "")
@@ -44,6 +73,7 @@ def prepare_ide_files(
     os.chmod(data_dir, 0o700)
 
     def escape_pgpass(value: str) -> str:
+        """Escapa separadores e barras invertidas conforme a sintaxe do `.pgpass`."""
         return value.replace("\\", "\\\\").replace(":", "\\:").replace("\n", "")
 
     host = values.get("DB_IDE_BIND_ADDRESS", "127.0.0.1")

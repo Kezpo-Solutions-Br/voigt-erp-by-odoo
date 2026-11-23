@@ -4,6 +4,8 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
+# Apresenta a sintaxe e a finalidade dos modos disponíveis para o banco local.
+# Resultado: escreve a ajuda em stdout; não altera serviços nem arquivos.
 usage() {
   printf 'Uso: %s {start|status}\n' "$0"
   printf '  start   inicia somente o PostgreSQL e aguarda a verificação de saúde\n'

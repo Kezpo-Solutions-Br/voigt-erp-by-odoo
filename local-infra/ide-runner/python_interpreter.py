@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stable IntelliJ interpreter shim that creates and delegates to the project venv."""
+"""Inicializador estável do IntelliJ que prepara e usa a `.venv` do projeto."""
 
 from __future__ import annotations
 
@@ -23,7 +23,11 @@ NATIVE_PREFIX = ROOT / "local-infra" / ".local" / "native" / "current"
 
 
 def configure_local_native_dependencies() -> None:
-    """Expose project-local headers, pkg-config metadata, tools, and shared libraries."""
+    """Configura o processo para localizar dependências nativas isoladas no projeto.
+
+    Ajusta apenas as variáveis de ambiente deste processo, preservando os valores
+    existentes e sem registrar bibliotecas no sistema operacional.
+    """
     if not NATIVE_PREFIX.is_dir():
         return
 
@@ -43,6 +47,12 @@ def configure_local_native_dependencies() -> None:
     binary_dirs = [NATIVE_PREFIX / "bin", NATIVE_PREFIX / "usr/bin"]
 
     def prepend(variable: str, paths: list[pathlib.Path]) -> None:
+        """Precede os caminhos locais existentes ao valor atual de uma variável.
+
+        Args:
+            variable: Nome da variável de ambiente a atualizar.
+            paths: Caminhos locais existentes que devem ter prioridade.
+        """
         current = os.environ.get(variable, "")
         values = [str(path) for path in paths if path.is_dir()]
         if current:
@@ -67,6 +77,12 @@ def configure_local_native_dependencies() -> None:
 
 
 def ensure_venv() -> None:
+    """Cria a `.venv` quando necessário e confirma que usa Python 3.12 ou superior.
+
+    Raises:
+        RuntimeError: Se Python 3.12 não estiver disponível ou a `.venv` for inválida.
+        subprocess.CalledProcessError: Se a criação ou consulta do ambiente falhar.
+    """
     if VENV.exists() and not VENV.is_dir():
         raise RuntimeError(f"{VENV} existe e não é um diretório; mova-o e tente novamente.")
     if not VENV_PYTHON.exists():
@@ -92,6 +108,11 @@ def ensure_venv() -> None:
 
 
 def dependency_hash() -> str:
+    """Calcula a impressão digital das entradas que determinam as dependências locais.
+
+    Returns:
+        Hash SHA-256 da versão do Python, requisitos e metadados nativos locais.
+    """
     digest = hashlib.sha256()
     digest.update(sys.version.encode("utf-8"))
     for requirement_file in (REQUIREMENTS, CONSTRAINTS):
@@ -110,6 +131,16 @@ def dependency_hash() -> str:
 
 
 def synchronize_dependencies(force: bool = False) -> None:
+    """Instala dependências Python quando as entradas diferem do marcador salvo.
+
+    Args:
+        force: Quando verdadeiro, sincroniza mesmo que o hash não tenha mudado.
+
+    Raises:
+        RuntimeError: Se `pg_config` não estiver disponível para compilar dependências.
+        subprocess.CalledProcessError: Se o pip não concluir a instalação.
+        OSError: Se não for possível gravar o marcador de sincronização.
+    """
     expected = dependency_hash()
     try:
         current = DEPENDENCY_MARKER.read_text(encoding="ascii").strip()
@@ -139,6 +170,11 @@ def synchronize_dependencies(force: bool = False) -> None:
 
 
 def main() -> None:
+    """Prepara o ambiente virtual e encaminha os argumentos ao Python do projeto.
+
+    Os modos `--sync-deps` e `--install-deps` permitem sincronizar dependências
+    sem iniciar a aplicação; os demais argumentos são executados pela `.venv`.
+    """
     configure_local_native_dependencies()
     args = sys.argv[1:]
     dependency_mode = args[0] if args and args[0] in {"--sync-deps", "--install-deps"} else ""

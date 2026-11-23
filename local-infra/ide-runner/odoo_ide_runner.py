@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guarded host-side entry point for running/debugging Odoo from IntelliJ."""
+"""Ponto de entrada protegido para executar e depurar o Odoo pelo IntelliJ."""
 
 from __future__ import annotations
 
@@ -21,6 +21,15 @@ MINIMUM_PYTHON = (3, 12)
 
 
 def compose(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    """Executa Docker Compose com os arquivos desta infraestrutura local.
+
+    Args:
+        *args: Argumentos encaminhados ao comando `docker compose`.
+        check: Se verdadeiro, propaga falhas do Compose como exceção.
+
+    Returns:
+        Resultado do subprocesso, incluindo saída e código de retorno.
+    """
     command = [
         "docker", "compose", "--project-directory", str(INFRA),
         "--env-file", str(ENV_FILE), "-f", str(COMPOSE), *args,
@@ -29,11 +38,27 @@ def compose(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
 
 
 def fail(message: str) -> None:
+    """Exibe uma falha do runner em stderr e encerra com status 1.
+
+    Args:
+        message: Orientação que identifica o problema e a ação corretiva.
+
+    Raises:
+        SystemExit: Sempre, com código de saída 1.
+    """
     print(f"Odoo IDE: {message}", file=sys.stderr)
     raise SystemExit(1)
 
 
 def verify_native_runtime_environment() -> None:
+    """Confirma que a biblioteca libpq privada está disponível para o processo.
+
+    Valida o prefixo local e o `LD_LIBRARY_PATH` antes de iniciar serviços ou
+    criar o marcador de processo do runner.
+
+    Raises:
+        SystemExit: Se a dependência local ou sua configuração estiver ausente.
+    """
     native_prefix = INFRA / ".local" / "native" / "current"
     if not native_prefix.is_dir():
         fail("Prefixo nativo local ausente. Execute ./local-infra/scripts/ide-day.sh antes do Run/Debug.")
@@ -64,6 +89,11 @@ def verify_native_runtime_environment() -> None:
 
 
 def main() -> None:
+    """Valida o ambiente, inicia somente o banco Compose e executa o Odoo oficial.
+
+    Registra a sessão da IDE, prepara credenciais locais, verifica conflitos com
+    o Odoo em container e remove o marcador do runner ao encerrar.
+    """
     if sys.version_info < MINIMUM_PYTHON:
         actual = ".".join(map(str, sys.version_info[:3]))
         required = ".".join(map(str, MINIMUM_PYTHON))
