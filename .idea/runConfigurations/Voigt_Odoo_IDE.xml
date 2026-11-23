@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Voigt Odoo Local (IDE Debug/Test)" type="PythonConfigurationType" factoryName="Python">
     <module name="voigt-erp-by-odoo" />
-    <option name="ENV_FILES" value="" />
+    <option name="ENV_FILES" value="$PROJECT_DIR$/local-infra/.local/ide-runner.env" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -14,7 +14,7 @@
       <env name="ODOO_IDE_RUNNER" value="1" />
     </envs>
     <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
-    <option name="SDK_NAME" value="Python 3.12 (voigt-erp-by-odoo .venv)" />
+    <option name="SDK_NAME" value="~/Projects/Kezpo/voigt-erp-by-odoo/.venv" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
