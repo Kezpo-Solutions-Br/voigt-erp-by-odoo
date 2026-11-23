@@ -33,6 +33,36 @@ def fail(message: str) -> None:
     raise SystemExit(1)
 
 
+def verify_native_runtime_environment() -> None:
+    native_prefix = INFRA / ".local" / "native" / "current"
+    if not native_prefix.is_dir():
+        fail("Prefixo nativo local ausente. Execute ./local-infra/scripts/ide-day.sh antes do Run/Debug.")
+
+    library_roots = (native_prefix / "usr" / "lib", native_prefix / "lib")
+    libpq_files = [
+        path
+        for root in library_roots
+        if root.is_dir()
+        for path in (*root.glob("libpq.so.5"), *root.glob("*-linux-gnu/libpq.so.5"))
+        if path.is_file()
+    ]
+    if not libpq_files:
+        fail("libpq.so.5 não foi encontrado no prefixo nativo local. Execute ./local-infra/scripts/ide-first-run.sh.")
+
+    expected_library_directory = libpq_files[0].parent.resolve()
+    configured_directories = {
+        pathlib.Path(directory).resolve()
+        for directory in os.environ.get("LD_LIBRARY_PATH", "").split(os.pathsep)
+        if directory and pathlib.Path(directory).is_dir()
+    }
+    if expected_library_directory not in configured_directories:
+        fail(
+            "O IntelliJ não carregou local-infra/.local/ide-runner.env; o processo não recebeu o caminho "
+            f"para libpq.so.5 ({expected_library_directory}). Execute ./local-infra/scripts/ide-day.sh, "
+            "confirme ENV_FILES em .idea/runConfigurations/Voigt_Odoo_IDE.xml e recarregue a configuração."
+        )
+
+
 def main() -> None:
     if sys.version_info < MINIMUM_PYTHON:
         actual = ".".join(map(str, sys.version_info[:3]))
@@ -42,6 +72,8 @@ def main() -> None:
             "Execute ./local-infra/scripts/ide-day.sh e configure o runner para usar "
             "$PROJECT_DIR$/.venv/bin/python (o nome antigo pode estar associado a um SDK de outro projeto)."
         )
+
+    verify_native_runtime_environment()
 
     pid_file = INFRA / ".local" / "ide-runner.pid"
     pid_file.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
