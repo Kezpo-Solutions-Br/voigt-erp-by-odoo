@@ -1,0 +1,56 @@
+name: voigt-odoo-local
+
+services:
+  db:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in local-infra/.env}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - odoo-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    stop_grace_period: 1m
+
+  odoo:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        ODOO_SOURCE_REV: ${ODOO_SOURCE_REV:-local-uncommitted}
+    image: voigt-odoo:local
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      PORT: 5432
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in local-infra/.env}
+      ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in local-infra/.env}
+    ports:
+      - "${ODOO_BIND_ADDRESS:-127.0.0.1}:${ODOO_PORT:-8069}:8069"
+    volumes:
+      - odoo-data:/var/lib/odoo
+    networks:
+      - odoo-backend
+    init: true
+    stop_grace_period: 1m
+
+volumes:
+  postgres-data:
+  odoo-data:
+
+networks:
+  odoo-backend:
+    driver: bridge
