@@ -18,6 +18,7 @@ REQUIREMENTS = ROOT / "requirements.txt"
 CONSTRAINTS = ROOT / "constraints-voigt.txt"
 DEPENDENCY_MARKER = VENV / ".odoo-requirements.sha256"
 RUNNER_SCRIPT = "odoo_ide_runner.py"
+MINIMUM_PYTHON = (3, 12)
 NATIVE_PREFIX = ROOT / "local-infra" / ".local" / "native" / "current"
 
 
@@ -76,6 +77,18 @@ def ensure_venv() -> None:
         subprocess.run([python, "-m", "venv", str(VENV)], check=True)
     if not VENV_PYTHON.is_file() or not os.access(VENV_PYTHON, os.X_OK):
         raise RuntimeError(f"Não foi possível criar um interpretador executável em {VENV_PYTHON}.")
+    version = subprocess.run(
+        [str(VENV_PYTHON), "-c", "import sys; print('.'.join(map(str, sys.version_info[:3])))"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    version_parts = tuple(int(part) for part in version.split("."))
+    if version_parts < MINIMUM_PYTHON:
+        raise RuntimeError(
+            f"A .venv existente usa Python {version}; Odoo requer Python >= 3.12. "
+            "Mova/remova a .venv antiga e execute ./local-infra/scripts/ide-first-run.sh novamente."
+        )
 
 
 def dependency_hash() -> str:

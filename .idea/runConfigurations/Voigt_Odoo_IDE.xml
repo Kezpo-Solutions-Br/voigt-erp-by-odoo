@@ -13,8 +13,8 @@
       <env name="ODOO_RC" value="$PROJECT_DIR$/local-infra/.local/ide-odoo.conf" />
       <env name="ODOO_IDE_RUNNER" value="1" />
     </envs>
-    <option name="SDK_HOME" value="$PROJECT_DIR$/local-infra/ide-runner/python_interpreter.py" />
-    <option name="SDK_NAME" value="Voigt Odoo Bootstrap Python 3.12" />
+    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+    <option name="SDK_NAME" value="Python 3.12 (voigt-erp-by-odoo .venv)" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />

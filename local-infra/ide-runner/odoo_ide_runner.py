@@ -17,6 +17,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 INFRA = ROOT / "local-infra"
 COMPOSE = INFRA / "compose.yaml"
 ENV_FILE = INFRA / ".env"
+MINIMUM_PYTHON = (3, 12)
 
 
 def compose(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -33,6 +34,15 @@ def fail(message: str) -> None:
 
 
 def main() -> None:
+    if sys.version_info < MINIMUM_PYTHON:
+        actual = ".".join(map(str, sys.version_info[:3]))
+        required = ".".join(map(str, MINIMUM_PYTHON))
+        fail(
+            f"Python {actual} foi selecionado pela IDE; o Odoo deste projeto requer Python >= {required}. "
+            "Execute ./local-infra/scripts/ide-day.sh e configure o runner para usar "
+            "$PROJECT_DIR$/.venv/bin/python (o nome antigo pode estar associado a um SDK de outro projeto)."
+        )
+
     pid_file = INFRA / ".local" / "ide-runner.pid"
     pid_file.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     try:
