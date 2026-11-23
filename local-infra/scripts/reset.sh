@@ -6,6 +6,7 @@ source "$SCRIPT_DIR/lib.sh"
 require_docker_compose
 ensure_env_file
 ensure_docker_daemon
+require_ide_runner_stopped
 printf 'This permanently deletes the local PostgreSQL database and Odoo filestore volumes.\n'
 read -r -p 'Type DELETE to continue: ' confirmation
 [[ "$confirmation" == DELETE ]] || { printf 'Cancelled.\n'; exit 0; }

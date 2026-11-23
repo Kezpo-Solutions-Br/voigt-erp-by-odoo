@@ -9,6 +9,11 @@ _build/
 !.github
 !.mailmap
 !.weblate.json
+!.idea/
+.idea/*
+!.idea/runConfigurations/
+.idea/runConfigurations/*
+!.idea/runConfigurations/*.xml
 # compiled python files
 *.py[co]
 __pycache__/

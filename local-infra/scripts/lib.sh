@@ -4,6 +4,7 @@ set -Eeuo pipefail
 INFRA_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 COMPOSE_FILE="$INFRA_DIR/compose.yaml"
 ENV_FILE="$INFRA_DIR/.env"
+IDE_RUNNER_PID_FILE="$INFRA_DIR/.local/ide-runner.pid"
 
 die() {
   printf 'Error: %s\n' "$*" >&2
@@ -33,4 +34,22 @@ compose() {
 
 ensure_docker_daemon() {
   docker info >/dev/null 2>&1 || die 'Docker daemon is not reachable. Start Docker Desktop or the Docker service, then retry.'
+}
+
+require_ide_runner_stopped() {
+  [[ -f "$IDE_RUNNER_PID_FILE" ]] || return 0
+  local pid
+  pid="$(<"$IDE_RUNNER_PID_FILE")"
+  if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then
+    die "O runner do IntelliJ está ativo (PID $pid). Pare a configuração no IDE antes de iniciar/parar o Odoo em Compose."
+  fi
+  rm -f "$IDE_RUNNER_PID_FILE"
+}
+
+require_compose_odoo_stopped() {
+  local running
+  running="$(compose ps --status running --services)"
+  if printf '%s\n' "$running" | grep -qx odoo; then
+    die 'O serviço Odoo do Compose está ativo. Pare-o antes de iniciar o runner da IDE.'
+  fi
 }

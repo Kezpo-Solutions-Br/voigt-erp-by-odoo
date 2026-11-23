@@ -39,6 +39,9 @@ Todos os scripts podem ser executados a partir de qualquer diretório atual; os 
 ./local-infra/scripts/stop.sh        # para e remove contêineres/rede, preservando os volumes nomeados
 ./local-infra/scripts/db-ide.sh start  # inicia somente o PostgreSQL para conectar pelo JetBrains
 ./local-infra/scripts/db-ide.sh status # mostra o estado e os parâmetros da conexão JetBrains
+./local-infra/scripts/start-ide.sh    # inicia somente o PostgreSQL necessário ao runner IntelliJ
+./local-infra/scripts/stop-ide.sh     # para somente o PostgreSQL, preservando os dados
+./local-infra/scripts/setup-ide.sh     # prepara o ambiente Python para executar/debugar pelo IntelliJ
 ```
 
 Para iniciar novamente após parar os serviços, execute `start.sh`. Para recompilar explicitamente a imagem do Odoo, execute `start.sh` (o comando usa `compose up --build`).
@@ -74,6 +77,9 @@ Ao alterar credenciais de um banco de dados já inicializado, o PostgreSQL não 
 ## Arquitetura e limites
 
 - O projeto Compose se chama `voigt-odoo-local`; todas as definições, o modelo de configuração, os scripts e a documentação ficam neste diretório.
+- O código de suporte exclusivo da IDE fica em `local-infra/ide-runner/`, fora das pastas oficiais `odoo/` e `addons/`. Os scripts operacionais ficam em `local-infra/scripts/`; a configuração compartilhada do IntelliJ fica em `.idea/runConfigurations/`. Essa separação mantém os artefatos auxiliares fora do código da plataforma e deixa explícito que eles não fazem parte do pacote Odoo nem da imagem cloud.
+- O runner não copia nem modifica o `odoo-bin`: ele delega a execução ao arquivo oficial na raiz do projeto. Só a inicialização acontece por meio do wrapper de desenvolvimento, que valida o PostgreSQL e impede dois servidores Odoo simultâneos.
+- O `.dockerignore` exclui `local-infra/`, `.idea/`, `.run/` e `.venv/` do contexto de compilação. Embora o Dockerfile use o contexto raiz para acessar o código Odoo, os arquivos de suporte da IDE não são copiados para a imagem.
 - O contexto de compilação é a raiz do repositório porque o Dockerfile existente copia dali o código-fonte e as dependências do Odoo. O Compose aponta diretamente para esse Dockerfile; a infraestrutura local não mantém uma versão própria do processo de compilação da aplicação.
 - O PostgreSQL 16 é um serviço separado em uma rede bridge privada. Sua porta é publicada apenas no endereço local `127.0.0.1:15432` por padrão, para conexão do JetBrains Database Tools; ela não fica acessível pela rede. Para administração local, use `docker compose exec db psql -U odoo`.
 - O script `db-ide.sh start` inicia somente o PostgreSQL e aguarda sua verificação de saúde; ele não inicia, altera nem depende da configuração AWS/cloud.
@@ -148,14 +154,112 @@ Para parar os serviços, `./local-infra/scripts/stop.sh` para Odoo e PostgreSQL,
 - O endereço de publicação padrão é loopback. Não o altere para `0.0.0.0` sem necessidade, pois isso pode expor o banco na rede do computador.
 - O arquivo `.env` local e as configurações cloud permanecem separados. Este diretório não lê o `.env` do Pulumi nem executa scripts AWS.
 
+## Executar, depurar e testar Odoo pelo IntelliJ IDEA
+
+O projeto inclui uma configuração compartilhada em `.idea/runConfigurations/Voigt_Odoo_IDE.xml`, chamada **Voigt Odoo Local (IDE Debug/Test)**. Ela inicia o `odoo-bin` como processo Python local, permitindo usar os breakpoints e ferramentas de depuração/teste do IntelliJ. A aplicação usa o PostgreSQL local do Compose em `127.0.0.1:15432`; não usa o PostgreSQL cloud.
+
+O plugin **Odoo** mostrado nas configurações da IDE permanece habilitado e complementa o trabalho com o código: segundo a descrição do plugin e o projeto oficial OdooLS, ele fornece recursos de linguagem, como informações ao passar o mouse, navegação para definições, autocompletar e diagnósticos. Ele não inicia o servidor Odoo nem configura o debugger Python. Por isso, o projeto mantém uma configuração de execução Python separada; os recursos do plugin continuam disponíveis no editor durante a execução e depuração.
+
+### Preparar o interpretador e as credenciais locais
+
+Esta preparação é executada uma vez por checkout (e novamente quando os requisitos Python mudarem):
+
+1. Confirme que `local-infra/.env` está preenchido, como descrito em [Primeira execução](#primeira-execução).
+2. Instale os pacotes nativos listados abaixo. O host precisa de privilégios administrativos para essa etapa:
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y build-essential libffi-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libjpeg62-turbo-dev libldap2-dev liblcms2-dev libmagic-dev libopenjp2-7-dev libpq-dev libsasl2-dev libssl-dev libtiff-dev libwebp-dev libxcb1-dev libxml2-dev libxslt1-dev pkg-config zlib1g-dev
+   ```
+
+3. Prepare o interpretador virtual isolado e as credenciais locais:
+
+   ```bash
+   ./local-infra/scripts/setup-ide.sh
+   ```
+
+   O script cria `.venv` na raiz e instala as dependências de `requirements.txt`, respeitando `constraints-voigt.txt`. Cria também `local-infra/.pgpass` e `local-infra/.local/ide-odoo.conf`, ambos com permissão 0600. Esses arquivos contêm credenciais locais e são ignorados pelo Git.
+
+   O runner usa Python 3.12 e as versões de dependências/restrições definidas neste repositório; as bibliotecas nativas do sistema são fornecidas pelo computador host.
+
+4. No IntelliJ IDEA, confirme que o plugin Python está habilitado e selecione `$PROJECT_DIR$/.venv/bin/python` como interpretador do projeto. A configuração compartilhada já aponta para esse caminho.
+
+### Iniciar e depurar a aplicação
+
+1. Confirme que o Docker está ativo e que a aplicação Odoo em Compose está parada. Se o serviço `odoo` estiver em execução, pare somente esse serviço:
+
+   ```bash
+   docker compose --project-directory local-infra --env-file local-infra/.env -f local-infra/compose.yaml stop odoo
+   ```
+
+2. No seletor de configurações do IntelliJ, escolha **Voigt Odoo Local (IDE Debug/Test)** e clique em **Run** ou **Debug**. Não é necessário executar `start-ide.sh` antes: o wrapper prepara os arquivos privados locais e inicia automaticamente somente o serviço PostgreSQL `db`, se ele ainda não estiver ativo.
+3. A configuração usa HTTP em `127.0.0.1:8070`, separado da porta 8069 do serviço Odoo em container. Acesse [http://127.0.0.1:8070](http://127.0.0.1:8070). Defina breakpoints no código Python do Odoo ou dos addons e use o painel **Debug** para inspecionar a execução.
+4. Ao terminar, use **Stop** na janela Run/Debug. O PostgreSQL continua ativo para manter a conexão do Database Tools e evitar inicializações repetidas. Quando quiser pará-lo também, execute `./local-infra/scripts/stop-ide.sh`.
+
+### Pré-etapas automatizadas ao clicar em Run/Debug
+
+O `local-infra/ide-runner/odoo_ide_runner.py` executa essas verificações antes de chamar o `odoo-bin` oficial:
+
+1. Cria um marcador PID local para impedir que os scripts Compose parem ou iniciem serviços enquanto a depuração estiver ativa.
+2. Lê `local-infra/.env` e gera/atualiza `.pgpass` e `ide-odoo.conf` com permissões 0600. A senha não fica na configuração versionada do IntelliJ.
+3. Verifica se o Odoo em container está ativo; se estiver, encerra com uma instrução de como alternar os modos.
+4. Executa `docker compose up --detach --wait db`: somente o PostgreSQL é criado/iniciado; não sobe o serviço `odoo` da Compose.
+5. Confirma a saúde com `pg_isready` e testa a porta TCP publicada.
+6. Inicia o `odoo-bin` a partir do código oficial da raiz, com o interpretador `.venv` e o debugger do IntelliJ.
+
+Se uma etapa falhar, o wrapper encerra e remove o marcador PID. Os scripts `start.sh`, `stop.sh`, `reset.sh`, `start-ide.sh` e `stop-ide.sh` verificam esse marcador para proteger a sessão da IDE.
+
+O runner `local-infra/ide-runner/odoo_ide_runner.py` verifica que o serviço `db` está acessível e interrompe a inicialização se o serviço `odoo` do Compose estiver rodando. O script cria um marcador local de PID enquanto o runner está ativo; `start.sh`, `stop.sh`, `reset.sh`, `start-ide.sh` e `stop-ide.sh` consultam esse marcador para evitar iniciar ou desligar serviços Compose durante a sessão de depuração. Portanto, os dois processos Odoo não atendem simultaneamente nem disputam os mesmos registros do banco.
+
+Para alternar para o Odoo em container, pare a configuração da IDE e execute `./local-infra/scripts/start.sh`. Para voltar à IDE, pare o Odoo em container sem parar o PostgreSQL e então inicie o runner:
+
+```bash
+docker compose --project-directory local-infra --env-file local-infra/.env -f local-infra/compose.yaml stop odoo
+./local-infra/scripts/start-ide.sh
+```
+
+Ao terminar o trabalho na IDE, pare o runner pelo botão **Stop** e execute `./local-infra/scripts/stop-ide.sh` para parar somente o PostgreSQL, preservando os dados. A verificação impede parar o banco se o runner ou o Odoo em Compose ainda estiver ativo.
+
+O runner da IDE usa um diretório de dados/filestore próprio em `local-infra/data/ide-runner`, separado do volume `odoo-data` do container. O banco PostgreSQL é compartilhado, mas arquivos de anexos/filestore escritos por um processo não são automaticamente copiados para o outro. Para depurar fluxos que dependem de anexos já existentes, use a aplicação em container ou copie os dados de filestore de forma deliberada antes da execução.
+
+### Executar testes do Odoo
+
+Use **Run** ou **Debug** na mesma configuração Python; o IntelliJ mantém suporte a breakpoints durante a execução dos testes. Edite temporariamente **Program arguments** na configuração (ou duplique a configuração para manter uma variante de testes) para indicar um banco de teste e as opções do Odoo. Exemplo de execução de testes de um módulo:
+
+```text
+-d voigt_odoo_test -i sale --test-enable --test-tags /sale --stop-after-init
+```
+
+O banco `voigt_odoo_test` deve existir no PostgreSQL local. Use um banco descartável para testes: algumas suítes instalam módulos, criam registros e podem alterar os dados. `-i sale` instala/atualiza o módulo indicado antes dos testes; ajuste o nome do módulo e os `--test-tags` para seu caso. Remova os argumentos de teste para voltar a iniciar o servidor web de depuração. A configuração padrão não executa testes automaticamente.
+
+### Credenciais e ajustes locais
+
+- A senha PostgreSQL é lida pelo libpq a partir de `local-infra/.pgpass`; ela não fica escrita na configuração compartilhada do IntelliJ.
+- `ODOO_ADMIN_PASSWD` é gravada apenas no arquivo local `local-infra/.local/ide-odoo.conf`, necessário para o gerenciador de bancos do Odoo.
+- A configuração `.run`/`.idea` rastreada contém somente caminhos relativos, portas, nome do usuário padrão e parâmetros não secretos. Se personalizar `DB_IDE_PORT` ou `POSTGRES_USER` em `.env`, atualize os valores correspondentes em `PGPORT` e `PGUSER` nessa configuração compartilhada.
+- `setup-ide.sh` instala as dependências e prepara as credenciais. A cada execução do runner, os arquivos `.pgpass` e `ide-odoo.conf` são atualizados automaticamente para refletir o `.env` local.
+- O interpretador `.venv` fica fora do código Odoo oficial e da imagem Docker; ele pode ser recriado removendo `.venv` e executando `setup-ide.sh` novamente.
+
+### Por que a configuração fica no repositório
+
+O JetBrains permite salvar configurações compartilhadas como arquivos do projeto; o local padrão é `.idea/runConfigurations`. O `.gitignore` deste repositório ignora arquivos privados do IntelliJ, mas abre exceção somente para arquivos XML nessa subpasta. Assim, o runner pode ser distribuído com o projeto sem versionar configurações pessoais, credenciais, histórico da IDE ou fontes de dados locais.
+
 ## Solução de problemas
 
-- Erro ao acessar o daemon do Docker: inicie o Docker Desktop ou o Docker Engine e execute o comando novamente.
-- Porta ocupada: defina outro valor para `ODOO_PORT` em `.env` e reinicie os serviços.
-- A IDE não conecta: execute `scripts/db-ide.sh status`, confira se `db` está saudável, confirme host/porta/usuário/senha e verifique se outro processo (por exemplo, o túnel cloud) está usando a porta configurada.
-- O Odoo não consegue se conectar: consulte `scripts/logs.sh db` e `scripts/logs.sh odoo`; aguarde até que o serviço `db` esteja saudável.
-- Problemas de acesso ou inicialização: confira a senha do gerenciador de bancos e as credenciais do banco. Se as credenciais ou os dados do banco estiverem inconsistentes e os dados puderem ser descartados, redefina os volumes.
-- Contexto de compilação muito grande: o `.dockerignore` da raiz exclui diretórios de configuração, documentação e testes. Ele mantém disponíveis o código-fonte da aplicação e os arquivos usados pelo Dockerfile existente.
+| Sintoma | Causa provável | Efeito | Ação |
+| --- | --- | --- | --- |
+| Runner informa que Docker não pode ser consultado | Docker Desktop/Engine está parado ou o usuário não tem acesso ao daemon. | O PostgreSQL não inicia e o Odoo IDE não é executado. | Inicie o Docker e confirme `docker info`; depois use Run/Debug novamente. |
+| `setup-ide.sh` para em `pg_config` ou dependências nativas | Pacotes de desenvolvimento do host estão ausentes. | O `.venv` não recebe todas as dependências do Odoo. | Instale o conjunto de pacotes do passo de preparação e execute `setup-ide.sh` novamente. |
+| IntelliJ diz que o interpretador `.venv/bin/python` não existe | Preparação do ambiente não foi executada ou `.venv` foi removido. | A configuração Python não consegue iniciar. | Execute `./local-infra/scripts/setup-ide.sh` e selecione novamente o interpretador se necessário. |
+| Runner diz que faltam `POSTGRES_PASSWORD` ou `ODOO_ADMIN_PASSWD` | `.env` não existe ou ainda tem valores de exemplo. | Credenciais não são materializadas; o processo para antes de subir o banco. | Execute `setup.sh`, preencha `local-infra/.env` e tente de novo. |
+| Runner informa que Odoo Compose está ativo | O container `odoo` ainda está rodando. | O wrapper interrompe a inicialização para evitar dois servidores usando o mesmo banco. | Pare a configuração IDE e então use `docker compose ... stop odoo` antes de rodar a IDE; ou pare o runner e use `start.sh` para Compose. |
+| PostgreSQL não fica saudável durante Run/Debug | Inicialização do container falhou, volume está inconsistente ou a porta do host está ocupada. | O wrapper não chama `odoo-bin`. | Consulte `./local-infra/scripts/logs.sh db`, verifique `./local-infra/scripts/db-ide.sh status` e escolha outra `DB_IDE_PORT` se houver conflito. |
+| Erro de conexão TCP para `127.0.0.1:15432` | A porta foi alterada, está ocupada pelo túnel cloud ou não foi publicada. | O `pg_isready` interno pode passar, mas o host/IDE não acessa o banco. | Confira `.env`, pare o túnel cloud se usar a mesma porta, ajuste `PGPORT` na configuração IntelliJ e execute novamente. |
+| O IDE informa senha PostgreSQL inválida | `.env` mudou após a criação do volume, ou a senha no volume é antiga. | O Odoo e o Database Tools não autenticam. | Para dados descartáveis, use `reset.sh`; para preservar dados, altere a senha da role PostgreSQL para o valor do `.env`. |
+| Script diz que outro runner está ativo ou `stop-ide.sh` recusa parar | A configuração Python ainda está rodando ou sobrou um PID obsoleto. | Scripts de infraestrutura se recusam a desligar o banco durante depuração. | Pare o processo pelo botão Stop. Se ele já encerrou, confira `.local/ide-runner.pid`; remova somente se o PID não existir. |
+| Odoo inicia mas não encontra anexos antigos | Runner e container usam diretórios de filestore diferentes. | Registros do banco aparecem, mas os arquivos armazenados podem faltar. | Use o modo container para fluxos com anexos existentes ou copie o filestore deliberadamente antes de depurar. |
+| Configuração não aparece no IntelliJ | Arquivo XML não foi carregado ou plugin Python está desabilitado. | A configuração não aparece no seletor Run/Debug. | Confirme `.idea/runConfigurations/Voigt_Odoo_IDE.xml`, habilite Python e reabra o projeto. |
+| Testes não encontram o banco informado | `-d` aponta para um banco ainda não criado ou módulos requeridos não estão instalados. | Odoo encerra antes de executar os testes. | Crie um banco de teste descartável e instale o módulo com `-i`; mantenha `--test-enable --stop-after-init`. |
 
 ## Relatório dos artefatos e justificativas
 
@@ -172,6 +276,15 @@ Para parar os serviços, `./local-infra/scripts/stop.sh` para Odoo e PostgreSQL,
 | `scripts/logs.sh` | Acompanha os registros de todos os serviços ou de um serviço específico, aceitando nomes de serviço opcionais. |
 | `scripts/reset.sh` | Permite retornar deliberadamente a uma instância vazia, com confirmação explícita porque a exclusão dos volumes nomeados é destrutiva. |
 | `scripts/db-ide.sh` | Inicia somente o PostgreSQL ou exibe seu estado e os parâmetros necessários para configurar a fonte de dados JetBrains. Permite usar o banco local sem chamar a infraestrutura AWS. |
+| `scripts/start-ide.sh` | Atalho explícito para iniciar somente o PostgreSQL e aguardar sua saúde, sem subir o serviço Odoo em container. |
+| `scripts/stop-ide.sh` | Para somente o PostgreSQL, preservando volumes, e recusa parar enquanto o Odoo em container ou o runner IDE estiver ativo. |
+| `scripts/setup-ide.sh` | Prepara o virtualenv Python e materializa credenciais somente locais com permissões restritivas para o runner do IntelliJ. |
+| `ide-runner/odoo_ide_runner.py` | Código auxiliar isolado fora das pastas oficiais da plataforma. Cria credenciais locais, verifica os serviços Compose, mantém um marcador de PID, inicia somente o PostgreSQL se necessário e delega a inicialização ao `odoo-bin` oficial no processo depurável da IDE. |
+| `ide-runner/prepare_ide_files.py` | Compartilha a leitura do `.env` e a criação atômica dos arquivos `.pgpass` e `ide-odoo.conf` entre a preparação inicial e cada execução, mantendo permissões restritivas sem duplicar lógica. |
+| `.idea/runConfigurations/Voigt_Odoo_IDE.xml` | Configuração compartilhada Python do IntelliJ, com interpretador do projeto, caminho do runner, conexão PostgreSQL local e porta HTTP alternativa. Não contém senhas. |
+| `.gitignore` (raiz) | Mantém arquivos pessoais do IntelliJ ignorados, liberando para versionamento somente as configurações compartilhadas XML em `.idea/runConfigurations`. |
+| `.dockerignore` | Exclui toda a infraestrutura local, a configuração IntelliJ e o virtualenv do contexto enviado ao Docker, evitando incorporar artefatos de desenvolvimento à imagem Odoo. |
+| `local-infra/.gitignore` | Exclui credenciais PostgreSQL, configuração gerada do runner e dados locais do filestore. |
 | `README.md` | Explica a configuração inicial, o uso diário, a arquitetura, a configuração, a persistência, a recuperação e a justificativa de cada artefato gerado. |
 
 ## Referências externas utilizadas
@@ -179,5 +292,8 @@ Para parar os serviços, `./local-infra/scripts/stop.sh` para Odoo e PostgreSQL,
 - Ordem de inicialização no Docker Compose: o Compose aguarda a verificação de saúde de uma dependência quando `depends_on` usa a condição `service_healthy`. [Documentação do Docker](https://docs.docker.com/compose/how-tos/startup-order)
 - Definições de serviços e volumes do Docker Compose: [referência de serviços do Compose](https://docs.docker.com/reference/compose-file/services/) e [guia de início rápido do Compose](https://docs.docker.com/compose/gettingstarted/).
 - O Odoo requer PostgreSQL e deve se conectar usando um usuário dedicado, em vez do superusuário do PostgreSQL. [Documentação de instalação do Odoo](https://www.odoo.com/documentation/saas-15.4/administration/install/install.html).
+- Configurações de execução compartilhadas do IntelliJ podem ser armazenadas como arquivos do projeto; o padrão é `.idea/runConfigurations`. [Documentação de Run/Debug Configurations do IntelliJ IDEA](https://www.jetbrains.com/help/idea/run-debug-configuration.html).
+- O JetBrains oferece intérpretes Python locais e remotos via Docker/Compose; este runner escolhe um interpretador local para permitir depuração Python direta do processo. [Configurar um interpretador Python](https://www.jetbrains.com/help/pycharm/configuring-python-interpreter.html).
+- O plugin oficial OdooLS para PyCharm fornece recursos do servidor de linguagem, incluindo informações contextuais, navegação, autocompletar e diagnósticos. [Repositório oficial Odoo para o plugin](https://github.com/odoo/odoo-pycharm) e [guia de uso do OdooLS](https://github.com/odoo/odoo-ls/wiki/2.-How-to-use).
 
 A página de instalação do Odoo é antiga e específica de uma versão anterior. O requisito do PostgreSQL e a recomendação de usar um usuário dedicado continuam aplicáveis; o comportamento em tempo de execução descrito aqui foi baseado no Dockerfile e no entrypoint deste repositório.

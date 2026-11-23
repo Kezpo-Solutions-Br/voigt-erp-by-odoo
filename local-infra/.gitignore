@@ -1,1 +1,4 @@
 .env
+.pgpass
+.local/
+data/

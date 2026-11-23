@@ -1,5 +1,8 @@
 .git
 .idea
+.run
+.venv
+local-infra
 .github
 doc
 debian

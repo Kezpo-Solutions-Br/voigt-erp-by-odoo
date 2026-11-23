@@ -16,6 +16,8 @@ ensure_docker_daemon
 
 case "${1:-}" in
   start)
+    require_ide_runner_stopped
+    require_compose_odoo_stopped
     compose up --detach --wait db
     ;;
   status)
