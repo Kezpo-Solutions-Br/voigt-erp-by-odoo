@@ -1,9 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Voigt Odoo Local (IDE Debug/Test)" type="PythonConfigurationType" factoryName="Python">
     <module name="voigt-erp-by-odoo" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
       <env name="PGHOST" value="127.0.0.1" />
       <env name="PGPORT" value="15432" />
       <env name="PGUSER" value="odoo" />
@@ -11,16 +13,27 @@
       <env name="ODOO_RC" value="$PROJECT_DIR$/local-infra/.local/ide-odoo.conf" />
       <env name="ODOO_IDE_RUNNER" value="1" />
     </envs>
-    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
+    <option name="SDK_HOME" value="$PROJECT_DIR$/local-infra/ide-runner/python_interpreter.py" />
+    <option name="SDK_NAME" value="Voigt Odoo Bootstrap Python 3.12" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <EXTENSION ID="software.aws.toolkits.jetbrains.core.execution.PythonAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </EXTENSION>
+    <option name="RUN_TOOL" value="" />
+    <option name="RUN_AS_SCRIPT" value="false" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/local-infra/ide-runner/odoo_ide_runner.py" />
     <option name="PARAMETERS" value="--http-interface=127.0.0.1 --http-port=8070" />
     <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
     <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
     <method v="2" />
   </configuration>
 </component>

@@ -46,6 +46,32 @@ Todos os scripts podem ser executados a partir de qualquer diretório atual; os 
 
 Para iniciar novamente após parar os serviços, execute `start.sh`. Para recompilar explicitamente a imagem do Odoo, execute `start.sh` (o comando usa `compose up --build`).
 
+## Como executar os scripts wrapper
+
+Os wrappers agrupam as etapas dos guias manuais: use o primeiro uma vez por checkout e o segundo a cada sessão de trabalho. Execute os comandos a partir da raiz do repositório, como nos exemplos abaixo; os scripts também resolvem os caminhos a partir da própria localização.
+
+### Primeira configuração deste checkout
+
+```bash
+./local-infra/scripts/ide-first-run.sh
+```
+
+O script cria `local-infra/.env` se ainda não existir. Na primeira chamada, ele para para você editar o arquivo e substituir `POSTGRES_PASSWORD` e `ODOO_ADMIN_PASSWD`; depois de salvar, execute o mesmo comando novamente. O host precisa ter Python 3.12 e `venv` disponíveis; o wrapper não instala nem atualiza o interpretador global. Em hosts Debian/Ubuntu/Pop!_OS, identifica o codinome do sistema, verifica dependências com uma simulação do APT direcionada a essa versão e baixa, sem instalar no sistema, os pacotes de desenvolvimento e as bibliotecas de runtime necessárias. Isso inclui dependências transitivas resolvidas pelo APT. Os arquivos `.deb` são extraídos para uma área privada em `local-infra/.local/native`; o bootstrap Python usa somente para o processo da IDE os caminhos de bibliotecas, headers, linker e `pkg-config` dessa área. Nomes que variam entre versões têm alternativas equivalentes, como `libfreetype-dev`/`libfreetype6-dev` e `libjpeg-turbo8-dev`/`libjpeg62-turbo-dev`/`libjpeg-dev`. Arquivos estáticos `.a` são removidos do prefixo para evitar que o linker escolha uma biblioteca estática incompatível ao construir extensões compartilhadas. Em seguida prepara `.venv`, sincroniza os requisitos do Odoo e cria as credenciais locais protegidas. Repetir o script reutiliza o prefixo compatível já criado e não altera os pacotes de sistema.
+
+O script executa `apt-get update` para atualizar somente os índices de pacotes e usa `sudo` para baixar os arquivos. A chamada APT usa `--download-only`; os arquivos de download passam por uma pasta temporária acessível ao sandbox APT em `/tmp`, depois são extraídos para o prefixo do projeto. O script não executa uma instalação efetiva via APT/dpkg, não chama `ldconfig` e não altera bibliotecas em `/usr` nem o banco de pacotes instalado do host. A simulação e o download são limitados ao codinome do sistema; se não houver uma solução compatível, o wrapper para antes de trocar o link do prefixo local. Os prefixos são montados em uma pasta temporária e ativados por troca atômica de link simbólico, para evitar uma atualização parcial. Se a simulação encontrar versões incompatíveis, corrija as fontes APT da máquina antes de tentar novamente. O manual do APT explica a seleção de versões por prioridades e a documentação Ubuntu explica o gerenciamento de fontes ([APT](https://manpages.ubuntu.com/manpages/noble/man5/apt_preferences.5.html), [fontes Ubuntu](https://help.ubuntu.com/stable/ubuntu-help/addremove-sources.html)).
+
+### Uso diário
+
+```bash
+./local-infra/scripts/ide-day.sh
+```
+
+Esse script confirma que o Docker está disponível, repete as verificações idempotentes de preparação, para somente o serviço `odoo` em Compose se estiver rodando e inicia somente o PostgreSQL. Depois, no IntelliJ, selecione **Voigt Odoo Local (IDE Debug/Test)** e clique em **Run** ou **Debug**. O script não abre nem inicia a interface gráfica do IntelliJ. Ao encerrar, use **Stop** na IDE; o banco continua ativo. Execute `./local-infra/scripts/stop-ide.sh` quando quiser parar também o PostgreSQL. Se preferir executar cada etapa manualmente, siga os dois guias abaixo.
+
+Se a preparação inicial for chamada antes de preencher as senhas, o script encerra sem iniciar serviços e informa para editar `.env` e executar novamente. A atualização dos índices APT e o download dos arquivos locais podem pedir autenticação via `sudo`; os pacotes não são instalados globalmente.
+
+Para remover somente a cópia isolada das bibliotecas nativas, pare antes o runner IntelliJ e apague `local-infra/.local/native`. Não apague toda a pasta `.local`, pois ela também contém configuração privada do Odoo. O próximo `ide-first-run.sh` baixa e monta novamente o prefixo. Isso não remove nem altera bibliotecas do sistema.
+
 ## Dados e redefinição
 
 O Compose cria os volumes nomeados `voigt-odoo-local_postgres-data` e `voigt-odoo-local_odoo-data` (os nomes efetivos podem ser consultados com `docker volume ls`). O PostgreSQL armazena seu cluster no primeiro; o Odoo armazena os arquivos da aplicação e outros dados de execução no segundo. `stop.sh` preserva ambos. Para apagar intencionalmente os dois volumes e voltar a uma instância local vazia:
@@ -71,6 +97,69 @@ Edite `local-infra/.env` (ignorado pelo Git):
 | `DB_IDE_BIND_ADDRESS` | `127.0.0.1` | Endereço local do computador no qual a porta PostgreSQL será publicada para a IDE. Mantenha em `127.0.0.1` para que o banco não fique acessível pela rede. |
 | `DB_IDE_PORT` | `15432` | Porta do computador mapeada para a porta PostgreSQL 5432 do contêiner. A porta 15432 evita conflitar com instalações locais comuns do PostgreSQL. |
 | `ODOO_SOURCE_REV` | `local-uncommitted` | Identificação da revisão do código na imagem. Quando possível, `start.sh` substitui esse valor padrão pela revisão curta atual do Git. |
+
+## Versões de referência e compatibilidade entre computadores
+
+Esta tabela registra o ambiente de referência observado em **23/11/2026**. Ela separa os valores definidos pelo repositório dos valores da máquina usada para validar esta configuração. Os valores do host e da IDE são informativos; em outro computador, registre os resultados dos comandos abaixo e gere novamente os artefatos locais.
+
+| Componente | Versão/referência | Origem e como interpretar |
+| --- | --- | --- |
+| Sistema host de referência | Pop!_OS 24.04 LTS, base Ubuntu Noble (`noble`), arquitetura `x86_64` | Detectado em `/etc/os-release` e `uname -m`. O script usa o codinome do host para selecionar pacotes nativos; este valor não é fixo no projeto. |
+| Ferramentas do host usadas no bootstrap | GNU Bash 5.2.21, APT 2.8.4, dpkg 1.22.6, GCC 13.3.0 e pkg-config 1.8.1 | Versões observadas no host de referência. O bootstrap requer Bash, APT/dpkg, GCC e pkg-config compatíveis; distribuições suportadas podem fornecer versões diferentes. Os pacotes nativos resolvidos em cada host ficam registrados em `local-infra/.local/native/current/packages.tsv`. |
+| Python do host e da `.venv` | Python 3.12.3 no host de referência | Detectado por `python3.12 --version`. O projeto exige a série 3.12 para o runner; o patch pode variar por computador. O wrapper não instala nem atualiza Python globalmente. |
+| Docker Engine | 29.10.0 no host de referência | Detectado por `docker --version`; instalado e atualizado fora deste repositório. |
+| Docker Compose | Plugin Compose v5.7.1 no host de referência | Detectado por `docker compose version`. O pré-requisito do projeto é o comando `docker compose`; o script não fixa uma versão mínima numérica e usa o plugin instalado junto ao Docker do host. |
+| IntelliJ IDEA | 2026.3, build `IU-263.7307.200` no host de referência | Detectado por `idea --version`. A configuração compartilhada fica em `.idea/runConfigurations/Voigt_Odoo_IDE.xml`, mas o IDE não é instalado nem fixado pelo projeto. |
+| Plugin Odoo para IntelliJ | 1.6.2, conforme a tela de Plugins fornecida | Plugin habilitado na IDE de referência. A versão não é fixada pelo XML do runner; confirme compatibilidade/atualizações pelo Marketplace da instalação IntelliJ. |
+| Plugin Python da IntelliJ | Habilitado no IDE de referência | O projeto depende do suporte a SDKs e configurações Python; a versão do plugin acompanha a instalação do IntelliJ e não é fixada no repositório. |
+| Database Tools e Drivers da IntelliJ | Recurso disponível na IDE de referência | A fonte PostgreSQL é uma configuração pessoal da IDE; o repositório documenta host/porta/usuário, mas não fixa a versão do plugin nem compartilha senhas. |
+| Odoo do checkout | Série 20.0; `odoo/release.py` informa 20.0.0 | Versão da árvore de código atual, não uma versão de imagem Odoo publicada. O runner IntelliJ chama o `odoo-bin` oficial deste checkout. |
+| PostgreSQL do Compose | Imagem `postgres:16-bookworm`; digest local observado `sha256:ce3efec6bc404f6b15ebf5d9bed6b45a9d4655aea238d7dacc3467ccb05a1175` | A definição Compose fixa a série 16 e a família Debian Bookworm pela tag, mas não fixa o digest. O digest citado é o que estava no cache Docker deste host em 23/11/2026; em outra máquina, `docker image inspect` pode mostrar um digest mais recente. |
+| Base Python da imagem Odoo | `python:3.12-slim-bookworm`, digest `sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70` | Fixado por digest no `Dockerfile`. A imagem Compose do Odoo usa essa base; o runner IDE continua sendo Python local no host. |
+| Dependências Python do runner | Python 3.12; entre as versões condicionais: `gevent 24.2.1`, `lxml 6.1.3`, `Pillow 10.2.0`, `psycopg2 2.9.9` e `python-ldap 3.4.4` | `requirements.txt` define as dependências e marcadores de versão; `constraints-voigt.txt` congela as versões selecionadas. Consulte ambos como fonte de verdade, pois nem todas as dependências indiretas precisam estar declaradas diretamente no primeiro arquivo. |
+| Dependências nativas da IDE | Pacotes da distribuição correspondente ao codinome e arquitetura atuais | `ide-first-run.sh` simula a resolução APT, baixa os pacotes de desenvolvimento/runtime e monta um prefixo específico do host em `local-infra/.local/native`. Depois da primeira execução atualizada, `current/packages.tsv` registra nome, versão, arquitetura e se cada arquivo foi extraído no prefixo ou mantido como biblioteca base do sistema. Esse diretório não é versionado nem deve ser copiado entre distribuições ou arquiteturas. |
+
+### Conferir o ambiente em outro computador
+
+Execute estes comandos antes de comparar uma falha ou compartilhar um relatório de ambiente:
+
+```bash
+cat /etc/os-release
+uname -m
+git rev-parse --short HEAD
+bash --version | head -n 1
+apt-get --version | head -n 1
+dpkg --version | head -n 1
+gcc --version | head -n 1
+pkg-config --version
+python3.12 --version
+if [[ -x .venv/bin/python ]]; then .venv/bin/python --version; fi
+docker --version
+docker compose version
+idea --version
+docker image inspect postgres:16-bookworm --format '{{.Id}} {{join .RepoDigests " "}}'
+if [[ -f local-infra/.local/native/current/packages.tsv ]]; then
+  column -t -s $'\t' local-infra/.local/native/current/packages.tsv
+fi
+```
+
+Com o PostgreSQL local em execução, consulte também a versão efetiva do servidor:
+
+```bash
+docker compose --project-directory local-infra --env-file local-infra/.env \
+  -f local-infra/compose.yaml exec -T db postgres --version
+```
+
+Depois de preparar o runner, consulte as dependências Python efetivamente instaladas e as bibliotecas nativas resolvidas para esse computador:
+
+```bash
+.venv/bin/python -m pip freeze
+column -t -s $'\t' local-infra/.local/native/current/packages.tsv
+```
+
+`pip freeze` é um retrato do ambiente naquele momento; `requirements.txt` e `constraints-voigt.txt` continuam sendo as fontes versionadas usadas para reconstruí-lo. O inventário nativo registra pacote, versão, arquitetura e escopo (extraído no prefixo local ou fornecido como biblioteca base do sistema). Compartilhe esses resultados junto com a distribuição, arquitetura e revisão Git ao comparar computadores; remova senhas e outros dados locais de qualquer relatório antes de compartilhá-lo.
+
+Para reproduzir a preparação em outro computador, mantenha Python 3.12 disponível no `PATH`, Docker com `docker compose`, e APT/dpkg nos hosts Debian/Ubuntu/Pop!_OS suportados. Execute `ide-first-run.sh` naquele checkout para criar um prefixo nativo adequado ao sistema e à arquitetura locais. Não copie `.venv` nem `local-infra/.local/native` entre computadores: ambos podem conter binários e bibliotecas ligados ao sistema de origem. As configurações da IDE e os requisitos versionados podem ser compartilhados; a instalação dos plugins e os binários da IDE devem ser conferidos no próprio computador.
 
 Ao alterar credenciais de um banco de dados já inicializado, o PostgreSQL não atualiza a senha do usuário armazenada no volume existente. Se a instância de desenvolvimento puder ser descartada, execute `reset.sh` e inicie novamente. Caso contrário, altere a senha do usuário do banco no PostgreSQL para que corresponda ao novo valor no arquivo de ambiente.
 
@@ -160,45 +249,57 @@ O projeto inclui uma configuração compartilhada em `.idea/runConfigurations/Vo
 
 O plugin **Odoo** mostrado nas configurações da IDE permanece habilitado e complementa o trabalho com o código: segundo a descrição do plugin e o projeto oficial OdooLS, ele fornece recursos de linguagem, como informações ao passar o mouse, navegação para definições, autocompletar e diagnósticos. Ele não inicia o servidor Odoo nem configura o debugger Python. Por isso, o projeto mantém uma configuração de execução Python separada; os recursos do plugin continuam disponíveis no editor durante a execução e depuração.
 
-### Preparar o interpretador e as credenciais locais
+### Guia 1 — configurar o runner pela primeira vez (manual)
 
-Esta preparação é executada uma vez por checkout (e novamente quando os requisitos Python mudarem):
+Execute este guia uma vez para cada checkout do projeto. Se `requirements.txt` ou `constraints-voigt.txt` mudarem, repita a sincronização Python; o script compara os hashes e evita reinstalar sem necessidade.
 
-1. Confirme que `local-infra/.env` está preenchido, como descrito em [Primeira execução](#primeira-execução).
-2. Instale os pacotes nativos listados abaixo. O host precisa de privilégios administrativos para essa etapa:
+1. Crie o arquivo de ambiente local e configure as duas senhas:
 
    ```bash
-   sudo apt-get update
-   sudo apt-get install -y build-essential libffi-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libjpeg62-turbo-dev libldap2-dev liblcms2-dev libmagic-dev libopenjp2-7-dev libpq-dev libsasl2-dev libssl-dev libtiff-dev libwebp-dev libxcb1-dev libxml2-dev libxslt1-dev pkg-config zlib1g-dev
+   ./local-infra/scripts/setup.sh
    ```
 
-3. Prepare o interpretador virtual isolado e as credenciais locais:
+   Edite `local-infra/.env` e substitua `POSTGRES_PASSWORD` e `ODOO_ADMIN_PASSWD`. O arquivo não deve ser versionado.
+
+2. Prepare as bibliotecas de desenvolvimento sem instalá-las no sistema:
+
+   ```bash
+   ./local-infra/scripts/ide-first-run.sh --native-deps-only
+   ```
+
+   O script baixa pacotes compatíveis com o codinome do host e extrai os arquivos em `local-infra/.local/native`. Requer Docker Compose, APT e `sudo` para atualizar índices/baixar arquivos; não instala nem atualiza bibliotecas globais. A configuração é repetível e protegida por lock.
+
+3. Prepare e sincronize o interpretador virtual e os arquivos locais de credenciais:
 
    ```bash
    ./local-infra/scripts/setup-ide.sh
    ```
 
-   O script cria `.venv` na raiz e instala as dependências de `requirements.txt`, respeitando `constraints-voigt.txt`. Cria também `local-infra/.pgpass` e `local-infra/.local/ide-odoo.conf`, ambos com permissão 0600. Esses arquivos contêm credenciais locais e são ignorados pelo Git.
+   O script usa o bootstrap para criar `.venv` se necessário e instalar as dependências de `requirements.txt`, respeitando `constraints-voigt.txt`. Cria também `local-infra/.pgpass` e `local-infra/.local/ide-odoo.conf`, ambos com permissão 0600. Esses arquivos contêm credenciais locais e são ignorados pelo Git.
 
-   O runner usa Python 3.12 e as versões de dependências/restrições definidas neste repositório; as bibliotecas nativas do sistema são fornecidas pelo computador host.
+   O runner usa Python 3.12 e as versões de dependências/restrições definidas neste repositório. O bootstrap configura `LD_LIBRARY_PATH`, `LDFLAGS`, `CPATH`, `PKG_CONFIG_PATH` e `PATH` somente nos processos da IDE para usar o prefixo local extraído e priorizar bibliotecas compartilhadas durante a compilação.
 
-4. No IntelliJ IDEA, confirme que o plugin Python está habilitado e selecione `$PROJECT_DIR$/.venv/bin/python` como interpretador do projeto. A configuração compartilhada já aponta para esse caminho.
+4. Abra o repositório no IntelliJ IDEA e confirme que o plugin Python está habilitado. A configuração **Voigt Odoo Local (IDE Debug/Test)** deve aparecer no seletor Run/Debug porque está salva em `.idea/runConfigurations`.
+5. Se o IntelliJ mostrar um interpretador inválido ou de outro projeto, edite a configuração e escolha **Use specified interpreter**; pelo seletor de arquivos, aponte para `local-infra/ide-runner/python_interpreter.py` no checkout atual. O XML compartilhado usa `$PROJECT_DIR$` para resolver esse caminho e define `IS_MODULE_SDK=false`; não selecione o SDK Java do módulo nem um `venv` de outro checkout.
 
-### Iniciar e depurar a aplicação
+### Guia 2 — rotina diária para executar e depurar (manual)
 
-1. Confirme que o Docker está ativo e que a aplicação Odoo em Compose está parada. Se o serviço `odoo` estiver em execução, pare somente esse serviço:
+1. Inicie o Docker Desktop/Engine e confirme que `local-infra/.env` continua presente. Não é necessário chamar `setup-ide.sh` manualmente todo dia; o bootstrap do runner cria `.venv` se necessário e sincroniza os requisitos somente quando mudarem. O atalho `ide-day.sh` também repete a preparação segura antes de iniciar o banco.
+2. Confirme que a aplicação Odoo em Compose está parada. Se o serviço `odoo` estiver em execução, pare somente esse serviço:
 
    ```bash
    docker compose --project-directory local-infra --env-file local-infra/.env -f local-infra/compose.yaml stop odoo
    ```
 
-2. No seletor de configurações do IntelliJ, escolha **Voigt Odoo Local (IDE Debug/Test)** e clique em **Run** ou **Debug**. Não é necessário executar `start-ide.sh` antes: o wrapper prepara os arquivos privados locais e inicia automaticamente somente o serviço PostgreSQL `db`, se ele ainda não estiver ativo.
-3. A configuração usa HTTP em `127.0.0.1:8070`, separado da porta 8069 do serviço Odoo em container. Acesse [http://127.0.0.1:8070](http://127.0.0.1:8070). Defina breakpoints no código Python do Odoo ou dos addons e use o painel **Debug** para inspecionar a execução.
-4. Ao terminar, use **Stop** na janela Run/Debug. O PostgreSQL continua ativo para manter a conexão do Database Tools e evitar inicializações repetidas. Quando quiser pará-lo também, execute `./local-infra/scripts/stop-ide.sh`.
+3. No seletor de configurações do IntelliJ, escolha **Voigt Odoo Local (IDE Debug/Test)** e clique em **Run** ou **Debug**. Não é necessário executar `start-ide.sh` antes: o runner cria `.venv` caso tenha sido removido, sincroniza dependências se necessário, atualiza as credenciais locais e inicia somente o PostgreSQL `db` se estiver parado.
+4. A configuração usa HTTP em `127.0.0.1:8070`, separado da porta 8069 do Odoo em container. Acesse [http://127.0.0.1:8070](http://127.0.0.1:8070). Defina breakpoints no código Python do Odoo ou dos addons e use o painel **Debug** para inspecionar a execução.
+5. Ao terminar, use **Stop** na janela Run/Debug. O PostgreSQL continua ativo para manter a conexão do Database Tools. Quando quiser pará-lo também, execute `./local-infra/scripts/stop-ide.sh`.
+
+Se quiser usar o PostgreSQL no Database Tools antes de iniciar a aplicação, execute `./local-infra/scripts/start-ide.sh`. Para Run/Debug, esse passo é opcional porque o runner inicia o banco automaticamente.
 
 ### Pré-etapas automatizadas ao clicar em Run/Debug
 
-O `local-infra/ide-runner/odoo_ide_runner.py` executa essas verificações antes de chamar o `odoo-bin` oficial:
+O interpretador `local-infra/ide-runner/python_interpreter.py` cria `.venv` com Python 3.12 se ela não existir ou estiver incompleta. Nas chamadas do runner, configura os caminhos do prefixo nativo privado apenas no processo da IDE, compara hashes dos requisitos e do manifesto nativo, e sincroniza `.venv` somente quando algo mudar ou as dependências ainda não tiverem sido instaladas. O `local-infra/ide-runner/odoo_ide_runner.py` então executa essas verificações antes de chamar o `odoo-bin` oficial:
 
 1. Cria um marcador PID local para impedir que os scripts Compose parem ou iniciem serviços enquanto a depuração estiver ativa.
 2. Lê `local-infra/.env` e gera/atualiza `.pgpass` e `ide-odoo.conf` com permissões 0600. A senha não fica na configuração versionada do IntelliJ.
@@ -208,8 +309,6 @@ O `local-infra/ide-runner/odoo_ide_runner.py` executa essas verificações antes
 6. Inicia o `odoo-bin` a partir do código oficial da raiz, com o interpretador `.venv` e o debugger do IntelliJ.
 
 Se uma etapa falhar, o wrapper encerra e remove o marcador PID. Os scripts `start.sh`, `stop.sh`, `reset.sh`, `start-ide.sh` e `stop-ide.sh` verificam esse marcador para proteger a sessão da IDE.
-
-O runner `local-infra/ide-runner/odoo_ide_runner.py` verifica que o serviço `db` está acessível e interrompe a inicialização se o serviço `odoo` do Compose estiver rodando. O script cria um marcador local de PID enquanto o runner está ativo; `start.sh`, `stop.sh`, `reset.sh`, `start-ide.sh` e `stop-ide.sh` consultam esse marcador para evitar iniciar ou desligar serviços Compose durante a sessão de depuração. Portanto, os dois processos Odoo não atendem simultaneamente nem disputam os mesmos registros do banco.
 
 Para alternar para o Odoo em container, pare a configuração da IDE e execute `./local-infra/scripts/start.sh`. Para voltar à IDE, pare o Odoo em container sem parar o PostgreSQL e então inicie o runner:
 
@@ -237,8 +336,8 @@ O banco `voigt_odoo_test` deve existir no PostgreSQL local. Use um banco descart
 - A senha PostgreSQL é lida pelo libpq a partir de `local-infra/.pgpass`; ela não fica escrita na configuração compartilhada do IntelliJ.
 - `ODOO_ADMIN_PASSWD` é gravada apenas no arquivo local `local-infra/.local/ide-odoo.conf`, necessário para o gerenciador de bancos do Odoo.
 - A configuração `.run`/`.idea` rastreada contém somente caminhos relativos, portas, nome do usuário padrão e parâmetros não secretos. Se personalizar `DB_IDE_PORT` ou `POSTGRES_USER` em `.env`, atualize os valores correspondentes em `PGPORT` e `PGUSER` nessa configuração compartilhada.
-- `setup-ide.sh` instala as dependências e prepara as credenciais. A cada execução do runner, os arquivos `.pgpass` e `ide-odoo.conf` são atualizados automaticamente para refletir o `.env` local.
-- O interpretador `.venv` fica fora do código Odoo oficial e da imagem Docker; ele pode ser recriado removendo `.venv` e executando `setup-ide.sh` novamente.
+- `setup-ide.sh` sincroniza as dependências Python dentro de `.venv` e prepara credenciais locais com permissões restritas. As bibliotecas nativas baixadas pelo wrapper ficam em `local-infra/.local/native`, fora de `/usr`. A cada execução do runner, `.pgpass` e `ide-odoo.conf` são atualizados para refletir o `.env` local.
+- O bootstrap Python e o interpretador `.venv` ficam fora do código Odoo oficial e da imagem Docker. Se `.venv` for removido, o próximo Run/Debug a recria; `setup-ide.sh` também pode prepará-la explicitamente.
 
 ### Por que a configuração fica no repositório
 
@@ -248,9 +347,17 @@ O JetBrains permite salvar configurações compartilhadas como arquivos do proje
 
 | Sintoma | Causa provável | Efeito | Ação |
 | --- | --- | --- | --- |
+| `apt-get` informa `Unable to locate package ...` | O nome do pacote não existe nessa versão; nomes de bibliotecas de desenvolvimento podem mudar entre Debian/Ubuntu e derivados. | Nenhum pacote do sistema é instalado; a preparação local é interrompida. | Execute novamente `./local-infra/scripts/ide-first-run.sh`: ele busca alternativas conhecidas e baixa/extrai apenas a solução compatível. |
+| Simulação ou download APT falha por dependências ou suite incompatível | As fontes APT misturam versões diferentes do sistema. Neste host Pop!_OS 24.04/Noble, por exemplo, há índice Jammy que oferece `libfreetype6-dev` exigindo uma versão Jammy incompatível com Noble. | A preparação para antes de mudar o prefixo ativo; nenhum pacote é instalado no sistema. | Examine as fontes com `grep -RniE 'jammy|noble' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null` e `apt-cache policy libfreetype6-dev libfreetype-dev`. Corrija/desative entradas de outra versão conforme a origem, execute `sudo apt-get update` e tente novamente. Não faça um upgrade geral do sistema como atalho. |
 | Runner informa que Docker não pode ser consultado | Docker Desktop/Engine está parado ou o usuário não tem acesso ao daemon. | O PostgreSQL não inicia e o Odoo IDE não é executado. | Inicie o Docker e confirme `docker info`; depois use Run/Debug novamente. |
-| `setup-ide.sh` para em `pg_config` ou dependências nativas | Pacotes de desenvolvimento do host estão ausentes. | O `.venv` não recebe todas as dependências do Odoo. | Instale o conjunto de pacotes do passo de preparação e execute `setup-ide.sh` novamente. |
-| IntelliJ diz que o interpretador `.venv/bin/python` não existe | Preparação do ambiente não foi executada ou `.venv` foi removido. | A configuração Python não consegue iniciar. | Execute `./local-infra/scripts/setup-ide.sh` e selecione novamente o interpretador se necessário. |
+| `ide-first-run.sh` cria `.env` e encerra | É a primeira execução e o template ainda contém credenciais de exemplo. | A preparação e os serviços não iniciam até que as senhas sejam definidas. | Preencha `POSTGRES_PASSWORD` e `ODOO_ADMIN_PASSWD` em `local-infra/.env` e execute o script novamente. |
+| `ide-first-run.sh` não consegue baixar pacotes com `sudo` | O host não permite autenticação administrativa ou não usa APT/dpkg. | O prefixo nativo local não é criado e extensões Python que exigem compilação podem falhar. | Execute em terminal interativo com autorização para atualizar índices e baixar arquivos; em outra distribuição, prepare o prefixo nativo equivalente sem instalar bibliotecas globais. |
+| `setup-ide.sh` para em `pg_config` ou dependências nativas | O prefixo local não foi preparado ou a IDE não carregou o bootstrap. | O `.venv` não recebe todas as dependências do Odoo. | Execute `./local-infra/scripts/ide-first-run.sh --native-deps-only` e depois `./local-infra/scripts/setup-ide.sh`; confirme que a configuração IntelliJ usa `local-infra/ide-runner/python_interpreter.py`. |
+| Compilação de `python-ldap` falha com `relocation ... can not be used when making a shared object; recompile with -fPIC` | O prefixo continha o arquivo de desenvolvimento `libldap.a`, mas não a biblioteca de runtime que satisfaz o link simbólico `libldap.so`. O bootstrap também colocava o prefixo em `LIBRARY_PATH`, então o linker escolheu o arquivo estático sem PIC para construir `_ldap` como extensão compartilhada. | A compilação dos requisitos falha e o runner não inicia. | Execute novamente `./local-infra/scripts/ide-first-run.sh`: o conjunto local agora inclui bibliotecas de runtime (como `libldap2`), não coloca o prefixo em `LIBRARY_PATH`, passa `LDFLAGS` com caminhos locais, remove arquivos `.a` e troca o prefixo atomicamente. A mudança do manifesto invalida o hash de dependências e repete a sincronização da `.venv`. |
+| APT avisa que o download foi feito sem sandbox como `root` | A pasta temporária de arquivos `.deb` não permite travessia pelo usuário `_apt`. | O download pode terminar, mas o sandbox de aquisição do APT não foi usado. | O wrapper atual grava arquivos temporários em `/tmp` com permissões de travessia e remove a pasta ao encerrar; execute a versão atual do script. |
+| A configuração mostra `[Invalid] Python 3.10` ou um caminho de `venv` de outro projeto | O IntelliJ reteve um SDK local antigo ou a configuração usava o SDK do módulo em vez do bootstrap compartilhado. | A IDE rejeita a execução antes de iniciar o runner. | Confirme no XML `SDK_HOME=$PROJECT_DIR$/local-infra/ide-runner/python_interpreter.py` e `IS_MODULE_SDK=false`; recarregue a configuração. Em **Edit Configuration**, selecione **Use specified interpreter** e use o seletor de arquivos para apontar ao `local-infra/ide-runner/python_interpreter.py` do checkout atual, não ao SDK do módulo ou a outro projeto. |
+| O bootstrap informa que Python 3.12 não foi encontrado ou não cria `.venv` | Python 3.12/`venv` não está disponível no `PATH` ou `.venv` existe como arquivo, não diretório. | A execução para antes de iniciar Odoo e PostgreSQL. | Disponibilize Python 3.12 e `venv` por um método aprovado para o host (de preferência em espaço de usuário); o wrapper não instala nem atualiza o Python global. Se `.venv` for um arquivo, mova-o e tente novamente. |
+| `.venv` não existe | Ambiente ainda não foi criado ou foi removido. | O bootstrap cria o ambiente virtual antes de delegar qualquer comando do IntelliJ; se uma falha interromper a criação, nenhum processo Odoo inicia. | Clique Run/Debug novamente. Para preparar explicitamente, execute `./local-infra/scripts/setup-ide.sh`. |
 | Runner diz que faltam `POSTGRES_PASSWORD` ou `ODOO_ADMIN_PASSWD` | `.env` não existe ou ainda tem valores de exemplo. | Credenciais não são materializadas; o processo para antes de subir o banco. | Execute `setup.sh`, preencha `local-infra/.env` e tente de novo. |
 | Runner informa que Odoo Compose está ativo | O container `odoo` ainda está rodando. | O wrapper interrompe a inicialização para evitar dois servidores usando o mesmo banco. | Pare a configuração IDE e então use `docker compose ... stop odoo` antes de rodar a IDE; ou pare o runner e use `start.sh` para Compose. |
 | PostgreSQL não fica saudável durante Run/Debug | Inicialização do container falhou, volume está inconsistente ou a porta do host está ocupada. | O wrapper não chama `odoo-bin`. | Consulte `./local-infra/scripts/logs.sh db`, verifique `./local-infra/scripts/db-ide.sh status` e escolha outra `DB_IDE_PORT` se houver conflito. |
@@ -278,9 +385,14 @@ O JetBrains permite salvar configurações compartilhadas como arquivos do proje
 | `scripts/db-ide.sh` | Inicia somente o PostgreSQL ou exibe seu estado e os parâmetros necessários para configurar a fonte de dados JetBrains. Permite usar o banco local sem chamar a infraestrutura AWS. |
 | `scripts/start-ide.sh` | Atalho explícito para iniciar somente o PostgreSQL e aguardar sua saúde, sem subir o serviço Odoo em container. |
 | `scripts/stop-ide.sh` | Para somente o PostgreSQL, preservando volumes, e recusa parar enquanto o Odoo em container ou o runner IDE estiver ativo. |
-| `scripts/setup-ide.sh` | Prepara o virtualenv Python e materializa credenciais somente locais com permissões restritivas para o runner do IntelliJ. |
+| `scripts/setup-ide.sh` | Com o runner parado, sincroniza o virtualenv Python e materializa credenciais somente locais com permissões restritivas para o IntelliJ, evitando trocar dependências enquanto o processo está depurando. |
+| `scripts/ide-first-run.sh` | Wrapper idempotente do primeiro guia. Cria/valida `.env`, identifica a versão do sistema, valida alternativas e baixa pacotes `.deb` sem instalá-los. Extrai dependências de desenvolvimento e runtime, inclusive dependências transitivas, em um prefixo versionado dentro de `.local`; remove arquivos estáticos `.a` para as extensões compartilhadas e ativa o conjunto por troca atômica de symlink, sem substituir bibliotecas globais. |
+| `scripts/ide-day.sh` | Wrapper idempotente do guia diário. Garante a preparação local, para apenas o Odoo em Compose quando necessário e inicia somente o PostgreSQL antes do usuário executar Run/Debug no IntelliJ. |
 | `ide-runner/odoo_ide_runner.py` | Código auxiliar isolado fora das pastas oficiais da plataforma. Cria credenciais locais, verifica os serviços Compose, mantém um marcador de PID, inicia somente o PostgreSQL se necessário e delega a inicialização ao `odoo-bin` oficial no processo depurável da IDE. |
 | `ide-runner/prepare_ide_files.py` | Compartilha a leitura do `.env` e a criação atômica dos arquivos `.pgpass` e `ide-odoo.conf` entre a preparação inicial e cada execução, mantendo permissões restritivas sem duplicar lógica. |
+| `ide-runner/python_interpreter.py` | Interpretador bootstrap estável referenciado pelo IntelliJ. Cria `.venv` se ausente/incompleto, sincroniza dependências de modo idempotente quando os arquivos de requisitos mudam e delega a execução ao Python virtual do projeto. |
+| `local-infra/.local/native/current` | Link para o conjunto versionado de bibliotecas nativas de desenvolvimento e runtime extraídas localmente. O bootstrap injeta `LD_LIBRARY_PATH`, `LDFLAGS`, include paths, `pkg-config` e ferramentas apenas nos processos Python da IDE; os pacotes não são registrados pelo dpkg nem colocados em `/usr`. |
+| `local-infra/.local/native/current/packages.tsv` | Inventário específico do host com nome, versão Debian, arquitetura e escopo dos pacotes nativos considerados na preparação. Permite comparar resoluções entre distribuições sem supor que nomes ou versões APT sejam iguais; é gerado junto com o prefixo local e não deve ser versionado nem copiado para outro sistema. |
 | `.idea/runConfigurations/Voigt_Odoo_IDE.xml` | Configuração compartilhada Python do IntelliJ, com interpretador do projeto, caminho do runner, conexão PostgreSQL local e porta HTTP alternativa. Não contém senhas. |
 | `.gitignore` (raiz) | Mantém arquivos pessoais do IntelliJ ignorados, liberando para versionamento somente as configurações compartilhadas XML em `.idea/runConfigurations`. |
 | `.dockerignore` | Exclui toda a infraestrutura local, a configuração IntelliJ e o virtualenv do contexto enviado ao Docker, evitando incorporar artefatos de desenvolvimento à imagem Odoo. |
@@ -293,6 +405,11 @@ O JetBrains permite salvar configurações compartilhadas como arquivos do proje
 - Definições de serviços e volumes do Docker Compose: [referência de serviços do Compose](https://docs.docker.com/reference/compose-file/services/) e [guia de início rápido do Compose](https://docs.docker.com/compose/gettingstarted/).
 - O Odoo requer PostgreSQL e deve se conectar usando um usuário dedicado, em vez do superusuário do PostgreSQL. [Documentação de instalação do Odoo](https://www.odoo.com/documentation/saas-15.4/administration/install/install.html).
 - Configurações de execução compartilhadas do IntelliJ podem ser armazenadas como arquivos do projeto; o padrão é `.idea/runConfigurations`. [Documentação de Run/Debug Configurations do IntelliJ IDEA](https://www.jetbrains.com/help/idea/run-debug-configuration.html).
+- A versão do Docker Compose pode ser consultada por `docker compose version`; esse comando é fornecido pelo plugin Compose instalado no host. [Referência oficial da CLI Docker Compose](https://docs.docker.com/reference/cli/docker/compose/version/).
+- O suporte a Python na IntelliJ depende do plugin Python habilitado, que fornece SDKs e configurações Python de Run/Debug. [Documentação de Python na IntelliJ IDEA](https://www.jetbrains.com/help/idea/python.html).
+- O APT usa prioridades para selecionar versões candidatas; o wrapper direciona a resolução para o codinome do host, simula o download e extrai os arquivos em um prefixo do projeto sem instalação global, seguindo o comportamento documentado de preferências do APT. [Manual `apt_preferences` para Ubuntu Noble](https://manpages.ubuntu.com/manpages/noble/man5/apt_preferences.5.html). Fontes de terceiros devem ser configuradas para a versão correta do sistema. [Gerenciar fontes de software no Ubuntu](https://help.ubuntu.com/stable/ubuntu-help/addremove-sources.html).
+- O GCC consulta `LIBRARY_PATH` ao buscar bibliotecas `-l`; o bootstrap evita acrescentar o prefixo local a essa variável, passa `LDFLAGS` com os diretórios locais compartilhados e remove arquivos `.a` para que uma extensão compartilhada não selecione acidentalmente uma biblioteca estática. [Variáveis de ambiente do GCC](https://gcc.gnu.org/onlinedocs/gcc/Environment-Variables.html) e [opções de link do GCC](https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html).
+- A configuração de Python pode armazenar um caminho local em `SDK_HOME`; por isso o projeto usa um bootstrap com caminho relativo e um nome de SDK próprio, evitando reaproveitar um interpretador de outra máquina. [Compartilhamento de configurações do PyCharm](https://www.jetbrains.com/help/pycharm/sharing-project-settings.html).
 - O JetBrains oferece intérpretes Python locais e remotos via Docker/Compose; este runner escolhe um interpretador local para permitir depuração Python direta do processo. [Configurar um interpretador Python](https://www.jetbrains.com/help/pycharm/configuring-python-interpreter.html).
 - O plugin oficial OdooLS para PyCharm fornece recursos do servidor de linguagem, incluindo informações contextuais, navegação, autocompletar e diagnósticos. [Repositório oficial Odoo para o plugin](https://github.com/odoo/odoo-pycharm) e [guia de uso do OdooLS](https://github.com/odoo/odoo-ls/wiki/2.-How-to-use).
 
