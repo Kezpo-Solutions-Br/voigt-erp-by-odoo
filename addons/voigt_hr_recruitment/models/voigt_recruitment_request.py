@@ -38,12 +38,12 @@ class VoigtRecruitmentRequest(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        protected_fields = {
-            'state', 'department_approver_id', 'department_approved_at',
+        approval_fields = {
+            'department_approver_id', 'department_approved_at',
             'director_approver_id', 'director_approved_at',
         }
         for vals in vals_list:
-            if protected_fields.intersection(vals):
+            if vals.get('state', 'draft') != 'draft' or any(vals.get(field) for field in approval_fields):
                 raise ValidationError(self.env._('New requests must start in draft without approval records.'))
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('voigt.recruitment.request') or 'New'
@@ -81,10 +81,11 @@ class VoigtRecruitmentRequest(models.Model):
             super(VoigtRecruitmentRequest, request).write({'state': 'to_approve'})
 
     def action_approve_department(self):
+        is_system_admin = self.env.user.has_group('base.group_system')
         for request in self:
             if request.state != 'to_approve':
                 raise UserError(self.env._('This request is not awaiting department approval.'))
-            if request.requester_id == self.env.user:
+            if request.requester_id == self.env.user and not is_system_admin:
                 raise UserError(self.env._('The requester cannot approve their own request.'))
             department_manager = request.department_id.manager_id.user_id
             if department_manager and department_manager != self.env.user and not self.env.user.has_group(
@@ -97,10 +98,13 @@ class VoigtRecruitmentRequest(models.Model):
             })
 
     def action_approve_director(self):
+        is_system_admin = self.env.user.has_group('base.group_system')
         for request in self:
             if request.state != 'to_director':
                 raise UserError(self.env._('This request is not awaiting director approval.'))
-            if request.requester_id == self.env.user or request.department_approver_id == self.env.user:
+            if not is_system_admin and (
+                request.requester_id == self.env.user or request.department_approver_id == self.env.user
+            ):
                 raise UserError(self.env._('Director approval must be performed by a different user.'))
             super(VoigtRecruitmentRequest, request).write({
                 'state': 'approved', 'director_approver_id': self.env.user.id,

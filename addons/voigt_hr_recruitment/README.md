@@ -112,7 +112,7 @@ Em **Configurações > Usuários**, atribua os grupos conforme a matriz aprovada
 | `Voigt Occupational Health` | Leitura/edição do modelo restrito de aptidão; não dá acesso a `hr.applicant` nem permite criar solicitação de exame. O recrutamento autorizado cria a solicitação. |
 | `Voigt Organizational Psychologist` | Acesso a campos e avaliações organizacionais conforme a matriz de acesso. Acesso a candidatos e o fluxo operacional precisam ser validados em UAT. |
 
-Não conceda grupo de gerente ou acesso amplo a candidatos apenas para contornar uma permissão. No comportamento atual, use um Voigt Recruitment Manager para operar checklist e avaliações na aba Processo Voigt; use o grupo de Saúde Ocupacional apenas no menu de aptidão. Teste as permissões com contas de cada papel antes de ativar o processo.
+Para o tutorial ponta a ponta, o Administrator (grupo `base.group_system`) recebe exceções de aprovação própria e de acesso à aptidão ocupacional. Esse é um perfil privilegiado de administração/teste. No fluxo operacional, mantenha requisitante, aprovador do setor e diretoria distintos e use o grupo **Voigt Occupational Health** para o responsável de Saúde Ocupacional. Não conceda administração do sistema a recrutadores para contornar permissões.
 
 ### Estágios do recrutamento
 
@@ -202,6 +202,10 @@ As datas são editáveis, e o módulo não agenda atividades. Os documentos dive
 - Não são critérios automáticos: idade, estado civil, filhos, moradia, aparência ou condição clínica. Experiência com lixadeira para Rebarbação é diferencial, não eliminatório.
 - Teste permissões, gates e atualização em staging com dados sintéticos. O relatório completo de implementação e decisões está em [`doc/voigt/relatorio_implementacao_voigt_hr_recruitment.md`](../../doc/voigt/relatorio_implementacao_voigt_hr_recruitment.md).
 
+## Tutorial guiado com dados fictícios
+
+O tutorial detalhado com caminhos de menu (breadcrumbs), dados de exemplo, estágios, campos e resultado esperado está em [`doc/voigt/relatorio_implementacao_voigt_hr_recruitment.md`](../../doc/voigt/relatorio_implementacao_voigt_hr_recruitment.md), seção **10. Tutorial passo a passo do fluxo seletivo e admissional**. Use uma base de teste e a candidatura fictícia indicada ali; não use dados reais nem execute o exemplo em produção.
+
 ## Testes do addon
 
 Para executar os testes Odoo na base descartável local:
@@ -217,7 +221,7 @@ PYTHONPATH="$PWD" ./.venv/bin/python local-infra/ide-runner/odoo_ide_runner.py \
   --test-enable --test-tags /voigt_hr_recruitment --stop-after-init
 ```
 
-O teste deve ser executado em banco de desenvolvimento, nunca em produção. O relatório de implementação registra os testes já executados e seus resultados.
+O teste deve ser executado em banco de desenvolvimento, nunca em produção. A suíte atual contém 16 casos, incluindo o cenário do tutorial com Administrator de ponta a ponta. O relatório de implementação registra os testes e suas decisões.
 
 ## Referências Odoo
 

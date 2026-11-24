@@ -19,14 +19,14 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_mark_fit" type="object" string="Registrar apto" class="btn-primary" invisible="status != 'pending'" groups="voigt_hr_recruitment.group_voigt_occupational_health" />
-                    <button name="action_mark_unfit" type="object" string="Registrar inapto" invisible="status != 'pending'" groups="voigt_hr_recruitment.group_voigt_occupational_health" />
+                    <button name="action_mark_fit" type="object" string="Registrar apto" class="btn-primary" invisible="status != 'pending'" groups="voigt_hr_recruitment.group_voigt_occupational_health,base.group_system" />
+                    <button name="action_mark_unfit" type="object" string="Registrar inapto" invisible="status != 'pending'" groups="voigt_hr_recruitment.group_voigt_occupational_health,base.group_system" />
                     <field name="status" widget="statusbar" />
                 </header>
                 <sheet>
                     <group>
-                        <field name="candidate_name" />
-                        <field name="job_title" />
+                        <field name="candidate_name" groups="voigt_hr_recruitment.group_voigt_occupational_health,base.group_system" />
+                        <field name="job_title" groups="voigt_hr_recruitment.group_voigt_occupational_health,base.group_system" />
                         <field name="requested_by_id" />
                         <field name="requested_at" />
                     </group>
@@ -46,5 +46,5 @@
         <field name="view_mode">list,form</field>
         <field name="domain">[('status', '=', 'pending')]</field>
     </record>
-    <menuitem id="voigt_occupational_assessment_menu" name="Avaliações de aptidão" parent="voigt_recruitment_root_menu" action="voigt_occupational_assessment_action" sequence="30" groups="voigt_hr_recruitment.group_voigt_occupational_health" />
+    <menuitem id="voigt_occupational_assessment_menu" name="Avaliações de aptidão" parent="voigt_recruitment_root_menu" action="voigt_occupational_assessment_action" sequence="30" groups="voigt_hr_recruitment.group_voigt_occupational_health,base.group_system" />
 </odoo>

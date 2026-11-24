@@ -36,7 +36,7 @@ Os modelos de templates para documentos e critérios permitem alterar checklists
 
 ### 3.2 Requisição e aprovação RQ 077
 
-`voigt.recruitment.request` armazena os dados essenciais da solicitação, número sequencial, empresa, departamento, cargo, motivo, modalidade, justificativa, quantidade, horário e referência salarial. As ações registram separadamente a aprovação do responsável pelo setor e da diretoria com usuário e horário. O requisitante não pode aprovar a própria solicitação, o mesmo usuário não pode realizar as duas aprovações e, quando o departamento possui gestor cadastrado, a aprovação do setor deve ser feita por esse gestor ou pelo grupo funcional Voigt autorizado.
+`voigt.recruitment.request` armazena os dados essenciais da solicitação, número sequencial, empresa, departamento, cargo, motivo, modalidade, justificativa, quantidade, horário e referência salarial. As ações registram separadamente a aprovação do responsável pelo setor e da diretoria com usuário e horário. Usuários regulares não podem aprovar a própria solicitação nem repetir a aprovação nas duas etapas; quando o departamento possui gestor cadastrado, a aprovação do setor deve ser feita por esse gestor ou pelo grupo Voigt autorizado. Para habilitar o teste ponta a ponta com o usuário Administrator, `base.group_system` pode executar ambas as ações e aprovar o próprio registro; cada ação ainda grava usuário e horário. Essa exceção de administrador é ampla e não deve substituir a separação de funções no processo real.
 
 Depois de aprovada, uma alteração material retorna a solicitação para rascunho e limpa as aprovações anteriores. A vaga nativa referencia a RQ 077 aprovada. A criação da vaga continua sendo uma ação do usuário, pois o documento não especifica defaults suficientes para gerar automaticamente todos os campos de uma posição.
 
@@ -44,7 +44,7 @@ Depois de aprovada, uma alteração material retorna a solicitação para rascun
 
 `hr.job.voigt_profile` diferencia Administrativo, Produção - Rebarbação, Produção - Moldagem, Mecânico de Manutenção e Outro. Para avaliação técnica, critérios do perfil mecânico são gerados de templates com os tópicos observados no roteiro da função. Os critérios de produção distinguem Rebarbação e Moldagem. A experiência prévia com lixadeira está marcada como diferencial, não eliminatório, conforme a descrição da vaga.
 
-As avaliações RH, técnica, diretoria, QAE 01/02, avaliação organizacional e experiência ficam em `voigt.applicant.assessment`. QAE 01 e QAE 02 recebem a revisão Rev. B e corte inicial 60/100. O total é registrado pelo avaliador: o addon não tenta corrigir automaticamente respostas abertas ou interpretar a qualidade de respostas discursivas. Recalcular uma nota após edição a devolve a pendente. A liberação condicional exige motivo, usuário aprovador distinto do avaliador e grupo Voigt autorizado.
+As avaliações RH, técnica, diretoria, QAE 01/02, avaliação organizacional e experiência ficam em `voigt.applicant.assessment`. QAE 01 e QAE 02 recebem a revisão Rev. B e corte inicial 60/100. O total é registrado pelo avaliador: o addon não tenta corrigir automaticamente respostas abertas ou interpretar a qualidade de respostas discursivas. Recalcular uma nota após edição a devolve a pendente. A liberação condicional exige motivo e grupo Voigt autorizado; usuários regulares não podem aprovar a própria avaliação, enquanto administradores `base.group_system` podem fazê-lo para exercício de ponta a ponta.
 
 ### 3.4 Checklist e passagem de fase
 
@@ -90,27 +90,30 @@ O módulo gera as 9 linhas de habilidades e 10 de atitudes do RQ 006 com escala 
 Os testes usam `BaseCommon` do Odoo, ficam importados em `tests/__init__.py` e são executáveis pela infraestrutura `TransactionCase` do Odoo. Foram exercitados:
 
 - criação e aprovação em duas etapas da solicitação, mudança que exige aprovação nova e bloqueio de alteração direta do estado;
-- campos obrigatórios da substituição;
+- campos obrigatórios da substituição, aceitação dos valores iniciais `draft` e campos de aprovação vazios enviados pelo formulário;
+- fluxo ponta a ponta executado pelo perfil Administrator: requisição e duas aprovações próprias, vaga ligada à RQ, candidatura, gates RH/técnico/admissão/proposta, checklist, aptidão, estágio contratado, integração RQ 006, liberação PRÁTICO e avaliação final;
+- exceção de administrador para aprovação condicional própria e resultado ocupacional;
 - travas de etapa por avaliação e aptidão, criação automática do checklist e bloqueio de escrita direta no resultado ocupacional;
 - cálculo do corte QAE 01, atualização da nota e liberação condicional;
 - critérios técnicos gerados para Mecânico;
 - recusa de liberação PRÁTICO sem os treinamentos e requisitos do posto;
 - checklist de habilidades/atitudes RQ 006 e conclusão da decisão final.
 
-Comando usado na base local temporária, passando pelo runner da configuração `.idea/runConfigurations/Voigt_Odoo_IDE.xml`:
+Para rodar os testes, use o runner da configuração `.idea/runConfigurations/Voigt_Odoo_IDE.xml` ou o CLI Odoo com a mesma configuração local. Nesta revisão, o runner interativo já estava ativo, então os testes foram executados por `odoo-bin` no banco descartável `voigt_hr_recruitment_test2`:
 
 ```bash
 set -a
 source local-infra/.local/ide-runner.env
 set +a
-PYTHONPATH="$PWD" ./.venv/bin/python local-infra/ide-runner/odoo_ide_runner.py \
-  --http-interface=127.0.0.1 --http-port=8070 \
-  -d voigt_hr_recruitment_test2 \
+export PGHOST=127.0.0.1 PGPORT=15432 PGUSER=odoo \
+  PGPASSFILE="$PWD/local-infra/.pgpass" \
+  ODOO_RC="$PWD/local-infra/.local/ide-odoo.conf" PYTHONPATH="$PWD"
+./.venv/bin/python odoo-bin -c "$ODOO_RC" -d voigt_hr_recruitment_test2 \
   --update=voigt_hr_recruitment \
-  --test-enable --test-tags /voigt_hr_recruitment --stop-after-init
+  --test-enable --test-tags /voigt_hr_recruitment --stop-after-init --http-port=8071
 ```
 
-**Resultado final:** após a internacionalização e atualização do manifesto, 10 testes do módulo executados; `0 failed, 0 error`. O teste de aptidão também confirmou que o usuário de saúde não pode consultar `hr.applicant` e ainda consegue registrar a aptidão por meio do modelo restrito. Também passaram a compilação Python e a leitura sintática de todos os XML do addon. A atualização carregou as views, ACLs, templates, modelos e `pt_BR.po` no Odoo 20.0, sem os avisos de renderização da descrição do módulo. O runner IDE permaneceu ativo e o servidor respondeu em `127.0.0.1:8070`; sem banco selecionado na URL, o endpoint encaminhou para o seletor de bancos (HTTP 303). A execução do runner exigiu fornecer `PYTHONPATH` e carregar `ide-runner.env` no shell; isso não altera a configuração salva da IDE.
+**Resultado final:** após as correções de criação de RQ e do perfil de administrador, 16 testes do módulo executados; `0 failed, 0 error`. A suíte cobre o cenário do tutorial ponta a ponta com Administrator, incluindo criação inicial no estado draft, aprovações próprias da RQ 077, vaga, candidatura, gates, checklist, aptidão, contratação, onboarding e avaliação final. Também confirma que um usuário de Saúde Ocupacional sem recrutamento não pode consultar `hr.applicant`. Passaram ainda a compilação Python e a leitura sintática dos XML do addon. A atualização carregou views, ACLs, templates, modelos e `pt_BR.po` no Odoo 20.0, sem avisos de renderização da descrição do módulo. O runner IDE permaneceu ativo e o servidor respondeu em `127.0.0.1:8070`; sem banco selecionado na URL, o endpoint encaminhou para o seletor de bancos (HTTP 303). A execução de testes usou `odoo-bin` com a mesma configuração local e o banco descartável `voigt_hr_recruitment_test2`, pois o runner IDE já estava ocupado pela instância interativa.
 
 Os avisos de `pdfminer.six` e `markdown2` ausentes vêm do ambiente de desenvolvimento e não impediram a instalação nem os testes do addon. Não foi feita validação visual interativa de cada view no navegador.
 
@@ -187,7 +190,7 @@ A geração de checklist ocorre na criação da candidatura e a integração oco
 
 ### 7.4 Segurança, privacidade e multiempresa
 
-ACLs, grupos e restrição por empresa foram declarados em `security/`. O grupo de recrutamento Voigt Manager herda o administrador nativo de recrutamento; o grupo ocupacional tem somente leitura/edição no modelo de aptidão, sem ACL de criação nem de `hr.applicant`; o recrutamento autorizado cria solicitações e o resultado só é gravado por ações restritas. Parecer psicológico e campos de gestão têm controle por grupos. A limitação de campo com `groups` é reforçada por ACLs/modelos e não depende de ocultação visual.
+ACLs, grupos e restrição por empresa foram declarados em `security/`. O grupo de recrutamento Voigt Manager herda o administrador nativo de recrutamento; o grupo ocupacional tem leitura/edição no modelo de aptidão, sem ACL de criação nem de `hr.applicant`; o recrutamento autorizado cria solicitações e o resultado só é gravado por ações restritas. A pedido do usuário, a exceção de `base.group_system` também pode ler o resumo restrito e registrar aptidão, para que o perfil Administrator consiga executar o tutorial inteiro na base de teste. Administradores do sistema devem permanecer limitados a pessoas de confiança; para operação normal, mantenha a Saúde Ocupacional no grupo designado. Parecer psicológico e campos de gestão têm controle por grupos. A limitação de campo com `groups` é reforçada por ACLs/modelos e não depende de ocultação visual.
 
 O campo de aptidão no candidato é calculado a partir de registros segregados; o modelo de saúde expõe os campos mínimos de nome, cargo e auditoria. Os templates de documentos excluem de início categorias antigas sensíveis ou sem justificativa atual. Isso segue minimização e privilégio mínimo como decisões de engenharia, sem substituir a validação jurídica, de RH, DP ou Saúde Ocupacional.
 
@@ -292,50 +295,160 @@ O addon não atribui automaticamente grupos a usuários de produção. Contas t�
 
 O bloqueio roda no servidor ao gravar `stage_id`. Não existe uma ordem rígida de estágios criada pelo addon: mapear a política do RH para os gates e testar cada caminho, inclusive rejeição/retorno. O corte QAE não é gate independente: o resultado fica na avaliação e a etapa RH/técnica exige avaliação do tipo correspondente.
 
-## 10. Tutorial operacional do processo seletivo e admissional
+## 10. Tutorial passo a passo do fluxo seletivo e admissional
 
-### Etapa 1 - registrar e aprovar necessidade (RQ 077)
+Este roteiro foi organizado na ordem em que os registros precisam existir. Faça primeiro a configuração (uma vez por base); depois use o caso fictício abaixo para percorrer o fluxo de ponta a ponta.
 
-1. Acesse **Recrutamento > Processo Voigt > Solicitações RQ 077** e crie um registro.
-2. Preencha empresa, departamento, cargo, quantidade (mínimo 1), tipo de contratação (efetivo, temporário ou estagiário), motivo (aumento, substituição ou outros), justificativa, jornada e referência salarial.
-3. Para motivo substituição, preencha a pessoa/cargo substituído. A regra valida essa informação.
-4. Clique **Enviar para aprovação**. O responsável do departamento usa **Aprovar setor**; ele não pode aprovar se for o próprio requisitante. Se o departamento tem gestor cadastrado, esse gestor ou usuário Voigt Manager aprovado pela regra deve aprovar.
-5. Outro usuário, diferente do solicitante e do aprovador do setor, usa **Aprovar diretoria**. A aprovação grava usuário e horário. Para rejeitar, preencha justificativa e use **Rejeitar**. Alteração material em RQ aprovada volta para rascunho e requer nova aprovação.
+> **Dados de treinamento:** o nome do candidato e os dados operacionais abaixo são fictícios. Não use dados reais de candidatos em uma base de demonstração. A faixa salarial é uma referência textual, pois os documentos consultados não definem um valor fixo vigente.
 
-### Etapa 2 - criar e configurar a vaga
+### 10.1 Preparar usuários e permissões
 
-Depois de aprovada a RQ, crie a vaga no Recrutamento e relacione o campo `Solicitação RQ 077` à solicitação aprovada. Preencha título, departamento, empresa, quantidade, responsável, descrição, jornada e demais campos nativos. Selecione o perfil Voigt adequado. A vaga não é criada automaticamente a partir da requisição; o usuário confere os dados e cria o registro nativo, preservando o controle da publicação.
+Para o teste completo, use o usuário **Administrator** do Odoo, que pertence a `base.group_system`. O XML do addon já atribui esse usuário ao grupo **Voigt Recruitment Manager**. Administradores de sistema podem aprovar uma solicitação própria nas duas etapas, fazer aprovação condicional da própria avaliação e registrar o resultado ocupacional, além de abrir o menu de aptidão. O nome do aprovador e o horário continuam gravados em cada decisão.
 
-### Etapa 3 - registrar candidato e avaliações
+Essa exceção é para administração/teste: um usuário com `base.group_system` exerce privilégios amplos sobre o Odoo. No processo real, use pessoas distintas como requisitante, aprovador do setor, diretoria e Saúde Ocupacional, conforme a matriz aprovada. Usuários comuns continuam bloqueados de aprovar a própria solicitação e de registrar aptidão sem o grupo ocupacional.
 
-1. Inclua a candidatura pelo fluxo nativo do Recrutamento e associe-a à vaga. Ao criar candidato, o addon copia os templates ativos que correspondem ao perfil (globais `all` e perfil específico) para o checklist.
-2. Na aba **Processo Voigt** do candidato, crie avaliação em **Avaliações** e escolha o tipo: RH, técnica, diretoria, QAE 01, QAE 02, organizacional ou experiência. Informe o avaliador responsável, data e revisão aplicada.
-3. Para QAE 01/02, registre a nota total manualmente após a aplicação humana da rubrica; o addon não avalia respostas. Confirme máximo e corte, por padrão 100 e 60, e clique **Calcular resultado**. Nota igual ou acima do corte resulta em Apto; abaixo, Inapto. Para QAE condicional, usuário Voigt Manager registra motivo e precisa ser diferente do avaliador.
-4. Para RH/técnica e demais avaliações não-QAE, o avaliador atribuído ou Voigt Manager registra o resultado usando **Marcar apto**/**Marcar inapto**. Avaliação técnica cria critérios conforme o perfil da vaga; preencha evidência/resultado de cada critério e parecer. A decisão de cada critério não substitui a ação final da avaliação.
-5. Só avance para estágio com gate RH/técnica após gravar avaliação correspondente com resultado Apto ou Liberado condicional. As etapas de entrevista e aprovações internas devem refletir a sequência definida pela PO 017, mas atividades e reuniões devem ser criadas pelo usuário/fluxo nativo: este addon não gera agenda automática.
+- **Breadcrumb:** `Configurações > Usuários e Empresas > Usuários > Administrator`
+- Confira os grupos **Configurações / Administração** e **Recrutamento / Manager** (o nome pode aparecer como **Voigt Recruitment Manager**). O addon carrega esse último para o usuário administrador padrão.
+- Para um usuário operacional distinto, atribua somente os grupos exigidos pelo papel: **Recruitment / User**, **Voigt Recruitment Manager**, **Voigt Occupational Health** ou **Voigt Organizational Psychologist**. Não atribua o grupo de saúde a recrutadores comuns.
 
-### Etapa 4 - checklist RQ 052 e aptidão ocupacional
+### 10.2 Preparar departamento, cargo e etapas
 
-1. No checklist da candidatura, marque o item como **Solicitado** e, após recebimento, como **Recebido**. Use **Verificar** para gravar responsável e horário. Itens opcionais não impedem conclusão; itens obrigatórios precisam estar verificados.
-2. Para dispensar item, Voigt Manager informa motivo e usa **Dispensar**. Dispensa de item obrigatório exige justificativa; não exclua itens já verificados ou dispensados.
-3. Quando for o momento definido pela política, usuário Voigt Manager clica **Solicitar avaliação**. O addon cria registro pendente sem anexar diagnóstico ou resultado clínico.
-4. O usuário de Saúde Ocupacional abre **Recrutamento > Processo Voigt > Avaliações de aptidão**, confere identificação mínima e registra **Registrar apto** ou **Registrar inapto**. Não escrever diagnóstico, prontuário ou detalhe clínico no chatter, nome do registro ou campos.
-5. Para mover para estágio de admissão/documentação ou proposta, o último resultado ocupacional deve ser Apto. Inapto ou pendente bloqueia a transição. A seleção de exames e a interpretação pertencem ao profissional competente, fora deste addon.
+**Departamento**
 
-### Etapa 5 - proposta e contratação
+- **Breadcrumb:** `Funcionários > Configuração > Departamentos`
+- Use um departamento existente da empresa, por exemplo **MACAHARIA** se esse for o departamento real exibido na base. Confirme que pertence à mesma empresa selecionada na solicitação. Se não existir, crie um departamento de teste vinculado à empresa Voigt. A aprovação do setor usa o gerente do departamento quando houver um gerente cadastrado.
 
-Antes de usar estágio configurado como proposta, confirme: vaga associada à RQ 077 aprovada; documentos obrigatórios verificados ou dispensados; aptidão Apto. O addon não cria proposta, contrato de experiência nem prazo contratual 45+45 automaticamente; use os módulos/fluxos de RH e parâmetros aprovados pela empresa.
+**Cargo/vaga**
 
-Ao mover candidatura para um estágio nativo com **Hired Stage/Etapa contratada** marcado, o addon cria um único registro de integração RQ 006. O empregado continua sendo o registro nativo `hr.employee` ligado à candidatura; o addon não duplica o cadastro de empregado. Se a contratação nativa não criar/vincular empregado, ajuste-a antes de depender do campo relacionado `employee_id`.
+- **Breadcrumb:** `Recrutamento > Configuração > Cargos` (em algumas bases, a configuração de cargos fica em **Recrutamento > Configuração > Cargos/Vagas**).
+- Após aprovar a RQ 077 no passo seguinte, crie a vaga **Auxiliar de Produção - Rebarbação (Treinamento)**, associe o departamento da requisição, escolha o perfil **Auxiliar de Produção - Rebarbação**, vincule a **Solicitação RQ 077** aprovada e informe uma vaga. Para demonstrar Moldagem, use outro cargo e o perfil correspondente; não misture os dois perfis.
 
-### Etapa 6 - integração, treinamento e PRÁTICO (RQ 006)
+**Estágios**
 
-1. Um Voigt Manager abre **Recrutamento > Processo Voigt > Integração RQ 006** e localiza a integração gerada. A permissão do modelo de integração é restrita ao grupo Voigt Manager, mesmo que o menu de recrutamento apareça para outros usuários.
-2. Confirme data de admissão, líder/Anjo da Guarda, treinamentos de RH, Qualidade, Segurança e operação, e entrega de fichas técnicas/documentos. Datas padrão: avaliação de habilidades em 15 dias e acompanhamento em 30 dias; são editáveis.
-3. Para Rebarbação/Moldagem, confirme área compatível, treinamento da tarefa e entrega/conferência de EPIs. Para Mecânico, registre treinamento dos equipamentos e rotinas aplicáveis. O perfil vem da vaga e define quais campos específicos aparecem e são exigidos.
-4. O módulo cria nove itens de habilidade e dez de atitude. O avaliador preenche cada nota com 0, 1, 3 ou 5 e anota evidências. A pontuação final não é calculada automaticamente.
-5. **Aprovar liberação PRÁTICO** só fica disponível para Voigt Manager e a ação verifica todos os treinamentos gerais, responsável operacional, documentos técnicos e exigências específicas de perfil. Se faltar algo, a ação retorna erro e não libera.
-6. Após a avaliação completa, Voigt Manager registra **Efetivar**, **Acompanhar / adequar** ou **Encerrar**. Todas as 19 linhas precisam estar avaliadas; a decisão grava usuário e horário. Atualize as datas de acompanhamento conforme decisão do RH e divergência entre PO 017 (uma semana) e RQ 006 (15–30 dias).
+- **Breadcrumb:** `Recrutamento > Configuração > Estágios`
+- Edite os estágios existentes e use o campo **Controle de passagem Voigt**. Associe as etapas às vagas Voigt pelo campo de vagas específicas quando necessário. Não crie um estágio por nome se já existir equivalente.
+- Configure a sequência de teste: uma etapa inicial sem bloqueio; etapa **Entrevista RH** com `Exige avaliação RH aprovada`; etapa **Entrevista técnica** com `Exige entrevista técnica aprovada`; etapa **Admissão/documentos** com `Exige documentos e aptidão ocupacional`; etapa **Proposta** com `Exige aprovação RQ 077, documentos e aptidão ocupacional`; etapa **Contratado** marcada com o campo nativo **Hired Stage/Etapa contratada**. A etapa contratada pode ficar sem gate; a etapa Proposta deve aplicar o gate final.
+- Os nomes acima são exemplos. Configure o campo no estágio que realmente corresponde à fase da empresa. A validação é feita ao alterar a candidatura para a etapa.
+
+### 10.3 Conjunto de dados fictício para o tutorial
+
+| Campo | Valor para digitar no ambiente de teste |
+|---|---|
+| Empresa | METALURGICA VOIGT LTDA (ou a empresa Voigt selecionada na base) |
+| Departamento | MACAHARIA, se existir e for a área da vaga; caso contrário, o departamento de teste vinculado à empresa |
+| Cargo solicitado | Auxiliar de Produção - Rebarbação |
+| Quantidade | 1 |
+| Tipo de contratação | Efetivo |
+| Motivo | Aumento do quadro |
+| Justificativa | `Caso fictício de treinamento: demonstrar o fluxo de requisição e admissão para a posição de Auxiliar de Produção - Rebarbação. Validar demanda e faixa com a liderança antes de qualquer uso real.` |
+| Jornada | `Turno conforme escala aprovada do departamento (dado de demonstração)` |
+| Referência salarial | `Faixa salarial vigente aprovada para a vaga (preencher após validação)` |
+| Substituição | Deixar vazio, pois o motivo escolhido é aumento do quadro |
+| Requisitante | Administrator (usuário conectado) |
+| Candidato | `Candidato Fictício Voigt - Treinamento` (não informe CPF, telefone, e-mail ou endereço reais) |
+| Avaliação RH | Resultado Apto; parecer de treinamento sem dados pessoais |
+| Avaliação técnica | Perfil Rebarbação; critérios do template aplicável, evidência fictícia e resultado Apto |
+| QAE (se aplicável) | Use somente se a faixa escolaridade e revisão do questionário estiverem confirmadas; exemplo aritmético: 70/100, corte 60/100, revisão RQ 079 ou RQ 081 correspondente |
+| Documentos | CPF, Documento oficial de identificação e Comprovante de endereço: Recebido e depois Verificado. São itens fictícios de checklist; não anexe documentos reais neste cenário. |
+| Aptidão | Registrar resultado Apto somente como decisão de demonstração; nunca digitar diagnóstico, exame ou nota clínica |
+| Treinamento RQ 006 | Treinamentos gerais e requisitos do posto marcados como concluídos apenas no cenário de simulação |
+
+### 10.4 Passo 1 - criar e salvar a requisição RQ 077
+
+- **Breadcrumb:** `Recrutamento > Processo Voigt > Solicitações RQ 077 > Novo`
+- Preencha os valores da tabela anterior nos campos **Empresa**, **Departamento**, **Cargo solicitado**, **Quantidade**, **Tipo de contratação**, **Motivo**, **Justificativa**, **Jornada de trabalho** e **Referência salarial**. Mantenha **Substituição** vazio para o motivo Aumento do quadro. O campo **Solicitante** vem preenchido com o usuário conectado.
+- Clique no ícone **Salvar** (nuvem/seta no formulário) ou use `Ctrl+S`. A solicitação deve ser gravada com um identificador `RQ ...` e status **Rascunho**. Agora o formulário aceita o estado inicial rascunho enviado pelo cliente Odoo. Se aparecer a validação anterior “Novas solicitações devem começar em rascunho...”, atualize o módulo para a versão corrigida (`--update=voigt_hr_recruitment`) e recarregue a página.
+- Clique **Enviar para aprovação**. O status passa para **Aguardando aprovação do setor**. Não tente preencher os campos de aprovação manualmente; eles são de auditoria e somente as ações devem gravá-los.
+
+### 10.5 Passo 2 - aprovar setor e diretoria com Administrator
+
+**Aprovar o setor**
+
+- **Breadcrumb:** `Recrutamento > Processo Voigt > Solicitações RQ 077 > abrir RQ ... > Aprovar setor`
+- Com **Administrator**, clique **Aprovar setor**. O status deve mudar para **Aguardando diretoria**; confira **Aprovador do setor** e **Aprovação do setor em** preenchidos.
+
+**Aprovar diretoria**
+
+- **Breadcrumb:** `Recrutamento > Processo Voigt > Solicitações RQ 077 > abrir a mesma RQ ... > Aprovar diretoria`
+- Com o mesmo **Administrator**, clique **Aprovar diretoria**. O status esperado é **Aprovada**; confira usuário e data nos campos de aprovação. Esse caminho com um único administrador é aceito para percorrer o fluxo de teste. Em produção, use aprovadores distintos e o processo de autoridade da empresa.
+
+Se o usuário não for administrador do sistema, ele não pode aprovar a própria requisição nem aprovar as duas etapas como a mesma pessoa. Associe um gestor ao departamento para a aprovação setorial ou use o fluxo de usuários designados.
+
+### 10.6 Passo 3 - criar vaga ligada à solicitação aprovada
+
+- **Breadcrumb:** `Recrutamento > Configuração > Cargos > Novo`
+- Informe **Auxiliar de Produção - Rebarbação (Treinamento)**, a empresa Voigt, o departamento da RQ, responsável de recrutamento, número de vagas `1` e perfil **Auxiliar de Produção - Rebarbação**.
+- No campo **Solicitação RQ 077**, selecione a solicitação `RQ ...` que está **Aprovada** e salve. O addon não cria a vaga automaticamente para que RH confira a correspondência entre requisição, cargo, departamento e empresa.
+- Selecione/associe essa vaga às etapas Voigt preparadas em 10.2.
+
+### 10.7 Passo 4 - criar candidatura e confirmar checklist inicial
+
+- **Breadcrumb:** `Recrutamento > Candidaturas > Novo`
+- Digite o nome fictício `Candidato Fictício Voigt - Treinamento`, selecione o cargo/vaga criado e salve. Não preencha contatos ou dados pessoais reais.
+- Abra a aba **Processo Voigt**. O sistema deve ter copiado três itens obrigatórios globais: **CPF**, **Documento oficial de identificação** e **Comprovante de endereço**, além do comprovante de escolaridade opcional. A qualificação técnica adicional é específica do perfil Mecânico.
+- Se a aba não aparecer, confira que o usuário tem **Voigt Recruitment Manager**; ela é restrita por grupo.
+
+### 10.8 Passo 5 - registrar e aprovar avaliações
+
+**Avaliação de RH**
+
+- **Breadcrumb:** `Recrutamento > Candidaturas > abrir Candidato Fictício... > Processo Voigt > Avaliações`
+- Adicione linha e escolha **Entrevista RH**; preencha **Avaliador**, **Data da avaliação**, **Revisão** (ex.: `PO 017 Rev. B - roteiro de treinamento`) e parecer fictício em **Parecer**. Salve a linha, abra a avaliação se necessário e clique **Marcar apto**.
+- Mova a candidatura para a etapa **Entrevista RH** configurada com gate. A alteração deve ser aceita. Se tentar antes de marcar Apto, o Odoo deve bloquear a mudança.
+
+**Avaliação técnica**
+
+- No mesmo caminho, adicione avaliação **Entrevista técnica**, com avaliador, data e revisão/roteiro aplicável. Ao salvar, devem aparecer critérios técnicos do perfil Rebarbação. Preencha o resultado e uma evidência curta de treinamento para cada critério, abra o formulário da avaliação e clique **Marcar apto**.
+- Mova a candidatura para a etapa **Entrevista técnica**. Ela só deve aceitar a candidatura depois que a avaliação técnica estiver aprovada.
+
+**QAE opcional**
+
+- Só crie uma avaliação **QAE 01 / RQ 079** ou **QAE 02 / RQ 081** quando esse questionário for aplicável à pessoa e à revisão oficial vigente. Preencha a pontuação total observada, o máximo `100`, o corte da revisão confirmada (o template documentado usa `60`) e clique **Calcular resultado**. O sistema calcula a comparação numérica; não corrige questionário nem escolhe qual versão aplicar.
+- Para **Aprovação condicional**, informe a justificativa da decisão. Administrator pode aprovar a própria avaliação para o cenário demonstrativo; avaliadores comuns continuam sujeitos à separação de funções.
+
+### 10.9 Passo 6 - completar RQ 052 e registrar aptidão
+
+**Checklist**
+
+- **Breadcrumb:** `Recrutamento > Candidaturas > abrir Candidato Fictício... > Processo Voigt > Checklist de admissão`
+- Para **CPF**, **Documento oficial de identificação** e **Comprovante de endereço**, altere o campo **Estado** de Não solicitado para **Recebido** e salve. Em seguida, em cada linha, clique **Verificar**. Confira **Verificado por** e **Verificado em** preenchidos. Não precisa anexar evidências reais para este exercício.
+- Se um documento obrigatório realmente não se aplicar, somente um Voigt Manager deve usar **Dispensar** após informar motivo. Não dispense itens apenas para passar no tutorial.
+
+**Aptidão ocupacional**
+
+- No bloco **Aptidão ocupacional** da aba, clique **Solicitar avaliação**.
+- **Breadcrumb:** `Recrutamento > Processo Voigt > Avaliações de aptidão > abrir avaliação pendente > Registrar apto`
+- Com Administrator de sistema, clique **Registrar apto** para validar o caminho de demonstração. O status muda para **Apto**, com usuário e horário. Um profissional de Saúde Ocupacional usa o mesmo fluxo com seu grupo próprio na operação real.
+- Não inclua exame, diagnóstico, laudo ou informação clínica em nenhum campo, nome do registro ou chatter.
+- Retorne à candidatura e mova para **Admissão/documentos**. O gate precisa ver checklist obrigatório completo e aptidão Apto. Depois mova para **Proposta**; o gate final também confere a RQ 077 aprovada associada à vaga.
+
+### 10.10 Passo 7 - contratar e abrir Integração RQ 006
+
+- **Breadcrumb:** `Recrutamento > Candidaturas > abrir candidatura > Etapa Contratado`
+- Mova a candidatura para o estágio nativo **Contratado** marcado como **Hired Stage**. O Odoo cria/vincula o empregado conforme o fluxo nativo; o addon cria um único registro de integração ligado à candidatura. Se esse vínculo não for produzido pela configuração nativa da base, finalize a contratação de RH conforme a prática local antes de prosseguir.
+- **Breadcrumb:** `Recrutamento > Processo Voigt > Integração RQ 006 > abrir a integração do candidato`
+- Confira **Data de admissão**, perfil e datas padrão de avaliação (15 e 30 dias depois). Datas são editáveis; PO 017 e RQ 006 divergem sobre o primeiro prazo e a empresa deve decidir qual vale para produção.
+
+### 10.11 Passo 8 - concluir treinamentos, liberação PRÁTICO e avaliação
+
+No exemplo de Rebarbação, o perfil deve exibir **Área de produção = Acabamento / Rebarbação**, preenchida pelo sistema. Não troque para Moldagem.
+
+- Na integração, marque **Treinamento de RH**, **Treinamento da Qualidade**, **Treinamento de Segurança** e **Treinamento operacional** somente para simular que foram realizados. Selecione um **Líder ou Anjo da Guarda** existente; se a base de treinamento não tiver, crie previamente um empregado fictício em `Funcionários > Funcionários` sem dados pessoais reais.
+- Marque **Fichas técnicas e especificações repassadas**, **Tarefa específica do setor repassada sob supervisão** e **EPIs do posto e treinamento de uso conferidos**. Esses campos espelham requisitos gerais do RQ 006 e específicos de produção identificados nos documentos de admissão e descrição da vaga.
+- Clique **Aprovar liberação PRÁTICO**. A auditoria deve mostrar **Aprovado por** e **Aprovado em**. Para Mecânico, use o perfil Mecânico e marque **Equipamentos e rotinas de manutenção aplicáveis repassados**; os campos de produção não se aplicam.
+- Na lista **Habilidades e atitudes RQ 006**, preencha as nove habilidades e dez atitudes. Para apenas demonstrar o salvamento, use nota fictícia `3 - Bom` em cada linha e registre notas de treinamento; não considere essa nota avaliação de pessoa real.
+- Clique **Efetivar** para encerrar o exercício. Para treinar alternativas, crie outra candidatura fictícia e use **Acompanhar / adequar** ou **Encerrar**. A ação exige que todas as 19 linhas estejam avaliadas e grava usuário/data.
+
+### 10.12 Resultado esperado e solução de problemas
+
+Ao final, deve existir uma requisição **Aprovada**, vaga associada à requisição, candidatura no estágio **Contratado**, checklist obrigatório concluído, aptidão resumida como Apto e uma integração RQ 006 com PRÁTICO liberado e decisão final auditada.
+
+- **Erro ao salvar a nova requisição:** instale o upgrade de `voigt_hr_recruitment`, atualize a tela e tente de novo. A correção permite `state='draft'` e valores vazios nos campos de aprovação; continua rejeitando estados iniciais diferentes de Rascunho e dados de aprovação não vazios.
+- **Aprovar setor/diretoria desabilitado ou erro de autop aprovação:** confira que a solicitação foi salva e enviada; o usuário de teste precisa ser membro de `base.group_system`. Para usuários regulares, use requisitante, gestor do setor e diretor diferentes.
+- **Aba Processo Voigt ausente:** confirme o grupo **Voigt Recruitment Manager** e recarregue a candidatura.
+- **Não consegue passar de etapa:** confira o gate atribuído ao estágio, resultado da avaliação apropriada, itens obrigatórios verificados/dispensados, resultado ocupacional Apto e associação da vaga à RQ 077 aprovada para a etapa Proposta.
+- **Integração não criada:** confirme que a etapa para a qual moveu a candidatura tem a caixa nativa **Hired Stage** marcada; a integração não é criada simplesmente ao entrar em uma etapa com nome “Contratado”.
+- **Não vê o menu Avaliações de aptidão:** entre como Administrator de sistema (base.group_system) ou atribua o grupo **Voigt Occupational Health** ao usuário de saúde designado.
 
 ## 11. Referências operacionais e pontos de conferência
 

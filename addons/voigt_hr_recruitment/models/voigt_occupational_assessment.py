@@ -8,9 +8,18 @@ class VoigtOccupationalAssessment(models.Model):
     _inherit = ['mail.thread']
     _order = 'id desc'
 
-    applicant_id = fields.Many2one('hr.applicant', required=True, ondelete='restrict', index=True, groups='voigt_hr_recruitment.group_voigt_recruitment_manager')
-    candidate_name = fields.Char(related='applicant_id.partner_name', groups='voigt_hr_recruitment.group_voigt_occupational_health')
-    job_title = fields.Char(related='applicant_id.job_id.name', groups='voigt_hr_recruitment.group_voigt_occupational_health')
+    applicant_id = fields.Many2one(
+        'hr.applicant', required=True, ondelete='restrict', index=True,
+        groups='voigt_hr_recruitment.group_voigt_recruitment_manager',
+    )
+    candidate_name = fields.Char(
+        related='applicant_id.partner_name',
+        groups='voigt_hr_recruitment.group_voigt_occupational_health,base.group_system',
+    )
+    job_title = fields.Char(
+        related='applicant_id.job_id.name',
+        groups='voigt_hr_recruitment.group_voigt_occupational_health,base.group_system',
+    )
     company_id = fields.Many2one(related='applicant_id.company_id', store=True, index=True)
     requested_by_id = fields.Many2one('res.users', required=True, readonly=True, default=lambda self: self.env.user)
     requested_at = fields.Datetime(required=True, readonly=True, default=fields.Datetime.now)
@@ -40,7 +49,9 @@ class VoigtOccupationalAssessment(models.Model):
         self._action_record_result('unfit')
 
     def _action_record_result(self, status):
-        if not self.env.user.has_group('voigt_hr_recruitment.group_voigt_occupational_health'):
+        is_occupational_health = self.env.user.has_group('voigt_hr_recruitment.group_voigt_occupational_health')
+        is_system_admin = self.env.user.has_group('base.group_system')
+        if not (is_occupational_health or is_system_admin):
             raise UserError(self.env._('Only the Voigt occupational health group can record fitness results.'))
         for assessment in self:
             if assessment.status != 'pending':

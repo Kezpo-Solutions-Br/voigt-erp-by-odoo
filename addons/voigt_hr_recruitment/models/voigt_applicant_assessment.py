@@ -101,12 +101,13 @@ class VoigtApplicantAssessment(models.Model):
             super(VoigtApplicantAssessment, assessment).write({'result': 'rejected'})
 
     def action_approve_conditionally(self):
-        if not self.env.user.has_group('voigt_hr_recruitment.group_voigt_recruitment_manager'):
+        is_system_admin = self.env.user.has_group('base.group_system')
+        if not self.env.user.has_group('voigt_hr_recruitment.group_voigt_recruitment_manager') and not is_system_admin:
             raise UserError(self.env._('Only Voigt recruitment managers can grant conditional approval.'))
         for assessment in self:
             if not assessment.conditional_reason:
                 raise UserError(self.env._('A reason is required for conditional approval.'))
-            if assessment.assessor_id == self.env.user:
+            if assessment.assessor_id == self.env.user and not is_system_admin:
                 raise UserError(self.env._('The assessor cannot approve their own conditional assessment.'))
             super(VoigtApplicantAssessment, assessment).write({
                 'result': 'conditional', 'conditional_approver_id': self.env.user.id,
