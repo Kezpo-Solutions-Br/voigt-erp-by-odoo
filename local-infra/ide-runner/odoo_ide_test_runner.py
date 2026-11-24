@@ -25,6 +25,20 @@ ENV_FILE = INFRA / ".env"
 TEST_DATABASE = "voigt_ide_tests"
 MINIMUM_PYTHON = (3, 12)
 INITIAL_LD_LIBRARY_PATH = os.environ.get("LD_LIBRARY_PATH", "")
+TEST_MODULE = os.environ.get("ODOO_IDE_TEST_MODULE", "").strip()
+
+
+def selected_test_tag() -> str:
+    """Return the Odoo test tag for the configured suite or addon.
+
+    Raises:
+        SystemExit: If the requested addon name is not a valid Odoo module name.
+    """
+    if not TEST_MODULE:
+        return "+standard"
+    if not all(part and part.replace("_", "").isalnum() for part in TEST_MODULE.split(".")):
+        fail(f"nome de módulo inválido em ODOO_IDE_TEST_MODULE: {TEST_MODULE!r}.")
+    return f"/{TEST_MODULE}"
 
 
 def compose(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -286,7 +300,7 @@ def remove_test_database() -> None:
 
 
 def main() -> None:
-    """Executa os testes padrão de todos os módulos Odoo em um banco descartável.
+    """Executa a suíte padrão ou os testes de um addon em um banco descartável.
 
     O runner impede execuções simultâneas com o Odoo em container ou na IDE,
     recria o banco reservado pelo comando oficial de inicialização, inicializa
@@ -352,17 +366,19 @@ def main() -> None:
         reset_test_database()
         test_db_created = True
 
+        test_tag = selected_test_tag()
+        test_scope = f"do módulo {TEST_MODULE}" if TEST_MODULE else "padrão do Odoo"
         print(
-            f"Executando testes padrão do Odoo no banco temporário {TEST_DATABASE}; "
+            f"Executando testes {test_scope} no banco temporário {TEST_DATABASE}; "
             "a suíte será removida ao encerrar.",
             flush=True,
         )
         sys.argv = [
             str(ROOT / "odoo-bin"),
             "--database", TEST_DATABASE,
-            "--init", "all",
+            "--init", TEST_MODULE or "all",
             "--update", "all",
-            "--test-tags", "+standard",
+            "--test-tags", test_tag,
             "--stop-after-init",
         ]
         if str(ROOT) not in sys.path:
