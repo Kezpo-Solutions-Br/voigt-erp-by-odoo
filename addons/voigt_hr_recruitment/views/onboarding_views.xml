@@ -1,0 +1,82 @@
+<odoo>
+    <record id="voigt_onboarding_view_form" model="ir.ui.view">
+        <field name="name">voigt.onboarding.form</field>
+        <field name="model">voigt.onboarding</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve_practical" type="object" string="Aprovar liberação PRÁTICO" class="btn-primary" invisible="practical_done" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+                    <button name="action_confirm_effective" type="object" string="Efetivar" invisible="final_evaluation != 'pending'" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+                    <button name="action_extend_probation" type="object" string="Acompanhar / adequar" invisible="final_evaluation != 'pending'" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+                    <button name="action_end_probation" type="object" string="Encerrar" invisible="final_evaluation != 'pending'" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+                    <field name="practical_done" widget="boolean_toggle" />
+                    <field name="final_evaluation" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="applicant_id" />
+                        <field name="employee_id" />
+                        <field name="admission_date" />
+                        <field name="profile" />
+                    </group>
+                    <group string="Treinamentos RQ 006">
+                        <field name="hr_training_done" />
+                        <field name="quality_training_done" />
+                        <field name="safety_training_done" />
+                        <field name="operational_training_done" />
+                        <field name="operational_trainer_id" />
+                        <field name="technical_documents_done" />
+                    </group>
+                    <group string="Etapas específicas da função" invisible="profile not in ('production_rebarbacao', 'production_moldagem', 'mechanic')">
+                        <field name="production_area" readonly="1" invisible="profile not in ('production_rebarbacao', 'production_moldagem')" />
+                        <field name="production_task_trained" invisible="profile not in ('production_rebarbacao', 'production_moldagem')" />
+                        <field name="ppe_issue_verified" invisible="profile not in ('production_rebarbacao', 'production_moldagem')" />
+                        <field name="mechanic_equipment_training" invisible="profile != 'mechanic'" />
+                    </group>
+                    <group string="Acompanhamento">
+                        <field name="evaluation_date" />
+                        <field name="probation_followup_date" />
+                        <field name="evaluation_notes" />
+                        <field name="final_evaluation_by_id" />
+                        <field name="final_evaluation_at" />
+                    </group>
+                    <group string="Liberação PRÁTICO">
+                        <field name="practical_approved_by_id" />
+                        <field name="practical_approved_at" />
+                    </group>
+                    <group string="Habilidades e atitudes RQ 006">
+                        <field name="skill_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle" />
+                                <field name="kind" />
+                                <field name="name" />
+                                <field name="rating" />
+                                <field name="notes" />
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+    <record id="voigt_onboarding_view_list" model="ir.ui.view">
+        <field name="name">voigt.onboarding.list</field>
+        <field name="model">voigt.onboarding</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="applicant_id" />
+                <field name="admission_date" />
+                <field name="profile" />
+                <field name="practical_done" />
+                <field name="final_evaluation" />
+            </list>
+        </field>
+    </record>
+    <record id="voigt_onboarding_action" model="ir.actions.act_window">
+        <field name="name">Integração RQ 006</field>
+        <field name="res_model">voigt.onboarding</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="voigt_onboarding_menu" name="Integração RQ 006" parent="voigt_recruitment_root_menu" action="voigt_onboarding_action" sequence="20" groups="hr_recruitment.group_hr_recruitment_user" />
+</odoo>

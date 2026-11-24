@@ -1,0 +1,75 @@
+<odoo>
+    <record id="voigt_document_template_view_list" model="ir.ui.view">
+        <field name="name">voigt.applicant.document.template.list</field>
+        <field name="model">voigt.applicant.document.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="profile" />
+                <field name="required" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+    <record id="voigt_document_template_view_form" model="ir.ui.view">
+        <field name="name">voigt.applicant.document.template.form</field>
+        <field name="model">voigt.applicant.document.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="sequence" />
+                        <field name="profile" />
+                        <field name="required" />
+                        <field name="active" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="voigt_assessment_criterion_template_view_list" model="ir.ui.view">
+        <field name="name">voigt.assessment.criterion.template.list</field>
+        <field name="model">voigt.assessment.criterion.template</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="profile" />
+                <field name="assessment_type" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+    <record id="voigt_onboarding_skill_template_view_list" model="ir.ui.view">
+        <field name="name">voigt.onboarding.skill.template.list</field>
+        <field name="model">voigt.onboarding.skill.template</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="kind" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+    <record id="voigt_document_template_action" model="ir.actions.act_window">
+        <field name="name">Modelos do checklist</field>
+        <field name="res_model">voigt.applicant.document.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="voigt_assessment_criterion_template_action" model="ir.actions.act_window">
+        <field name="name">Critérios por perfil</field>
+        <field name="res_model">voigt.assessment.criterion.template</field>
+        <field name="view_mode">list</field>
+    </record>
+    <record id="voigt_onboarding_skill_template_action" model="ir.actions.act_window">
+        <field name="name">Habilidades e atitudes RQ 006</field>
+        <field name="res_model">voigt.onboarding.skill.template</field>
+        <field name="view_mode">list</field>
+    </record>
+    <menuitem id="voigt_document_template_menu" name="Modelos do checklist" parent="voigt_recruitment_root_menu" action="voigt_document_template_action" sequence="80" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+    <menuitem id="voigt_assessment_criterion_template_menu" name="Critérios por perfil" parent="voigt_recruitment_root_menu" action="voigt_assessment_criterion_template_action" sequence="81" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+    <menuitem id="voigt_onboarding_skill_template_menu" name="Habilidades e atitudes RQ 006" parent="voigt_recruitment_root_menu" action="voigt_onboarding_skill_template_action" sequence="82" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" />
+</odoo>

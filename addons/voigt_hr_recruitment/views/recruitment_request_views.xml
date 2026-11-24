@@ -1,0 +1,88 @@
+<odoo>
+    <record id="voigt_recruitment_request_view_list" model="ir.ui.view">
+        <field name="name">voigt.recruitment.request.list</field>
+        <field name="model">voigt.recruitment.request</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('rejected', 'cancelled', 'filled')">
+                <field name="name" />
+                <field name="job_title" />
+                <field name="department_id" />
+                <field name="employment_type" />
+                <field name="requester_id" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+    <record id="voigt_recruitment_request_view_form" model="ir.ui.view">
+        <field name="name">voigt.recruitment.request.form</field>
+        <field name="model">voigt.recruitment.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Enviar para aprovação" invisible="state != 'draft'" class="btn-primary" />
+                    <button name="action_approve_department" type="object" string="Aprovar setor" invisible="state != 'to_approve'" />
+                    <button name="action_approve_director" type="object" string="Aprovar diretoria" invisible="state != 'to_director'" class="btn-primary" />
+                    <button name="action_reject" type="object" string="Rejeitar" invisible="state not in ('to_approve', 'to_director')" />
+                    <button name="action_reset_to_draft" type="object" string="Reabrir" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" invisible="state != 'rejected'" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,to_director,approved" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" />
+                            <field name="department_id" />
+                            <field name="job_title" />
+                            <field name="quantity" />
+                            <field name="employment_type" />
+                        </group>
+                        <group>
+                            <field name="reason" />
+                            <field name="replacement_for" invisible="reason != 'replacement'" />
+                            <field name="requester_id" />
+                            <field name="salary_reference" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="justification" />
+                        <field name="work_schedule" />
+                    </group>
+                    <group string="Aprovações">
+                        <group>
+                            <field name="department_approver_id" />
+                            <field name="department_approved_at" />
+                        </group>
+                        <group>
+                            <field name="director_approver_id" />
+                            <field name="director_approved_at" />
+                        </group>
+                        <field name="approval_comment" />
+                    </group>
+                    <notebook>
+                        <page string="Vagas">
+                            <field name="job_ids">
+                                <list>
+                                    <field name="name" />
+                                    <field name="voigt_profile" />
+                                    <field name="no_of_recruitment" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+    <record id="voigt_recruitment_request_action" model="ir.actions.act_window">
+        <field name="name">Solicitações de admissão</field>
+        <field name="res_model">voigt.recruitment.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="voigt_recruitment_root_menu" name="Processo Voigt" parent="hr_recruitment.menu_hr_recruitment_root" sequence="90" groups="hr_recruitment.group_hr_recruitment_user" />
+    <menuitem id="voigt_recruitment_request_menu" name="Solicitações RQ 077" parent="voigt_recruitment_root_menu" action="voigt_recruitment_request_action" sequence="10" groups="hr_recruitment.group_hr_recruitment_user" />
+</odoo>

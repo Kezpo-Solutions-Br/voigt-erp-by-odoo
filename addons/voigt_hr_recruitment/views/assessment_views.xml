@@ -1,0 +1,51 @@
+<odoo>
+    <record id="voigt_applicant_assessment_view_form" model="ir.ui.view">
+        <field name="name">voigt.applicant.assessment.form</field>
+        <field name="model">voigt.applicant.assessment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_evaluate" type="object" string="Calcular resultado" invisible="assessment_type not in ('qae_01', 'qae_02')" />
+                    <button name="action_mark_approved" type="object" string="Marcar apto" invisible="assessment_type in ('qae_01', 'qae_02') or result == 'approved'" />
+                    <button name="action_mark_rejected" type="object" string="Marcar inapto" invisible="assessment_type in ('qae_01', 'qae_02') or result == 'rejected'" />
+                    <button name="action_approve_conditionally" type="object" string="Aprovar condicionalmente" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" invisible="result == 'conditional'" />
+                    <field name="result" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="applicant_id" />
+                        <field name="assessment_type" />
+                        <field name="assessor_id" />
+                        <field name="assessment_date" />
+                        <field name="revision" />
+                    </group>
+                    <group string="Pontuação">
+                        <field name="score" />
+                        <field name="maximum_score" />
+                        <field name="cutoff_score" />
+                    </group>
+                    <notebook>
+                        <page string="Critérios da vaga">
+                            <field name="criterion_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
+                                    <field name="result" />
+                                    <field name="notes" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Parecer">
+                            <field name="comments" />
+                            <field name="psychological_summary" groups="voigt_hr_recruitment.group_voigt_psychologist" invisible="assessment_type != 'psychological'" />
+                            <field name="conditional_reason" />
+                            <field name="conditional_approver_id" />
+                            <field name="conditional_approved_at" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+</odoo>

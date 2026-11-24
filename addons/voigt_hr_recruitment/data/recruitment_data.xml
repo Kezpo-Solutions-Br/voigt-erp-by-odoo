@@ -1,0 +1,9 @@
+<odoo>
+    <record id="sequence_voigt_recruitment_request" model="ir.sequence">
+        <field name="name">Solicitação de Admissão Voigt</field>
+        <field name="code">voigt.recruitment.request</field>
+        <field name="prefix">RQ077/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False" />
+    </record>
+</odoo>

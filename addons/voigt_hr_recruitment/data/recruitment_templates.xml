@@ -1,0 +1,184 @@
+<odoo noupdate="1">
+    <record id="document_template_cpf" model="voigt.applicant.document.template">
+        <field name="name">CPF</field>
+        <field name="profile">all</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="document_template_identity" model="voigt.applicant.document.template">
+        <field name="name">Documento oficial de identificação</field>
+        <field name="profile">all</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="document_template_address" model="voigt.applicant.document.template">
+        <field name="name">Comprovante de endereço</field>
+        <field name="profile">all</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="document_template_education" model="voigt.applicant.document.template">
+        <field name="name">Comprovante de escolaridade, se exigido no perfil aprovado</field>
+        <field name="profile">all</field>
+        <field name="sequence">40</field>
+        <field name="required" eval="False" />
+    </record>
+    <record id="document_template_mechanic_qualification" model="voigt.applicant.document.template">
+        <field name="name">Qualificação técnica aplicável à vaga</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">50</field>
+        <field name="required" eval="False" />
+    </record>
+    <record id="criterion_mechanic_welding" model="voigt.assessment.criterion.template">
+        <field name="name">Soldagem (eletrodo, MIG/TIG), maçarico e corte a plasma</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="criterion_mechanic_fabrication" model="voigt.assessment.criterion.template">
+        <field name="name">Caldeiraria e leitura de desenhos técnicos</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="criterion_mechanic_grinder" model="voigt.assessment.criterion.template">
+        <field name="name">Uso de lixadeira para corte e desbaste</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="criterion_mechanic_conveyors" model="voigt.assessment.criterion.template">
+        <field name="name">Correias transportadoras e elevadores de caneca</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="criterion_mechanic_reducers" model="voigt.assessment.criterion.template">
+        <field name="name">Redutores, hidráulica e noções de elétrica</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="criterion_mechanic_bearings" model="voigt.assessment.criterion.template">
+        <field name="name">Rolamentos, torno, fresa e furadeira</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="criterion_mechanic_lifting" model="voigt.assessment.criterion.template">
+        <field name="name">Talha manual e manutenção de ponte rolante</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="criterion_mechanic_measurement" model="voigt.assessment.criterion.template">
+        <field name="name">Uso de paquímetro e instrumentos de medição</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="criterion_mechanic_building" model="voigt.assessment.criterion.template">
+        <field name="name">Manutenção predial, organização e documentação técnica</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">90</field>
+    </record>
+    <record id="criterion_mechanic_generalist" model="voigt.assessment.criterion.template">
+        <field name="name">Experiência generalista, planejamento e interação com equipe</field>
+        <field name="profile">mechanic</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="criterion_production_rebarbacao" model="voigt.assessment.criterion.template">
+        <field name="name">Aderência às tarefas de rebarbação e experiência com lixadeira (diferencial, não eliminatório)</field>
+        <field name="profile">production_rebarbacao</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="criterion_production_moldagem" model="voigt.assessment.criterion.template">
+        <field name="name">Aderência às tarefas de moldagem e movimentação segura de peças</field>
+        <field name="profile">production_moldagem</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="skill_communication" model="voigt.onboarding.skill.template">
+        <field name="name">Boa comunicação</field>
+        <field name="kind">skill</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="skill_analysis" model="voigt.onboarding.skill.template">
+        <field name="name">Capacidade analítica</field>
+        <field name="kind">skill</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="skill_concentration" model="voigt.onboarding.skill.template">
+        <field name="name">Concentração</field>
+        <field name="kind">skill</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="skill_creativity" model="voigt.onboarding.skill.template">
+        <field name="name">Criatividade</field>
+        <field name="kind">skill</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="skill_dexterity" model="voigt.onboarding.skill.template">
+        <field name="name">Destreza</field>
+        <field name="kind">skill</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="skill_accuracy" model="voigt.onboarding.skill.template">
+        <field name="name">Exatidão</field>
+        <field name="kind">skill</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="skill_learning" model="voigt.onboarding.skill.template">
+        <field name="name">Facilidade de aprendizado</field>
+        <field name="kind">skill</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="skill_strength" model="voigt.onboarding.skill.template">
+        <field name="name">Força</field>
+        <field name="kind">skill</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="skill_relationship" model="voigt.onboarding.skill.template">
+        <field name="name">Relação interpessoal</field>
+        <field name="kind">skill</field>
+        <field name="sequence">90</field>
+    </record>
+    <record id="attitude_attention" model="voigt.onboarding.skill.template">
+        <field name="name">Atenção</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="attitude_commitment" model="voigt.onboarding.skill.template">
+        <field name="name">Comprometimento</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">110</field>
+    </record>
+    <record id="attitude_education" model="voigt.onboarding.skill.template">
+        <field name="name">Educação</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">120</field>
+    </record>
+    <record id="attitude_flexibility" model="voigt.onboarding.skill.template">
+        <field name="name">Flexibilidade</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">130</field>
+    </record>
+    <record id="attitude_initiative" model="voigt.onboarding.skill.template">
+        <field name="name">Iniciativa</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">140</field>
+    </record>
+    <record id="attitude_leadership" model="voigt.onboarding.skill.template">
+        <field name="name">Liderança</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">150</field>
+    </record>
+    <record id="attitude_objectivity" model="voigt.onboarding.skill.template">
+        <field name="name">Objetividade</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">160</field>
+    </record>
+    <record id="attitude_organization" model="voigt.onboarding.skill.template">
+        <field name="name">Organização</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">170</field>
+    </record>
+    <record id="attitude_persistence" model="voigt.onboarding.skill.template">
+        <field name="name">Persistência</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">180</field>
+    </record>
+    <record id="attitude_confidentiality" model="voigt.onboarding.skill.template">
+        <field name="name">Sigilo</field>
+        <field name="kind">attitude</field>
+        <field name="sequence">190</field>
+    </record>
+</odoo>

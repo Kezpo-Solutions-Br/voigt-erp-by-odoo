@@ -1,0 +1,62 @@
+<odoo>
+    <record id="hr_applicant_view_form_inherit_voigt" model="ir.ui.view">
+        <field name="name">hr.applicant.form.inherit.voigt.recruitment</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Processo Voigt" name="voigt_recruitment" groups="voigt_hr_recruitment.group_voigt_recruitment_manager">
+                    <group>
+                        <field name="voigt_checklist_complete" />
+                        <field name="voigt_onboarding_ids">
+                            <list>
+                                <field name="admission_date" />
+                                <field name="practical_done" />
+                                <field name="final_evaluation" />
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Aptidão ocupacional">
+                        <field name="voigt_occupational_fitness" />
+                        <button name="action_request_occupational_fitness" type="object" string="Solicitar avaliação" invisible="voigt_occupational_fitness == 'pending'" />
+                        <field name="voigt_occupational_assessment_ids">
+                            <list>
+                                <field name="requested_at" />
+                                <field name="status" />
+                                <field name="result_by_id" />
+                                <field name="result_at" />
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Checklist de admissão">
+                        <field name="voigt_document_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle" />
+                                <field name="name" />
+                                <field name="required" />
+                                <field name="state" />
+                                <button name="action_verify" type="object" string="Verificar" invisible="state != 'received'" />
+                                <button name="action_waive" type="object" string="Dispensar" groups="voigt_hr_recruitment.group_voigt_recruitment_manager" invisible="state == 'waived'" />
+                                <field name="verified_by_id" />
+                                <field name="verified_at" />
+                                <field name="waiver_reason" />
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Avaliações">
+                        <field name="voigt_assessment_ids">
+                            <list editable="bottom">
+                                <field name="assessment_type" />
+                                <field name="assessor_id" />
+                                <field name="assessment_date" />
+                                <field name="revision" />
+                                <field name="score" />
+                                <field name="result" />
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,50 @@
+<odoo>
+    <record id="voigt_occupational_assessment_view_list" model="ir.ui.view">
+        <field name="name">voigt.occupational.assessment.list</field>
+        <field name="model">voigt.occupational.assessment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="candidate_name" />
+                <field name="job_title" />
+                <field name="requested_at" />
+                <field name="status" />
+                <field name="result_by_id" />
+                <field name="result_at" />
+            </list>
+        </field>
+    </record>
+    <record id="voigt_occupational_assessment_view_form" model="ir.ui.view">
+        <field name="name">voigt.occupational.assessment.form</field>
+        <field name="model">voigt.occupational.assessment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_fit" type="object" string="Registrar apto" class="btn-primary" invisible="status != 'pending'" groups="voigt_hr_recruitment.group_voigt_occupational_health" />
+                    <button name="action_mark_unfit" type="object" string="Registrar inapto" invisible="status != 'pending'" groups="voigt_hr_recruitment.group_voigt_occupational_health" />
+                    <field name="status" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="candidate_name" />
+                        <field name="job_title" />
+                        <field name="requested_by_id" />
+                        <field name="requested_at" />
+                    </group>
+                    <group>
+                        <field name="result_by_id" />
+                        <field name="result_at" />
+                    </group>
+                    <p>Registre somente aptidão para o trabalho. Não registre diagnóstico ou dados clínicos.</p>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+    <record id="voigt_occupational_assessment_action" model="ir.actions.act_window">
+        <field name="name">Avaliações de aptidão</field>
+        <field name="res_model">voigt.occupational.assessment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('status', '=', 'pending')]</field>
+    </record>
+    <menuitem id="voigt_occupational_assessment_menu" name="Avaliações de aptidão" parent="voigt_recruitment_root_menu" action="voigt_occupational_assessment_action" sequence="30" groups="voigt_hr_recruitment.group_voigt_occupational_health" />
+</odoo>
