@@ -20,6 +20,7 @@ python_bin="$(command -v python3.12 || true)"
 
 native_prefix="$LOCAL_DIR/native/current"
 [[ -d "$native_prefix" ]] || die 'Prefixo nativo local ausente. Execute ide-first-run.sh antes de preparar o SDK Python da IDE.'
+wkhtmltox_prefix="$LOCAL_DIR/tooling/wkhtmltox/current/usr/local"
 multiarch_triplet="$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || true)"
 [[ -n "$multiarch_triplet" ]] || die 'Não foi possível identificar a arquitetura multiarch do host com dpkg-architecture.'
 library_dirs=""
@@ -31,7 +32,8 @@ for candidate in \
   "$native_prefix/usr/lib/$multiarch_triplet" \
   "$native_prefix/lib/$multiarch_triplet" \
   "$native_prefix/usr/lib" \
-  "$native_prefix/lib"; do
+  "$native_prefix/lib" \
+  "$wkhtmltox_prefix/lib"; do
   if [[ -d "$candidate" ]]; then
     [[ -z "$library_dirs" ]] || library_dirs="$library_dirs:"
     library_dirs="$library_dirs$candidate"
@@ -64,7 +66,7 @@ for candidate in \
     linker_flags="${linker_flags}-L$candidate"
   fi
 done
-for candidate in "$native_prefix/usr/bin" "$native_prefix/bin"; do
+for candidate in "$wkhtmltox_prefix/bin" "$native_prefix/usr/bin" "$native_prefix/bin"; do
   if [[ -d "$candidate" ]]; then
     [[ -z "$binary_dirs" ]] || binary_dirs="$binary_dirs:"
     binary_dirs="$binary_dirs$candidate"

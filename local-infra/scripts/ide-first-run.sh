@@ -85,6 +85,7 @@ runtime_dependency_groups=(
   'fonts-liberation'
   'fonts-noto-core'
   'libcairo2'
+  'libfontconfig1'
   'libffi8 libffi8t64'
   'libfreetype6'
   'libfribidi0'
@@ -95,6 +96,7 @@ runtime_dependency_groups=(
   'libmagic1t64 libmagic1'
   'libopenjp2-7'
   'libpq5'
+  'libpng16-16t64 libpng16-16'
   'libsasl2-2'
   'libssl3t64 libssl3'
   'libtiff6 libtiff6t64'
@@ -102,7 +104,12 @@ runtime_dependency_groups=(
   'libxcb1'
   'libxml2'
   'libxslt1.1'
+  'libx11-6'
+  'libxext6'
+  'libxrender1'
   'wkhtmltopdf'
+  'xfonts-75dpi'
+  'xfonts-base'
   'zlib1g'
 )
 
@@ -136,8 +143,8 @@ for group in "${dependency_groups[@]}"; do
   installed=false
   available_locally=false
   for candidate in "${candidates[@]}"; do
-    status="$(dpkg-query -W -f='${db:Status-Status}' "$candidate" 2>/dev/null || true)"
-    if [[ "$status" == installed ]]; then
+    status="$(dpkg-query -W -f='${db:Status-Status}\n' "$candidate" 2>/dev/null || true)"
+    if grep -Fxq 'installed' <<< "$status"; then
       installed=true
       break
     fi
@@ -150,13 +157,19 @@ for group in "${dependency_groups[@]}"; do
 done
 for group in "${runtime_dependency_groups[@]}"; do
   available_locally=false
+  installed=false
   for candidate in $group; do
+    status="$(dpkg-query -W -f='${db:Status-Status}\n' "$candidate" 2>/dev/null || true)"
+    if grep -Fxq 'installed' <<< "$status"; then
+      installed=true
+      break
+    fi
     if [[ "$local_manifest_release" == "$release_codename" ]] && grep -Fxq "$candidate" "$local_manifest"; then
       available_locally=true
       break
     fi
   done
-  [[ "$available_locally" == true ]] || pending_groups+=("$group")
+  [[ "$available_locally" == true || "$installed" == true ]] || pending_groups+=("$group")
 done
 
 if ((${#pending_groups[@]} > 0)); then
@@ -300,6 +313,49 @@ if [[ "$native_deps_only" == true ]]; then
   printf '\nDependências nativas preparadas em local-infra/.local/native sem instalação no sistema.\n'
   exit 0
 fi
+
+# O pacote Ubuntu wkhtmltopdf não inclui Qt corrigido; Odoo precisa do build
+# oficial com patched Qt para incorporar as fontes WOFF usadas nos relatórios.
+command -v curl >/dev/null 2>&1 || die 'curl não encontrado; é necessário para baixar o build oficial isolado de wkhtmltopdf.'
+command -v sha256sum >/dev/null 2>&1 || die 'sha256sum não encontrado; é necessário validar o pacote de wkhtmltopdf.'
+tooling_root="$INFRA_DIR/.local/tooling/wkhtmltox"
+tooling_release="$tooling_root/releases/0.12.6.1-3.jammy-amd64"
+tooling_signature='4f723b2691ad8638a9df960e0421d346d7315083e3583a334f33362280ddba15'
+[[ "$(dpkg --print-architecture)" == amd64 ]] \
+  || die 'O pacote wkhtmltopdf privado fixado está disponível para amd64; esta arquitetura não é compatível.'
+if [[ ! -x "$tooling_release/usr/local/bin/wkhtmltopdf" || ! -f "$tooling_release/package.sha256" ]] \
+  || [[ "$(cat "$tooling_release/package.sha256" 2>/dev/null || true)" != "$tooling_signature" ]]; then
+  mkdir -p "$tooling_root/releases"
+  chmod 700 "$tooling_root" "$tooling_root/releases"
+  tooling_stage="$(mktemp -d "$tooling_root/.stage.XXXXXX")"
+  tooling_archive="$tooling_stage/wkhtmltox.deb"
+  trap 'cleanup_stage; [[ -z "${tooling_stage:-}" || ! -d "$tooling_stage" ]] || rm -rf -- "$tooling_stage"' EXIT
+  printf 'Baixando e validando o wkhtmltopdf oficial com patched Qt em prefixo privado...\n'
+  curl -fL --retry 2 --output "$tooling_archive" \
+    'https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb'
+  printf '%s  %s\n' "$tooling_signature" "$tooling_archive" | sha256sum -c - >/dev/null \
+    || die 'A validação SHA-256 do pacote oficial wkhtmltopdf falhou; o prefixo privado não foi atualizado.'
+  mkdir -p "$tooling_stage/root"
+  dpkg-deb -x "$tooling_archive" "$tooling_stage/root"
+  printf '%s\n' "$tooling_signature" > "$tooling_stage/root/package.sha256"
+  rm -f "$tooling_archive"
+  if [[ -d "$tooling_release" ]]; then
+    rm -rf -- "$tooling_release"
+  fi
+  mv -- "$tooling_stage/root" "$tooling_release"
+  rm -rf -- "$tooling_stage"
+  tooling_stage=""
+  tooling_link="$tooling_root/.current-$$"
+  ln -s 'releases/0.12.6.1-3.jammy-amd64' "$tooling_link"
+  mv -Tf -- "$tooling_link" "$tooling_root/current"
+  trap 'cleanup_stage' EXIT
+fi
+tooling_current="$tooling_root/current"
+multiarch_triplet="$(dpkg-architecture -qDEB_HOST_MULTIARCH)"
+tooling_version="$(LD_LIBRARY_PATH="$tooling_current/usr/local/lib:$native_root/current/usr/lib/$multiarch_triplet:$native_root/current/usr/lib" \
+  "$tooling_current/usr/local/bin/wkhtmltopdf" --version 2>&1 || true)"
+[[ "$tooling_version" == *'with patched qt'* ]] \
+  || die "O wkhtmltopdf privado não iniciou com patched Qt: ${tooling_version:-sem saída}."
 "$SCRIPT_DIR/setup-ide.sh"
 printf '\nPreparação inicial concluída. No IntelliJ, selecione Voigt Odoo Local (IDE Debug/Test).\n'
 printf 'Para iniciar o ambiente de trabalho diário, execute local-infra/scripts/ide-day.sh.\n'

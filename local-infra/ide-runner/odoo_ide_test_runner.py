@@ -10,6 +10,7 @@ import shutil
 import socket
 import subprocess
 import sys
+import sysconfig
 import xml.sax.saxutils
 import importlib.metadata
 
@@ -18,10 +19,12 @@ from prepare_ide_files import prepare_ide_files
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 INFRA = ROOT / "local-infra"
+WKHTMLTOX_PREFIX = INFRA / ".local" / "tooling" / "wkhtmltox" / "current" / "usr" / "local"
 COMPOSE = INFRA / "compose.yaml"
 ENV_FILE = INFRA / ".env"
 TEST_DATABASE = "voigt_ide_tests"
 MINIMUM_PYTHON = (3, 12)
+INITIAL_LD_LIBRARY_PATH = os.environ.get("LD_LIBRARY_PATH", "")
 
 
 def compose(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -87,11 +90,19 @@ def configure_local_native_build_environment(native_prefix: pathlib.Path) -> Non
         native_prefix / "usr/lib/pkgconfig",
         native_prefix / "usr/share/pkgconfig",
     ]
-    include_dirs = [native_prefix / "usr/include", native_prefix / "include"]
+    include_dirs = [
+        native_prefix / "usr/include",
+        native_prefix / "usr/include/cairo",
+        pathlib.Path("/usr/include/xcb"),
+        native_prefix / "include",
+        pathlib.Path(sysconfig.get_path("include")),
+        pathlib.Path(sysconfig.get_path("platinclude")),
+    ]
     library_dirs = [
         *multiarch_dirs,
         native_prefix / "usr/lib",
         native_prefix / "lib",
+        WKHTMLTOX_PREFIX / "lib",
     ]
 
     def prepend(variable: str, paths: list[pathlib.Path]) -> None:
@@ -103,6 +114,10 @@ def configure_local_native_build_environment(native_prefix: pathlib.Path) -> Non
             os.environ[variable] = os.pathsep.join(values)
 
     prepend("PKG_CONFIG_PATH", pkg_config_dirs)
+    # Debian's cairo.pc emits /usr/include/cairo while the headers are privately
+    # extracted. Add that header directory directly; a global sysroot also hides
+    # the host Python headers and headers for optional system build dependencies.
+    os.environ.pop("PKG_CONFIG_SYSROOT_DIR", None)
     prepend("CPATH", include_dirs)
     prepend("C_INCLUDE_PATH", include_dirs)
     prepend("LD_LIBRARY_PATH", library_dirs)
@@ -112,6 +127,30 @@ def configure_local_native_build_environment(native_prefix: pathlib.Path) -> Non
         linker_flags.append(current_ldflags)
     if linker_flags:
         os.environ["LDFLAGS"] = " ".join(linker_flags)
+
+
+def restart_with_native_loader_path(native_prefix: pathlib.Path) -> None:
+    """Restart once so the dynamic loader sees private libraries from process start.
+
+    Args:
+        native_prefix: Active, versioned native dependency prefix for this checkout.
+    """
+    required_dirs = [
+        *native_prefix.glob("usr/lib/*-linux-gnu"),
+        *native_prefix.glob("lib/*-linux-gnu"),
+        native_prefix / "usr/lib",
+        native_prefix / "lib",
+        WKHTMLTOX_PREFIX / "lib",
+    ]
+    initial_dirs = {
+        pathlib.Path(item).resolve()
+        for item in INITIAL_LD_LIBRARY_PATH.split(os.pathsep)
+        if item and pathlib.Path(item).is_dir()
+    }
+    if all(path.resolve() in initial_dirs for path in required_dirs if path.is_dir()):
+        return
+
+    os.execve(sys.executable, [sys.executable, *sys.argv], os.environ)
 
 
 def prepare_runtime() -> dict[str, str]:
@@ -145,9 +184,10 @@ def prepare_runtime() -> dict[str, str]:
         )
         if install_backend.returncode:
             details = install_backend.stderr.strip() or install_backend.stdout.strip()
+            details = "\n".join(details.splitlines()[-80:])
             raise RuntimeError(
-                "não foi possível instalar o backend Cairo do ReportLab. Confirme se o prefixo nativo "
-                "contém libcairo2-dev e se PKG_CONFIG_PATH inclui o diretório privado pkgconfig.\n"
+                "não foi possível compilar o backend Cairo do ReportLab. Confira no erro abaixo se "
+                "os headers privados de Cairo e os headers do Python estão disponíveis.\n"
                 f"{details or f'pip terminou com código {install_backend.returncode}'}"
             )
 
@@ -260,11 +300,12 @@ def main() -> None:
     native_prefix = INFRA / ".local" / "native" / "current"
     if not native_prefix.is_dir():
         fail("dependências locais ausentes; execute ./local-infra/scripts/ide-test-first-run.sh.")
-    binary_dirs = [native_prefix / "usr" / "bin", native_prefix / "bin"]
+    binary_dirs = [WKHTMLTOX_PREFIX / "bin", native_prefix / "usr" / "bin", native_prefix / "bin"]
     os.environ["PATH"] = os.pathsep.join(
         [*(str(path) for path in binary_dirs if path.is_dir()), os.environ.get("PATH", "")]
     )
     configure_local_native_build_environment(native_prefix)
+    restart_with_native_loader_path(native_prefix)
     private_font_dirs = [
         native_prefix / "usr" / "share" / "fonts" / name
         for name in ("truetype/dejavu", "truetype/freefont", "truetype/liberation", "opentype/noto")
@@ -324,6 +365,8 @@ def main() -> None:
             "--test-tags", "+standard",
             "--stop-after-init",
         ]
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
         runpy.run_path(str(ROOT / "odoo-bin"), run_name="__main__")
     except FileNotFoundError:
         fail("Docker CLI ou executável necessário não encontrado; confira Docker e a preparação do ambiente.")
