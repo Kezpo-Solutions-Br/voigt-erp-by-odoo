@@ -23,6 +23,10 @@ native_prefix="$LOCAL_DIR/native/current"
 multiarch_triplet="$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || true)"
 [[ -n "$multiarch_triplet" ]] || die 'Não foi possível identificar a arquitetura multiarch do host com dpkg-architecture.'
 library_dirs=""
+binary_dirs=""
+pkg_config_dirs=""
+include_dirs=""
+linker_flags=""
 for candidate in \
   "$native_prefix/usr/lib/$multiarch_triplet" \
   "$native_prefix/lib/$multiarch_triplet" \
@@ -34,10 +38,48 @@ for candidate in \
   fi
 done
 [[ -n "$library_dirs" ]] || die 'O prefixo nativo local não contém diretórios de bibliotecas compartilhadas.'
+for candidate in \
+  "$native_prefix/usr/lib/$multiarch_triplet/pkgconfig" \
+  "$native_prefix/lib/$multiarch_triplet/pkgconfig" \
+  "$native_prefix/usr/lib/pkgconfig" \
+  "$native_prefix/usr/share/pkgconfig"; do
+  if [[ -d "$candidate" ]]; then
+    [[ -z "$pkg_config_dirs" ]] || pkg_config_dirs="$pkg_config_dirs:"
+    pkg_config_dirs="$pkg_config_dirs$candidate"
+  fi
+done
+for candidate in "$native_prefix/usr/include" "$native_prefix/include"; do
+  if [[ -d "$candidate" ]]; then
+    [[ -z "$include_dirs" ]] || include_dirs="$include_dirs:"
+    include_dirs="$include_dirs$candidate"
+  fi
+done
+for candidate in \
+  "$native_prefix/usr/lib/$multiarch_triplet" \
+  "$native_prefix/lib/$multiarch_triplet" \
+  "$native_prefix/usr/lib" \
+  "$native_prefix/lib"; do
+  if [[ -d "$candidate" ]]; then
+    [[ -z "$linker_flags" ]] || linker_flags="$linker_flags "
+    linker_flags="${linker_flags}-L$candidate"
+  fi
+done
+for candidate in "$native_prefix/usr/bin" "$native_prefix/bin"; do
+  if [[ -d "$candidate" ]]; then
+    [[ -z "$binary_dirs" ]] || binary_dirs="$binary_dirs:"
+    binary_dirs="$binary_dirs$candidate"
+  fi
+done
 ide_env_tmp="$LOCAL_DIR/.ide-runner.env.tmp.$$"
 trap 'rm -f -- "$ide_env_tmp"' EXIT
 chmod 700 "$LOCAL_DIR"
-printf 'LD_LIBRARY_PATH=%s\n' "$library_dirs" > "$ide_env_tmp"
+printf 'LD_LIBRARY_PATH=%s\nPATH=%s:%s\n' "$library_dirs" "$binary_dirs" "$PATH" > "$ide_env_tmp"
+[[ -z "$pkg_config_dirs" ]] || printf 'PKG_CONFIG_PATH=%s:%s\n' "$pkg_config_dirs" "${PKG_CONFIG_PATH:-}" >> "$ide_env_tmp"
+[[ -z "$include_dirs" ]] || {
+  printf 'CPATH=%s:%s\n' "$include_dirs" "${CPATH:-}" >> "$ide_env_tmp"
+  printf 'C_INCLUDE_PATH=%s:%s\n' "$include_dirs" "${C_INCLUDE_PATH:-}" >> "$ide_env_tmp"
+}
+[[ -z "$linker_flags" ]] || printf 'LDFLAGS=%s %s\n' "$linker_flags" "${LDFLAGS:-}" >> "$ide_env_tmp"
 chmod 600 "$ide_env_tmp"
 mv -f -- "$ide_env_tmp" "$LOCAL_DIR/ide-runner.env"
 trap - EXIT

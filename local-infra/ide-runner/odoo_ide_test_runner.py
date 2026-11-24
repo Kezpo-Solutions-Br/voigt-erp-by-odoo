@@ -10,6 +10,8 @@ import shutil
 import socket
 import subprocess
 import sys
+import xml.sax.saxutils
+import importlib.metadata
 
 from prepare_ide_files import prepare_ide_files
 
@@ -71,6 +73,47 @@ def verify_project_interpreter() -> None:
         )
 
 
+def configure_local_native_build_environment(native_prefix: pathlib.Path) -> None:
+    """Expose private headers and pkg-config metadata to optional Python builds.
+
+    Args:
+        native_prefix: Active, versioned native dependency prefix for this checkout.
+    """
+    multiarch_dirs = list(native_prefix.glob("usr/lib/*-linux-gnu")) + list(
+        native_prefix.glob("lib/*-linux-gnu")
+    )
+    pkg_config_dirs = [
+        *(directory / "pkgconfig" for directory in multiarch_dirs),
+        native_prefix / "usr/lib/pkgconfig",
+        native_prefix / "usr/share/pkgconfig",
+    ]
+    include_dirs = [native_prefix / "usr/include", native_prefix / "include"]
+    library_dirs = [
+        *multiarch_dirs,
+        native_prefix / "usr/lib",
+        native_prefix / "lib",
+    ]
+
+    def prepend(variable: str, paths: list[pathlib.Path]) -> None:
+        values = [str(path) for path in paths if path.is_dir()]
+        current = os.environ.get(variable, "")
+        if current:
+            values.append(current)
+        if values:
+            os.environ[variable] = os.pathsep.join(values)
+
+    prepend("PKG_CONFIG_PATH", pkg_config_dirs)
+    prepend("CPATH", include_dirs)
+    prepend("C_INCLUDE_PATH", include_dirs)
+    prepend("LD_LIBRARY_PATH", library_dirs)
+    linker_flags = [f"-L{path}" for path in library_dirs if path.is_dir()]
+    current_ldflags = os.environ.get("LDFLAGS", "")
+    if current_ldflags:
+        linker_flags.append(current_ldflags)
+    if linker_flags:
+        os.environ["LDFLAGS"] = " ".join(linker_flags)
+
+
 def prepare_runtime() -> dict[str, str]:
     """Sincroniza dependências, configura credenciais e inicia o PostgreSQL local.
 
@@ -84,6 +127,29 @@ def prepare_runtime() -> dict[str, str]:
     """
     bootstrap = INFRA / "ide-runner" / "python_interpreter.py"
     subprocess.run([sys.executable, str(bootstrap), "--sync-deps"], cwd=ROOT, check=True)
+
+    # ReportLab 4.1 leaves bitmap rendering as an optional extra. Odoo's barcode
+    # QWeb widget uses it, so install its Cairo backend in the shared project venv.
+    try:
+        importlib.metadata.version("rlPyCairo")
+    except importlib.metadata.PackageNotFoundError:
+        install_backend = subprocess.run(
+            [
+                sys.executable, "-m", "pip", "install", "--disable-pip-version-check",
+                "reportlab[pycairo]==4.1.0", "-c", str(ROOT / "constraints-voigt.txt"),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if install_backend.returncode:
+            details = install_backend.stderr.strip() or install_backend.stdout.strip()
+            raise RuntimeError(
+                "não foi possível instalar o backend Cairo do ReportLab. Confirme se o prefixo nativo "
+                "contém libcairo2-dev e se PKG_CONFIG_PATH inclui o diretório privado pkgconfig.\n"
+                f"{details or f'pip terminou com código {install_backend.returncode}'}"
+            )
 
     values = prepare_ide_files(
         ENV_FILE,
@@ -194,6 +260,28 @@ def main() -> None:
     native_prefix = INFRA / ".local" / "native" / "current"
     if not native_prefix.is_dir():
         fail("dependências locais ausentes; execute ./local-infra/scripts/ide-test-first-run.sh.")
+    binary_dirs = [native_prefix / "usr" / "bin", native_prefix / "bin"]
+    os.environ["PATH"] = os.pathsep.join(
+        [*(str(path) for path in binary_dirs if path.is_dir()), os.environ.get("PATH", "")]
+    )
+    configure_local_native_build_environment(native_prefix)
+    private_font_dirs = [
+        native_prefix / "usr" / "share" / "fonts" / name
+        for name in ("truetype/dejavu", "truetype/freefont", "truetype/liberation", "opentype/noto")
+    ]
+    existing_font_dirs = [path for path in private_font_dirs if path.is_dir()]
+    if existing_font_dirs:
+        font_config = INFRA / ".local" / "ide-test-fonts.conf"
+        font_dirs_xml = "\n".join(
+            f"  <dir>{xml.sax.saxutils.escape(str(path))}</dir>" for path in existing_font_dirs
+        )
+        font_config.write_text(
+            "<?xml version=\"1.0\"?>\n<!DOCTYPE fontconfig SYSTEM \"/etc/fonts/fonts.dtd\">\n"
+            "<fontconfig>\n  <include>/etc/fonts/fonts.conf</include>\n"
+            f"{font_dirs_xml}\n</fontconfig>\n",
+            encoding="utf-8",
+        )
+        os.environ["FONTCONFIG_FILE"] = str(font_config)
     library_dirs = [native_prefix / "usr" / "lib", native_prefix / "lib"]
     libpq = [
         file
@@ -240,7 +328,8 @@ def main() -> None:
     except FileNotFoundError:
         fail("Docker CLI ou executável necessário não encontrado; confira Docker e a preparação do ambiente.")
     except subprocess.CalledProcessError as error:
-        fail(f"falha ao preparar as dependências ou o PostgreSQL: {error.stderr.strip() or error}")
+        details = error.stderr.strip() if error.stderr else str(error)
+        fail(f"falha ao preparar as dependências ou o PostgreSQL: {details}")
     except RuntimeError as error:
         fail(str(error))
     except OSError as error:

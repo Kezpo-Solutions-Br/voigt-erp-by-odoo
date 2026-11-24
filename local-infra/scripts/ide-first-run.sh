@@ -58,6 +58,7 @@ fi
 # pelo dpkg. Isso mantém bibliotecas de desenvolvimento e runtime fora do sistema.
 dependency_groups=(
   'build-essential'
+  'libcairo2-dev'
   'libffi-dev'
   'libfreetype-dev libfreetype6-dev'
   'libfribidi-dev'
@@ -79,6 +80,11 @@ dependency_groups=(
   'zlib1g-dev'
 )
 runtime_dependency_groups=(
+  'fonts-dejavu-core'
+  'fonts-freefont-ttf'
+  'fonts-liberation'
+  'fonts-noto-core'
+  'libcairo2'
   'libffi8 libffi8t64'
   'libfreetype6'
   'libfribidi0'
@@ -96,6 +102,7 @@ runtime_dependency_groups=(
   'libxcb1'
   'libxml2'
   'libxslt1.1'
+  'wkhtmltopdf'
   'zlib1g'
 )
 
