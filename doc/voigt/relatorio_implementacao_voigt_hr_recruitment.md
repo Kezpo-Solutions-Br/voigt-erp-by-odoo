@@ -73,13 +73,14 @@ O módulo gera as 9 linhas de habilidades e 10 de atitudes do RQ 006 com escala 
 ## 4. Arquivos principais
 
 - `addons/voigt_hr_recruitment/README.md`: objetivo do addon, compatibilidade, instalação, configuração e tutorial operacional em português.
-- `__manifest__.py`: dependência, versão, arquivos carregados e licença.
+- `__manifest__.py`: dependência, versão, arquivos carregados e licença. Inclui descrição curta explícita para o Apps, evitando que o Odoo use o README Markdown como descrição reStructuredText do módulo.
 - `models/voigt_recruitment_request.py`: RQ 077, etapas de aprovação, histórico e reabertura após alteração material.
 - `models/voigt_applicant_assessment.py` e `models/voigt_applicant_assessment_criterion.py`: avaliações, QAE, decisões autorizadas e critérios por posição.
 - `models/voigt_applicant_document.py` e `models/voigt_applicant_document_template.py`: checklist, evidências, verificação e dispensa com justificativa.
 - `models/voigt_onboarding.py`, `models/voigt_onboarding_skill.py` e `models/voigt_onboarding_skill_template.py`: RQ 006, treinamento, critérios, liberação prática e decisão final.
 - `models/hr_job.py`, `models/hr_recruitment_stage.py` e `models/hr_applicant.py`: extensões e travas de transição do recrutamento nativo.
 - `data/recruitment_data.xml` e `data/recruitment_templates.xml`: sequência RQ 077 e templates iniciais baseados nos documentos.
+- `i18n/voigt_hr_recruitment.pot` e `i18n/pt_BR.po`: catálogo extraído pelo exportador Odoo e traduções dos termos ingleses do addon para português do Brasil.
 - `security/`: grupo funcional, permissão mínima por modelo e domínios por empresa.
 - `views/`: formulários, listas e menus do processo, campos na vaga/candidato/etapa e templates editáveis.
 - `tests/test_voigt_recruitment.py`: testes de regras de fluxo e validações.
@@ -109,9 +110,19 @@ PYTHONPATH="$PWD" ./.venv/bin/python local-infra/ide-runner/odoo_ide_runner.py \
   --test-enable --test-tags /voigt_hr_recruitment --stop-after-init
 ```
 
-**Resultado final:** 10 testes do módulo executados; `0 failed, 0 error`. O teste de aptidão também confirmou que o usuário de saúde não pode consultar `hr.applicant` e ainda consegue registrar a aptidão por meio do modelo restrito. Também passaram a compilação Python e a leitura sintática de todos os XML do addon. A inicialização/atualização carregou as views, ACLs, templates e modelos no Odoo 20.0. A aplicação iniciou pelo runner IDE e `GET /web/login` respondeu HTTP 200. A execução do runner exigiu fornecer `PYTHONPATH` e carregar `ide-runner.env` no shell; isso não altera a configuração salva da IDE.
+**Resultado final:** após a internacionalização e atualização do manifesto, 10 testes do módulo executados; `0 failed, 0 error`. O teste de aptidão também confirmou que o usuário de saúde não pode consultar `hr.applicant` e ainda consegue registrar a aptidão por meio do modelo restrito. Também passaram a compilação Python e a leitura sintática de todos os XML do addon. A atualização carregou as views, ACLs, templates, modelos e `pt_BR.po` no Odoo 20.0, sem os avisos de renderização da descrição do módulo. O runner IDE permaneceu ativo e o servidor respondeu em `127.0.0.1:8070`; sem banco selecionado na URL, o endpoint encaminhou para o seletor de bancos (HTTP 303). A execução do runner exigiu fornecer `PYTHONPATH` e carregar `ide-runner.env` no shell; isso não altera a configuração salva da IDE.
 
 Os avisos de `pdfminer.six` e `markdown2` ausentes vêm do ambiente de desenvolvimento e não impediram a instalação nem os testes do addon. Não foi feita validação visual interativa de cada view no navegador.
+
+## 5.1 Internacionalização e idioma pt_BR
+
+O screenshot apresentado mostrou cabeçalhos nativos das solicitações (“Name”, “Job Title”, “Department”, “Employment Type”, “Requester” e “State”) em inglês. O problema é resolvido pela camada de tradução padrão do Odoo: os rótulos originais dos campos e as mensagens continuam no idioma-fonte do código, e os correspondentes em português do Brasil são fornecidos em `i18n/pt_BR.po`. O arquivo `i18n/voigt_hr_recruitment.pot` foi exportado pelo comando oficial `odoo-bin i18n export` da base Odoo 20 local, cobrindo os termos extraídos de modelos, dados e views.
+
+Para a tradução ser exibida, o idioma Português (Brasil) precisa estar instalado e selecionado na preferência de idioma do usuário que acessa o Odoo. As traduções de módulo são carregadas na instalação/atualização quando o idioma está instalado; por isso o guia inclui instalação do idioma, definição da preferência individual e upgrade do addon. A internacionalização não altera o idioma dos usuários nem força o idioma de toda a base.
+
+Validação feita: ativação de `pt_BR` na base descartável `voigt_hr_recruitment_test2`, carregamento do arquivo pelo comando `i18n loadlang` e inspeção de metadados `fields_get` no ORM com contexto `lang=pt_BR`. Os seis campos visíveis no screenshot foram retornados como `Nome`, `Cargo solicitado`, `Departamento`, `Tipo de contratação`, `Solicitante` e `Estado`. Também foram conferidos `Perfil do processo Voigt` no `hr.job`, `Aptidão ocupacional Voigt` no `hr.applicant`, nome, resumo e descrição do módulo em **Apps**. O `.po` inclui mensagens de modelo, campos, menus e ações; entradas que já são originalmente portuguesas mantêm o texto fonte e podem ter `msgstr` vazio, comportamento normal de gettext/Odoo. A instalação/atualização do módulo também atualiza as traduções dos idiomas instalados conforme a documentação.
+
+Não foi possível usar um Web Inspector da integração IntelliJ disponível nesta sessão: a ferramenta IDE exposta não publicou comandos de navegador/inspeção. O runner local já estava ativo e o banco estava disponível; foi utilizado o ORM Odoo diretamente para confirmar a tradução dos rótulos reportados. A interface web ainda depende de selecionar um banco e autenticar um usuário cuja preferência seja pt_BR.
 
 ## 6. Referências usadas na implementação
 
@@ -141,6 +152,9 @@ A pasta contém também documentos históricos de funcionários, versões antiga
 - [Odoo 20 - manifesto de módulo](https://www.odoo.com/documentation/20.0/developer/reference/backend/module.html): metadados, dependências, arquivos declarados e licença.
 - [Odoo 20 - tutorial de criação de módulos e segurança](https://www.odoo.com/documentation/20.0/developer/tutorials/backend.html): estrutura declarativa, modelos, acesso e herança de views.
 - [Odoo 20 - diretrizes de código](https://www.odoo.com/documentation/20.0/contributing/development/coding_guidelines.html): convenções para Python, arquivos de views, dados e estrutura de módulos.
+- [Odoo 20 - tradução de módulos](https://www.odoo.com/documentation/20.0/developer/howtos/translations.html): exportação/importação de PO/POT, diretório `i18n/`, extração de rótulos em views/campos e carregamento automático ao instalar idioma e módulo. A recomendação orienta manter o POT do módulo e PO por idioma.
+- [Odoo 20 - CLI de internacionalização](https://www.odoo.com/documentation/20.0/developer/reference/cli.html): opções `i18n export` para gerar o catálogo POT a partir do addon instalado.
+- [Odoo 20 - tutorial de construção de módulos](https://www.odoo.com/documentation/20.0/developer/tutorials/backend.html): fluxo de desenvolvimento em inglês, exportação gettext POT e produção de traduções PO; menciona a plataforma de traduções Odoo como ambiente colaborativo para os arquivos de módulo.
 - [Odoo 20 - ORM e herança](https://www.odoo.com/documentation/20.0/developer/reference/backend/orm.html): modelos/recordsets, extensão por `_inherit`, constraints, `Command`, operações em lote e cache.
 - [Odoo 20 - segurança](https://www.odoo.com/documentation/20.0/developer/reference/backend/security.html) e [tutorial para restringir acesso a dados](https://www.odoo.com/documentation/20.0/developer/tutorials/restrict_data_access.html): grupos, ACLs, regras, acesso a campos e validação no servidor.
 - [Odoo 20 - arquivos de dados XML](https://www.odoo.com/documentation/20.0/developer/reference/backend/data.html) e [views](https://www.odoo.com/documentation/20.0/developer/reference/user_interface/view_records.html): carga ordenada de dados, menus, ações e herança de views.

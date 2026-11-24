@@ -81,6 +81,24 @@ Faça backup/snapshot antes de atualizar qualquer base com dados. Com o código 
 
 No ambiente local, use o runner e o arquivo `ide-runner.env` como nos exemplos anteriores. Pela interface, abra o menu do addon em **Aplicativos** e selecione **Upgrade**. Faça upgrade e eventual desinstalação somente após validar os efeitos na cópia; a remoção de um módulo pode apagar registros relacionados.
 
+### Idioma e traduções
+
+Os termos do addon seguem o fluxo padrão de internacionalização do Odoo: o template `i18n/voigt_hr_recruitment.pot` é exportado do módulo e `i18n/pt_BR.po` fornece as traduções para português do Brasil. O Odoo carrega as traduções do módulo ao instalá-lo/atualizá-lo quando o idioma está instalado. Portanto, para exibir os rótulos traduzidos:
+
+1. Instale **Português (Brasil)** em **Configurações > Traduções > Idiomas** (o menu pode variar conforme a edição e o idioma atual).
+2. Em **Configurações > Usuários**, abra cada usuário que operará o recrutamento e configure **Idioma = Português (BR)**. O idioma escolhido por cada usuário determina os rótulos apresentados a ele.
+3. Atualize o módulo (`--update=voigt_hr_recruitment` pela linha de comando ou **Aplicativos > Upgrade**) e atualize a página. Em geral, o idioma ativo e o idioma do usuário precisam estar configurados; selecionar pt_BR apenas como idioma da base não troca automaticamente a preferência individual.
+
+Para atualizar traduções após mudar modelos, views ou textos Python, reexporte o `.pot` com a versão de Odoo usada no projeto, revise/complemente o `.po` e atualize o módulo numa base de teste. No Odoo 20, o comando de exportação pode ser executado assim (ajuste configuração e base):
+
+```bash
+./odoo-bin i18n export -c /etc/odoo.conf -d voigt_recruitment_test \
+  --languages=pot --output=addons/voigt_hr_recruitment/i18n/voigt_hr_recruitment.pot \
+  voigt_hr_recruitment
+```
+
+Não sobrescreva traduções revisadas sem comparar o novo template. A interface de exportação/importação do Odoo e a plataforma de tradução de módulos descritas na documentação oficial podem ser usadas para colaborar na revisão; mantenha o `.po` pt_BR versionado junto ao addon para que instalações reproduzíveis recebam as mesmas traduções.
+
 ## Configuração inicial
 
 ### Usuários e grupos
@@ -209,3 +227,6 @@ O teste deve ser executado em banco de desenvolvimento, nunca em produção. O r
 - [Segurança do backend](https://www.odoo.com/documentation/20.0/developer/reference/backend/security.html)
 - [ORM](https://www.odoo.com/documentation/20.0/developer/reference/backend/orm.html)
 - [Testes unitários Odoo](https://www.odoo.com/documentation/20.0/developer/tutorials/unit_tests.html)
+- [Tradução de módulos Odoo](https://www.odoo.com/documentation/20.0/developer/howtos/translations.html)
+- [Tutorial de construção de módulos e fluxo POT/PO](https://www.odoo.com/documentation/20.0/developer/tutorials/backend.html)
+- [Diretrizes de código Odoo, incluindo uso de `self.env._()`](https://www.odoo.com/documentation/20.0/contributing/development/coding_guidelines.html)

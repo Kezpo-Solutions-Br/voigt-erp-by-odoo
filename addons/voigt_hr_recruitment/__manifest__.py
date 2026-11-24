@@ -3,6 +3,7 @@
     'version': '20.0.1.0.0',
     'category': 'Human Resources/Recruitment',
     'summary': 'Voigt-specific recruitment controls and onboarding',
+    'description': 'Voigt recruitment controls, assessments, admission checklist and onboarding.',
     'author': 'Kezpo Solutions Br',
     'depends': ['hr_recruitment'],
     'data': [

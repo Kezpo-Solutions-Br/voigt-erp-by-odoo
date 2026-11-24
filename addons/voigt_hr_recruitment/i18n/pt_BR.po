@@ -1,0 +1,2024 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* voigt_hr_recruitment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-24 15:54+0000\n"
+"PO-Revision-Date: 2026-11-24 15:54+0000\n"
+"Last-Translator: Equipe de Sistemas Voigt\n"
+"Language-Team: Português do Brasil\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : ((n % 1000000 == 0) ? 1 : 2);\n"
+"X-Generator: Odoo 20 i18n export + revisão local\n"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill__rating__0
+msgid "0 - Ruim"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill__rating__1
+msgid "1 - Regular"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill__rating__3
+msgid "3 - Bom"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill__rating__5
+msgid "5 - Ótimo"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "A reason is required for conditional approval."
+msgstr "É necessário informar o motivo da aprovação condicional."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "A reason is required to waive a checklist item."
+msgstr "É necessário informar o motivo para dispensar um item do checklist."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "A reason is required to waive a required checklist item."
+msgstr ""
+"É necessário informar o motivo para dispensar um item obrigatório do "
+"checklist."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding__production_area__rebarbacao
+msgid "Acabamento / Rebarbação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Acompanhamento"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Acompanhar / adequar"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_needaction
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_needaction
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_needaction
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_needaction
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_needaction
+msgid "Action Needed"
+msgstr "Requer ação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__active
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__active
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__active
+msgid "Active"
+msgstr "Ativo"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_ids
+msgid "Activities"
+msgstr "Atividades"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_exception_decoration
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decoração de atividade excepcional"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_plans_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_plans_ids
+msgid "Activity Plans"
+msgstr "Plano de atividades"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_state
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_state
+msgid "Activity State"
+msgstr "Status da atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_type_icon
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Ícone do tipo de atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding__final_evaluation__extended
+msgid "Adequação / acompanhamento"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_production_moldagem
+msgid "Aderência às tarefas de moldagem e movimentação segura de peças"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_production_rebarbacao
+msgid ""
+"Aderência às tarefas de rebarbação e experiência com lixadeira (diferencial,"
+" não eliminatório)"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_job__voigt_profile__administrative
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document_template__profile__administrative
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__profile__administrative
+msgid "Administrativo"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__admission_date
+msgid "Admission Date"
+msgstr "Data de admissão"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__to_approve
+msgid "Aguardando aprovação do setor"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__to_director
+msgid "Aguardando diretoria"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_hr_applicant
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__applicant_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__applicant_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__applicant_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__applicant_id
+msgid "Applicant"
+msgstr "Candidato"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__candidate_name
+msgid "Applicant's Name"
+msgstr "Nome do Candidato"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__approval_comment
+msgid "Approval Comment"
+msgstr "Comentário da aprovação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__approved
+msgid "Aprovada"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Aprovar condicionalmente"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Aprovar diretoria"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Aprovar liberação PRÁTICO"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Aprovar setor"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Aprovações"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Aptidão ocupacional"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_applicant__voigt_occupational_fitness__fit
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__result__approved
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_occupational_assessment__status__fit
+msgid "Apto"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__assessment_id
+msgid "Assessment"
+msgstr "Avaliação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__assessment_date
+msgid "Assessment Date"
+msgstr "Data da avaliação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__assessment_type
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__assessment_type
+msgid "Assessment Type"
+msgstr "Tipo de avaliação"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "Assessment score must be between zero and the maximum score."
+msgstr "A pontuação da avaliação deve estar entre zero e a pontuação máxima."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid ""
+"Assessments must start as pending. Use an assessment action to record a "
+"decision."
+msgstr ""
+"As avaliações devem começar como pendentes. Use uma ação de avaliação para "
+"registrar a decisão."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__assessor_id
+msgid "Assessor"
+msgstr "Avaliador"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "Assign a leader or Guardian Angel before practical release."
+msgstr "Atribua um líder ou Anjo da Guarda antes da liberação PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment_criterion__result__meets
+msgid "Atende"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment_criterion__result__partial
+msgid "Atende parcialmente"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_attention
+msgid "Atenção"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill__kind__attitude
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill_template__kind__attitude
+msgid "Atitude"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_attachment_count
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_attachment_count
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_attachment_count
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_attachment_count
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_attachment_count
+msgid "Attachment Count"
+msgstr "Total de anexos"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__reason__headcount
+msgid "Aumento do quadro"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_job__voigt_profile__production_moldagem
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document_template__profile__production_moldagem
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__profile__production_moldagem
+msgid "Auxiliar de Produção - Moldagem"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_job__voigt_profile__production_rebarbacao
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document_template__profile__production_rebarbacao
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__profile__production_rebarbacao
+msgid "Auxiliar de Produção - Rebarbação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__skill_ids
+msgid "Avaliação RQ 006"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__probation
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__assessment_type__probation
+msgid "Avaliação de experiência"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__evaluation_date
+msgid "Avaliação de habilidades e atitudes, prevista entre 15 e 30 dias."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__probation_followup_date
+msgid "Avaliação intermediária de 30 ou 45 dias, quando necessária."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__psychological
+msgid "Avaliação organizacional"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Avaliações"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__voigt_assessment_ids
+msgid "Avaliações Voigt"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.actions.act_window,name:voigt_hr_recruitment.voigt_occupational_assessment_action
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_occupational_assessment_menu
+msgid "Avaliações de aptidão"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__voigt_occupational_assessment_ids
+msgid "Avaliações ocupacionais"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_communication
+msgid "Boa comunicação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.applicant.document.template,name:voigt_hr_recruitment.document_template_cpf
+msgid "CPF"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Calcular resultado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_fabrication
+msgid "Caldeiraria e leitura de desenhos técnicos"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__cancelled
+msgid "Cancelada"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_analysis
+msgid "Capacidade analítica"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__voigt_document_ids
+msgid "Checklist admissional"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Checklist de admissão"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid ""
+"Checklist items must start unverified. Use the checklist actions to record "
+"verification."
+msgstr ""
+"Os itens do checklist devem começar sem verificação. Use as ações do "
+"checklist para registrar a conferência."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__comments
+msgid "Comments"
+msgstr "Comentários"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__company_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid ""
+"Complete RH, Quality and Safety training before approving practical release."
+msgstr ""
+"Conclua os treinamentos de RH, Qualidade e Segurança antes de aprovar a "
+"liberação PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid "Complete and pass the RH screening assessment before this stage."
+msgstr "Conclua e aprove a avaliação de triagem de RH antes desta etapa."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid "Complete and pass the technical assessment before this stage."
+msgstr "Conclua e aprove a avaliação técnica antes desta etapa."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "Complete maintenance equipment training before practical release."
+msgstr ""
+"Conclua o treinamento dos equipamentos de manutenção antes da liberação "
+"PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid ""
+"Complete operational training and document handover before practical "
+"release."
+msgstr ""
+"Conclua o treinamento operacional e a entrega dos documentos antes da "
+"liberação PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid ""
+"Complete position-specific task training and PPE verification before "
+"practical release."
+msgstr ""
+"Conclua o treinamento específico da função e confira os EPIs antes da "
+"liberação PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid "Complete the required admission checklist before making an offer."
+msgstr ""
+"Conclua o checklist admissional obrigatório antes de apresentar uma "
+"proposta."
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_commitment
+msgid "Comprometimento"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.applicant.document.template,name:voigt_hr_recruitment.document_template_address
+msgid "Comprovante de endereço"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.applicant.document.template,name:voigt_hr_recruitment.document_template_education
+msgid "Comprovante de escolaridade, se exigido no perfil aprovado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_concentration
+msgid "Concentração"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__conditional_approved_at
+msgid "Conditional Approved At"
+msgstr "Aprovação condicional em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__conditional_approver_id
+msgid "Conditional Approver"
+msgstr "Aprovador da decisão condicional"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__conditional_reason
+msgid "Conditional Reason"
+msgstr "Motivo da decisão condicional"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_recruitment_stage__voigt_gate
+msgid "Controle de passagem Voigt"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_conveyors
+msgid "Correias transportadoras e elevadores de caneca"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__cutoff_score
+msgid "Corte da revisão aplicada; QAE 01 Rev. B usa 60/100."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__create_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__create_uid
+msgid "Created by"
+msgstr "Criado por"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__create_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__create_date
+msgid "Created on"
+msgstr "Criado em"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_creativity
+msgid "Criatividade"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__criterion_ids
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Critérios da vaga"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.actions.act_window,name:voigt_hr_recruitment.voigt_assessment_criterion_template_action
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_assessment_criterion_template_menu
+msgid "Critérios por perfil"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__cutoff_score
+msgid "Cutoff Score"
+msgstr "Nota de corte"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__department_id
+msgid "Department"
+msgstr "Departamento"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__department_approved_at
+msgid "Department Approved At"
+msgstr "Aprovação do setor em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__department_approver_id
+msgid "Department Approver"
+msgstr "Aprovador do setor"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Department approval must be performed by the department manager."
+msgstr "A aprovação do setor deve ser feita pelo gestor do departamento."
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_dexterity
+msgid "Destreza"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__director_approved_at
+msgid "Director Approved At"
+msgstr "Aprovação da diretoria em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__director_approver_id
+msgid "Director Approver"
+msgstr "Aprovador da diretoria"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Director approval must be performed by a different user."
+msgstr "A aprovação da diretoria deve ser feita por outro usuário."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document__state__waived
+msgid "Dispensado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Dispensar"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_job__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_recruitment_stage__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__display_name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__display_name
+msgid "Display Name"
+msgstr "Nome exibido"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.applicant.document.template,name:voigt_hr_recruitment.document_template_identity
+msgid "Documento oficial de identificação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__ppe_issue_verified
+msgid "EPIs do posto e treinamento de uso conferidos."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_education
+msgid "Educação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding__final_evaluation__confirmed
+msgid "Efetivado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Efetivar"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__employment_type__permanent
+msgid "Efetivo"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__employee_id
+msgid "Employee"
+msgstr "Funcionário"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__employee_id
+msgid "Employee linked to the applicant."
+msgstr "Funcionário vinculado ao candidato."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__employment_type
+msgid "Employment Type"
+msgstr "Tipo de contratação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding__final_evaluation__ended
+msgid "Encerrado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Encerrar"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Enter a reason for rejecting the request."
+msgstr "Informe o motivo da rejeição da solicitação."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__hr
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__assessment_type__hr
+msgid "Entrevista RH"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__director
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__assessment_type__director
+msgid "Entrevista diretoria"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__technical
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__assessment_type__technical
+msgid "Entrevista técnica"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Enviar para aprovação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__mechanic_equipment_training
+msgid "Equipamentos e rotinas de manutenção aplicáveis repassados."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__employment_type__intern
+msgid "Estagiário"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Etapas específicas da função"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__evaluation_date
+msgid "Evaluation Date"
+msgstr "Data da avaliação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__evaluation_notes
+msgid "Evaluation Notes"
+msgstr "Observações da avaliação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__attachment_id
+msgid "Evidência"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_accuracy
+msgid "Exatidão"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_recruitment_stage__voigt_gate__offer
+msgid "Exige aprovação RQ 077, documentos e aptidão ocupacional"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_recruitment_stage__voigt_gate__screening
+msgid "Exige avaliação RH aprovada"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_recruitment_stage__voigt_gate__admission
+msgid "Exige documentos e aptidão ocupacional"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_recruitment_stage__voigt_gate__technical
+msgid "Exige entrevista técnica aprovada"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_generalist
+msgid "Experiência generalista, planejamento e interação com equipe"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_learning
+msgid "Facilidade de aprendizado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__technical_documents_done
+msgid "Fichas técnicas e especificações repassadas ao colaborador."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__final_evaluation
+msgid "Final Evaluation"
+msgstr "Avaliação final"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__final_evaluation_at
+msgid "Final Evaluation At"
+msgstr "Avaliação final em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__final_evaluation_by_id
+msgid "Final Evaluation By"
+msgstr "Responsável pela avaliação final"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_flexibility
+msgid "Flexibilidade"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_follower_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_follower_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_follower_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_follower_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_partner_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_partner_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_partner_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_partner_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (usuários)"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_strength
+msgid "Força"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill__kind__skill
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding_skill_template__kind__skill
+msgid "Habilidade"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.actions.act_window,name:voigt_hr_recruitment.voigt_onboarding_skill_template_action
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_onboarding_skill_template_menu
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Habilidades e atitudes RQ 006"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__has_message
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__has_message
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__has_message
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__has_message
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__has_message
+msgid "Has Message"
+msgstr "Possui mensagens"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__hr_training_done
+msgid "Hr Training Done"
+msgstr "Treinamento de RH concluído"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_job__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_recruitment_stage__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__id
+msgid "ID"
+msgstr "ID"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_exception_icon
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_exception_icon
+msgid "Icon"
+msgstr "Ícone"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__activity_exception_icon
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ícone que indica uma atividade com exceção."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__message_needaction
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_document__message_needaction
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_occupational_assessment__message_needaction
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__message_needaction
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Se marcado, novas mensagens exigirão sua atenção."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__message_has_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__message_has_sms_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_document__message_has_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_document__message_has_sms_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_occupational_assessment__message_has_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_occupational_assessment__message_has_sms_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__message_has_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__message_has_sms_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__message_has_error
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Se marcado, algumas mensagens apresentam erro de entrega."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_applicant__voigt_occupational_fitness__unfit
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__result__rejected
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_occupational_assessment__status__unfit
+msgid "Inapto"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_initiative
+msgid "Iniciativa"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__voigt_onboarding_ids
+msgid "Integração"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.actions.act_window,name:voigt_hr_recruitment.voigt_onboarding_action
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_onboarding_menu
+msgid "Integração RQ 006"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_is_follower
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_is_follower
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_is_follower
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_is_follower
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_is_follower
+msgid "Is Follower"
+msgstr "É um seguidor"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__practical_done
+msgid "Item PRÁTICO do RQ 006 concluído."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_hr_job
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__job_title
+msgid "Job Position"
+msgstr "Cargo"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__job_title
+msgid "Job Title"
+msgstr "Cargo solicitado"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__justification
+msgid "Justification"
+msgstr "Justificativa"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__kind
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__kind
+msgid "Kind"
+msgstr "Categoria"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__write_uid
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__write_uid
+msgid "Last Updated by"
+msgstr "Atualizado por último por"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__write_date
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__write_date
+msgid "Last Updated on"
+msgstr "Atualizado em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__result__conditional
+msgid "Liberado condicional"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Liberação PRÁTICO"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_leadership
+msgid "Liderança"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__operational_trainer_id
+msgid "Líder ou Anjo da Guarda responsável pelo treinamento no posto."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_building
+msgid "Manutenção predial, organização e documentação técnica"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Marcar apto"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Marcar inapto"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__activity_type_icon
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__activity_type_icon
+msgid "Material Symbols icon e.g. checklist"
+msgstr "Ícone Material Symbols, por exemplo, checklist"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__maximum_score
+msgid "Maximum Score"
+msgstr "Pontuação máxima"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__mechanic_equipment_training
+msgid "Mechanic Equipment Training"
+msgstr "Treinamento de equipamentos de manutenção"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_job__voigt_profile__mechanic
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document_template__profile__mechanic
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__profile__mechanic
+msgid "Mecânico de Manutenção"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_has_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_has_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_has_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_has_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_has_error
+msgid "Message Delivery error"
+msgstr "Erro na entrega da mensagem"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_ids
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_ids
+msgid "Messages"
+msgstr "Mensagens"
+
+#. module: voigt_hr_recruitment
+#: model:ir.actions.act_window,name:voigt_hr_recruitment.voigt_document_template_action
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_document_template_menu
+msgid "Modelos do checklist"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding__production_area__moldagem
+msgid "Moldagem"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__my_activity_date_deadline
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Meu prazo da atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__name
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__name
+msgid "Name"
+msgstr "Nome"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_occupational_assessment.py:0
+msgid "New occupational assessments must start pending."
+msgstr "Novas avaliações ocupacionais devem começar como pendentes."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid ""
+"New onboarding records must start without practical or final approvals."
+msgstr ""
+"Novos registros de integração devem começar sem aprovação PRÁTICO ou "
+"avaliação final."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "New requests must start in draft without approval records."
+msgstr ""
+"Novas solicitações devem começar em rascunho e sem registros de aprovação."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_calendar_event_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Evento no calendário para a próxima atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_date_deadline
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Prazo da próxima atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_summary
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumo da próxima atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_type_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo da próxima atividade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__notes
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__notes
+msgid "Notes"
+msgstr "Notas"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_needaction_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_needaction_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_needaction_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_needaction_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de ações"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_has_error_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_has_error_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_has_error_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_has_error_counter
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de erros"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__message_needaction_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_document__message_needaction_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_occupational_assessment__message_needaction_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__message_needaction_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Número de mensagens que requerem ação"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__message_has_error_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_document__message_has_error_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_occupational_assessment__message_has_error_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__message_has_error_counter
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensagens com erro de entrega"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment_criterion__result__not_meets
+msgid "Não atende"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_applicant__voigt_occupational_fitness__not_requested
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document__state__not_requested
+msgid "Não solicitado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_objectivity
+msgid "Objetividade"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_occupational_assessment.py:0
+msgid "Occupational assessment records cannot be deleted."
+msgstr "Registros de avaliação ocupacional não podem ser excluídos."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid ""
+"Occupational fitness is computed from its restricted assessment record."
+msgstr ""
+"A aptidão ocupacional é calculada a partir do registro restrito de "
+"avaliação."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__onboarding_id
+msgid "Onboarding"
+msgstr "Integração"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "Only Voigt recruitment managers can approve practical release."
+msgstr ""
+"Somente gerentes de recrutamento Voigt podem aprovar a liberação PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "Only Voigt recruitment managers can grant conditional approval."
+msgstr ""
+"Somente gerentes de recrutamento Voigt podem conceder aprovação condicional."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "Only Voigt recruitment managers can record the final evaluation."
+msgstr ""
+"Somente gerentes de recrutamento Voigt podem registrar a avaliação final."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Only Voigt recruitment managers can reopen requests."
+msgstr "Somente gerentes de recrutamento Voigt podem reabrir solicitações."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid "Only Voigt recruitment managers can request occupational assessment."
+msgstr ""
+"Somente gerentes de recrutamento Voigt podem solicitar avaliação "
+"ocupacional."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "Only Voigt recruitment managers can waive checklist items."
+msgstr ""
+"Somente gerentes de recrutamento Voigt podem dispensar itens do checklist."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Only draft requests can be submitted."
+msgstr "Somente solicitações em rascunho podem ser enviadas."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_occupational_assessment.py:0
+msgid "Only pending occupational assessments can receive a result."
+msgstr "Somente avaliações ocupacionais pendentes podem receber um resultado."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "Only received items can be verified."
+msgstr "Somente itens recebidos podem ser verificados."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Only rejected requests can be reopened."
+msgstr "Somente solicitações rejeitadas podem ser reabertas."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Only requests awaiting approval can be rejected."
+msgstr "Somente solicitações aguardando aprovação podem ser rejeitadas."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_occupational_assessment.py:0
+msgid "Only the Voigt occupational health group can record fitness results."
+msgstr ""
+"Somente o grupo de Saúde Ocupacional Voigt pode registrar resultados de "
+"aptidão."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid ""
+"Only the assigned assessor or a Voigt recruitment manager can record this "
+"decision."
+msgstr ""
+"Somente o avaliador designado ou um gerente de recrutamento Voigt pode "
+"registrar esta decisão."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__operational_trainer_id
+msgid "Operational Trainer"
+msgstr "Instrutor operacional"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__operational_training_done
+msgid "Operational Training Done"
+msgstr "Treinamento operacional concluído"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_organization
+msgid "Organização"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_job__voigt_profile__other
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document_template__profile__other
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_assessment_criterion_template__profile__other
+msgid "Outro"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__reason__other
+msgid "Outros"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Parecer"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__comments
+msgid ""
+"Parecer de recrutamento. Não registrar informações clínicas ou diagnósticos."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_applicant__voigt_occupational_fitness__pending
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__result__pending
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment_criterion__result__pending
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_occupational_assessment__status__pending
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_onboarding__final_evaluation__pending
+msgid "Pendente"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_job__voigt_profile
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__profile
+msgid "Perfil do processo Voigt"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_persistence
+msgid "Persistência"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_applicant_assessment_view_form
+msgid "Pontuação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__score
+msgid "Pontuação total, quando aplicável."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__ppe_issue_verified
+msgid "Ppe Issue Verified"
+msgstr "Entrega e conferência de EPIs verificadas"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__practical_approved_at
+msgid "Practical Approved At"
+msgstr "Liberação PRÁTICO aprovada em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__practical_approved_by_id
+msgid "Practical Approved By"
+msgstr "Responsável pela aprovação PRÁTICO"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__practical_done
+msgid "Practical Done"
+msgstr "PRÁTICO concluído"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__filled
+msgid "Preenchida"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__probation_followup_date
+msgid "Probation Followup Date"
+msgstr "Data de acompanhamento da experiência"
+
+#. module: voigt_hr_recruitment
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_recruitment_root_menu
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Processo Voigt"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__production_area
+msgid "Production Area"
+msgstr "Área de produção"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__production_task_trained
+msgid "Production Task Trained"
+msgstr "Treinamento da tarefa de produção concluído"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__profile
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__profile
+msgid "Profile"
+msgstr "Perfil"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__psychological_summary
+msgid "Psychological Summary"
+msgstr "Resumo da avaliação organizacional"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__qae_01
+msgid "QAE 01 / RQ 079"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_assessment__assessment_type__qae_02
+msgid "QAE 02 / RQ 081"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.applicant.document.template,name:voigt_hr_recruitment.document_template_mechanic_qualification
+msgid "Qualificação técnica aplicável à vaga"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__quality_training_done
+msgid "Quality Training Done"
+msgstr "Treinamento de Qualidade concluído"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__quantity
+msgid "Quantity"
+msgstr "Quantidade"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__draft
+msgid "Rascunho"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "Rate every RQ 006 skill and attitude before the final decision."
+msgstr ""
+"Avalie todas as habilidades e atitudes do RQ 006 antes da decisão final."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__rating
+msgid "Rating"
+msgstr "Nota"
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Reabrir"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__reason
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document__state__received
+msgid "Recebido"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_hr_recruitment_stage
+msgid "Recruitment Stage"
+msgstr "Etapa de recrutamento"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_reducers
+msgid "Redutores, hidráulica e noções de elétrica"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_occupational_assessment_view_form
+msgid "Registrar apto"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_occupational_assessment_view_form
+msgid "Registrar inapto"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__psychological_summary
+msgid ""
+"Registrar somente parecer ocupacional resumido; não registrar diagnóstico ou"
+" notas clínicas."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_occupational_assessment_view_form
+msgid ""
+"Registre somente aptidão para o trabalho. Não registre diagnóstico ou dados "
+"clínicos."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__state__rejected
+msgid "Rejeitada"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Rejeitar"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.skill_relationship
+msgid "Relação interpessoal"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__replacement_for
+msgid "Replacement For"
+msgstr "Substituição de"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__requested_at
+msgid "Requested At"
+msgstr "Solicitado em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__requested_by_id
+msgid "Requested By"
+msgstr "Solicitado por"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__requester_id
+msgid "Requester"
+msgstr "Solicitante"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__required
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__required
+msgid "Required"
+msgstr "Obrigatório"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__activity_user_id
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__activity_user_id
+msgid "Responsible User"
+msgstr "Usuário responsável"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__result
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__result
+msgid "Result"
+msgstr "Resultado"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__result_at
+msgid "Result At"
+msgstr "Resultado registrado em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__result_by_id
+msgid "Result By"
+msgstr "Resultado registrado por"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__revision
+msgid "Revision"
+msgstr "Revisão"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_applicant_assessment__revision
+msgid "Revisão do formulário ou rubrica aplicada."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_bearings
+msgid "Rolamentos, torno, fresa e furadeira"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__message_has_sms_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__message_has_sms_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__message_has_sms_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__message_has_sms_error
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erro de entrega de SMS"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__safety_training_done
+msgid "Safety Training Done"
+msgstr "Treinamento de Segurança concluído"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__salary_reference
+msgid "Salary Reference"
+msgstr "Referência salarial"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment__score
+msgid "Score"
+msgstr "Pontuação"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "Scored evaluation is only available for QAE assessments."
+msgstr ""
+"A avaliação por pontuação está disponível somente para avaliações QAE."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__hr_recruitment_stage__voigt_gate__none
+msgid "Sem bloqueio Voigt"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_assessment_criterion__sequence
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__sequence
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document_template__sequence
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_assessment_criterion_template__sequence
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill__sequence
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding_skill_template__sequence
+msgid "Sequence"
+msgstr "Sequência"
+
+#. module: voigt_hr_recruitment
+#: model:voigt.onboarding.skill.template,name:voigt_hr_recruitment.attitude_confidentiality
+msgid "Sigilo"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_welding
+msgid "Soldagem (eletrodo, MIG/TIG), maçarico e corte a plasma"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document__state__requested
+msgid "Solicitado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Solicitar avaliação"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_job__voigt_request_id
+msgid "Solicitação RQ 077"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.ui.menu,name:voigt_hr_recruitment.voigt_recruitment_request_menu
+msgid "Solicitações RQ 077"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.actions.act_window,name:voigt_hr_recruitment.voigt_recruitment_request_action
+msgid "Solicitações de admissão"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Specify the position or employee being replaced."
+msgstr "Informe o cargo ou funcionário que será substituído."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__state
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__state
+msgid "State"
+msgstr "Estado"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_occupational_assessment__status
+msgid "Status"
+msgstr "Status"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__activity_state
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status baseado nas atividades\n"
+"Atrasada: a data prevista já passou\n"
+"Hoje: a atividade está prevista para hoje\n"
+"Planejada: atividade futura."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__reason__replacement
+msgid "Substituição"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_lifting
+msgid "Talha manual e manutenção de ponte rolante"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__production_task_trained
+msgid "Tarefa específica do setor repassada sob supervisão."
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_onboarding__technical_documents_done
+msgid "Technical Documents Done"
+msgstr "Documentos técnicos entregues"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_recruitment_request__employment_type__temporary
+msgid "Temporário"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "The assessor cannot approve their own conditional assessment."
+msgstr "O avaliador não pode aprovar a própria avaliação condicional."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid ""
+"The authorized occupational fitness result must be Apto before this stage."
+msgstr ""
+"O resultado autorizado de aptidão ocupacional deve ser Apto antes desta "
+"etapa."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "The cutoff must be between zero and the maximum score."
+msgstr "A nota de corte deve estar entre zero e a pontuação máxima."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid "The linked RQ 077 request must be approved before an offer."
+msgstr "A solicitação RQ 077 vinculada deve estar aprovada antes da proposta."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "The production area must match the position profile."
+msgstr "A área de produção deve corresponder ao perfil da vaga."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "The requested quantity must be at least one."
+msgstr "A quantidade solicitada deve ser no mínimo um."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "The requester cannot approve their own request."
+msgstr "O solicitante não pode aprovar a própria solicitação."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "This request is not awaiting department approval."
+msgstr "Esta solicitação não está aguardando aprovação do setor."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "This request is not awaiting director approval."
+msgstr "Esta solicitação não está aguardando aprovação da diretoria."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document_template__profile__all
+msgid "Todos os perfis"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_onboarding_view_form
+msgid "Treinamentos RQ 006"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_onboarding__activity_exception_decoration
+#: model:ir.model.fields,help:voigt_hr_recruitment.field_voigt_recruitment_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de atividade de exceção registrada."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "Use an assessment action to record a decision."
+msgstr "Use uma ação de avaliação para registrar uma decisão."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "Use the checklist actions to verify or waive an item."
+msgstr "Use as ações do checklist para verificar ou dispensar um item."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_occupational_assessment.py:0
+msgid "Use the occupational assessment actions to record a result."
+msgstr "Use as ações da avaliação ocupacional para registrar um resultado."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_onboarding.py:0
+msgid "Use the practical release action to record PRÁTICO approval."
+msgstr "Use a ação de liberação prática para registrar a aprovação PRÁTICO."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_recruitment_request.py:0
+msgid "Use the request approval actions to change approval status."
+msgstr ""
+"Use as ações de aprovação da solicitação para alterar o status de aprovação."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_assessment.py:0
+msgid "Use the score calculation for QAE assessments."
+msgstr "Use o cálculo de pontuação nas avaliações QAE."
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_grinder
+msgid "Uso de lixadeira para corte e desbaste"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:voigt.assessment.criterion.template,name:voigt_hr_recruitment.criterion_mechanic_measurement
+msgid "Uso de paquímetro e instrumentos de medição"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__job_ids
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.voigt_recruitment_request_view_form
+msgid "Vagas"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields.selection,name:voigt_hr_recruitment.selection__voigt_applicant_document__state__verified
+msgid "Verificado"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model_terms:ir.ui.view,arch_db:voigt_hr_recruitment.hr_applicant_view_form_inherit_voigt
+msgid "Verificar"
+msgstr ""
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__verified_at
+msgid "Verified At"
+msgstr "Verificado em"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__verified_by_id
+msgid "Verified By"
+msgstr "Verificado por"
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "Verified or waived checklist items cannot be deleted."
+msgstr "Itens verificados ou dispensados não podem ser excluídos."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/voigt_applicant_document.py:0
+msgid "Verified or waived checklist items cannot be waived again."
+msgstr ""
+"Itens verificados ou já dispensados não podem ser dispensados novamente."
+
+#. module: voigt_hr_recruitment
+#. odoo-python
+#: code:addons/voigt_hr_recruitment/models/hr_applicant.py:0
+msgid "Verify or formally waive all required admission checklist items first."
+msgstr ""
+"Verifique ou dispense formalmente todos os itens obrigatórios do checklist "
+"admissional antes de avançar."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_applicant_document
+msgid "Voigt Admission Checklist Item (RQ 052)"
+msgstr "Item do checklist admissional Voigt (RQ 052)"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_applicant_document_template
+msgid "Voigt Admission Checklist Template"
+msgstr "Modelo de checklist admissional Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_applicant_assessment
+msgid "Voigt Applicant Assessment"
+msgstr "Avaliação de candidato Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_applicant_assessment_criterion
+msgid "Voigt Applicant Assessment Criterion"
+msgstr "Critério de avaliação de candidato Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_assessment_criterion_template
+msgid "Voigt Assessment Criterion Template"
+msgstr "Modelo de critério de avaliação Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__voigt_checklist_complete
+msgid "Voigt Checklist Complete"
+msgstr "Checklist Voigt concluído"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_hr_applicant__voigt_occupational_fitness
+msgid "Voigt Occupational Fitness"
+msgstr "Aptidão ocupacional Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_occupational_assessment
+msgid "Voigt Occupational Fitness Assessment"
+msgstr "Avaliação de aptidão ocupacional Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:res.groups,name:voigt_hr_recruitment.group_voigt_occupational_health
+msgid "Voigt Occupational Health"
+msgstr "Saúde Ocupacional Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_onboarding
+msgid "Voigt Onboarding (RQ 006)"
+msgstr "Integração Voigt (RQ 006)"
+
+#. module: voigt_hr_recruitment
+#: model:res.groups,name:voigt_hr_recruitment.group_voigt_psychologist
+msgid "Voigt Organizational Psychologist"
+msgstr "Psicólogo organizacional Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_onboarding_skill
+msgid "Voigt RQ 006 Skill and Attitude Evaluation"
+msgstr "Avaliação de habilidades e atitudes Voigt RQ 006"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_onboarding_skill_template
+msgid "Voigt RQ 006 Skill and Attitude Template"
+msgstr "Modelo de habilidades e atitudes Voigt RQ 006"
+
+#. module: voigt_hr_recruitment
+#: model:res.groups,name:voigt_hr_recruitment.group_voigt_recruitment_manager
+msgid "Voigt Recruitment Manager"
+msgstr "Gerente de recrutamento Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.module.module,shortdesc:base.module_voigt_hr_recruitment
+msgid "Voigt Recruitment Process"
+msgstr "Processo de Recrutamento Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.module.module,description:base.module_voigt_hr_recruitment
+msgid "Voigt recruitment controls, assessments, admission checklist and onboarding."
+msgstr "Controles de recrutamento Voigt, avaliações, checklist admissional e integração."
+
+#. module: voigt_hr_recruitment
+#: model:ir.model,name:voigt_hr_recruitment.model_voigt_recruitment_request
+msgid "Voigt Recruitment Request (RQ 077)"
+msgstr "Solicitação de recrutamento Voigt (RQ 077)"
+
+#. module: voigt_hr_recruitment
+#: model:ir.module.module,summary:base.module_voigt_hr_recruitment
+msgid "Voigt-specific recruitment controls and onboarding"
+msgstr "Controles de recrutamento e integração específicos da Voigt"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_applicant_document__waiver_reason
+msgid "Waiver Reason"
+msgstr "Motivo da dispensa"
+
+#. module: voigt_hr_recruitment
+#: model:ir.model.fields,field_description:voigt_hr_recruitment.field_voigt_recruitment_request__work_schedule
+msgid "Work Schedule"
+msgstr "Jornada de trabalho"
