@@ -85,8 +85,8 @@ No ambiente local, use o runner e o arquivo `ide-runner.env` como nos exemplos a
 
 Os termos do addon seguem o fluxo padrão de internacionalização do Odoo: o template `i18n/voigt_hr_recruitment.pot` é exportado do módulo e `i18n/pt_BR.po` fornece as traduções para português do Brasil. O Odoo carrega as traduções do módulo ao instalá-lo/atualizá-lo quando o idioma está instalado. Portanto, para exibir os rótulos traduzidos:
 
-1. Instale **Português (Brasil)** em **Configurações > Traduções > Idiomas** (o menu pode variar conforme a edição e o idioma atual).
-2. Em **Configurações > Usuários**, abra cada usuário que operará o recrutamento e configure **Idioma = Português (BR)**. O idioma escolhido por cada usuário determina os rótulos apresentados a ele.
+1. Instale **Português (Brasil)** em **Definições > Traduções > Idiomas** (o nome pode variar conforme edição e idioma ativo).
+2. Em **Definições > Usuários e Empresas > Usuários**, abra cada usuário que operará o recrutamento e configure **Idioma = Português (BR)**. Também é possível usar **Definições > Usuários > Gerenciar usuários** na página inicial. O idioma escolhido por cada usuário determina os rótulos apresentados a ele.
 3. Atualize o módulo (`--update=voigt_hr_recruitment` pela linha de comando ou **Aplicativos > Upgrade**) e atualize a página. Em geral, o idioma ativo e o idioma do usuário precisam estar configurados; selecionar pt_BR apenas como idioma da base não troca automaticamente a preferência individual.
 
 Para atualizar traduções após mudar modelos, views ou textos Python, reexporte o `.pot` com a versão de Odoo usada no projeto, revise/complemente o `.po` e atualize o módulo numa base de teste. No Odoo 20, o comando de exportação pode ser executado assim (ajuste configuração e base):
@@ -103,7 +103,7 @@ Não sobrescreva traduções revisadas sem comparar o novo template. A interface
 
 ### Usuários e grupos
 
-Em **Configurações > Usuários**, atribua os grupos conforme a matriz aprovada pela Voigt:
+Em **Definições > Usuários e Empresas > Usuários** (ou **Definições > Usuários > Gerenciar usuários**), atribua os grupos conforme a matriz aprovada pela Voigt:
 
 | Grupo | Uso |
 |---|---|
@@ -116,7 +116,7 @@ Para o tutorial ponta a ponta, o Administrator (grupo `base.group_system`) receb
 
 ### Estágios do recrutamento
 
-O addon não cria nem renomeia os estágios nativos. Em **Recrutamento > Configuração > Estágios**, edite os estágios existentes, associe vagas no campo nativo de vagas específicas e escolha o campo **Controle de passagem Voigt**:
+O addon não cria nem renomeia os estágios nativos. Na base Voigt, abra **Recrutamento > Configuração > Estágios**, edite os estágios existentes, associe vagas no campo nativo de vagas específicas e escolha o campo **Controle de passagem Voigt**. Se **Estágios** não estiver visível, ative o modo desenvolvedor em **Definições > Configurações gerais > Ferramentas de desenvolvimento > Ativar o modo de desenvolvedor** e volte ao menu Recrutamento. O nome **Vagas de emprego** na tela inicial do Recrutamento é onde se criam/abrem vagas; o texto homônimo que aparece como título de grupo no menu Configuração não é um atalho.
 
 | Controle | Regra antes de entrar na etapa |
 |---|---|
@@ -205,6 +205,18 @@ As datas são editáveis, e o módulo não agenda atividades. Os documentos dive
 ## Tutorial guiado com dados fictícios
 
 O tutorial detalhado com caminhos de menu (breadcrumbs), dados de exemplo, estágios, campos e resultado esperado está em [`doc/voigt/relatorio_implementacao_voigt_hr_recruitment.md`](../../doc/voigt/relatorio_implementacao_voigt_hr_recruitment.md), seção **10. Tutorial passo a passo do fluxo seletivo e admissional**. Use uma base de teste e a candidatura fictícia indicada ali; não use dados reais nem execute o exemplo em produção.
+
+### Navegação observada na instância Voigt
+
+Os rótulos da interface podem diferir de tutoriais genéricos conforme versão, idioma e modo desenvolvedor. Nesta base Odoo 20 em pt_BR:
+
+- O aplicativo **Definições** contém **Usuários e Empresas > Usuários**; a página inicial também oferece **Usuários > Gerenciar usuários**.
+- O aplicativo **Funcionários** exibe **Departamentos** diretamente na barra superior, sem passar por **Configuração**.
+- O aplicativo **Recrutamento** abre no painel **Vagas de emprego**; use **Novo** para criar uma vaga. **Cargos** não é o nome deste menu.
+- **Recrutamento > Configuração > Estágios** requer modo desenvolvedor nesta instância. Para habilitá-lo: **Definições > Configurações gerais > Ferramentas de desenvolvimento > Ativar o modo de desenvolvedor**. Ao terminar, pode desativá-lo pelo menu de ferramentas do desenvolvedor.
+- Para a lista geral de candidatos: **Recrutamento > Candidaturas > Todas as candidaturas**.
+
+Esses caminhos foram conferidos na interface local. A documentação oficial confirma que o painel principal de Recrutamento lista as vagas e que as etapas podem ser editadas e limitadas a vagas específicas: [Recrutamento no Odoo 20](https://www.odoo.com/documentation/20.0/applications/hr/recruitment.html). Para usuários, consulte [Usuários no Odoo 20](https://www.odoo.com/documentation/20.0/applications/general/odoo_basics/users.html).
 
 ## Testes do addon
 

@@ -266,7 +266,7 @@ Na tela **Apps**, a atualização usa o menu de ações do módulo e **Upgrade**
 
 ### 9.1 Usuários e permissões
 
-Em **Configurações > Usuários**, atribua os grupos conforme responsabilidade e aprovação da matriz de acesso:
+Abra **Definições > Usuários e Empresas > Usuários** (ou, na página inicial de Definições, **Usuários > Gerenciar usuários**) e atribua os grupos conforme responsabilidade e aprovação da matriz de acesso. Nesta instância o aplicativo se chama **Definições**; “Configurações” é o nome da área/página, não o nome do aplicativo no seletor.
 
 - **RH/Recrutador**: `Recruitment / User` (`hr_recruitment.group_hr_recruitment_user`), para operar o recrutamento e acessar menus do processo Voigt.
 - **Responsável Voigt**: `Voigt Recruitment Manager`, que herda o papel de gerente de recrutamento e recebe funções de aprovação, templates, checklist, integração e decisão.
@@ -277,10 +277,10 @@ O addon não atribui automaticamente grupos a usuários de produção. Contas t�
 
 ### 9.2 Estágios e perfis de vaga
 
-1. Abra **Recrutamento > Configuração > Estágios** (nome pode variar com menu/idioma) e edite os estágios existentes; o addon não cria um Kanban predefinido.
+1. Abra **Recrutamento > Configuração > Estágios** e edite os estágios existentes; o addon não cria um Kanban predefinido. Se **Estágios** não aparecer, habilite o modo desenvolvedor conforme a seção 10.2; nesta instância o menu nativo fica oculto sem esse modo.
 2. Use `Job Specific`/Vagas para associar a etapa às posições correspondentes. Marque `Controle de passagem Voigt` conforme a tabela do tutorial de processo abaixo. Uma etapa com controle `Sem bloqueio Voigt` conserva o comportamento padrão.
 3. Configure ao menos as fases necessárias ao processo real: abertura/triagem, RH, técnica, avaliações/entrevistas, documentação/aptidão, proposta e contratação. Use estágios comuns ou específicos a vagas conforme a organização existente; não duplique estágios sem decisão do RH.
-4. Em **Recrutamento > Configuração > Cargos** (ou abra a vaga), defina `Perfil do processo Voigt`: Administrativo, Produção - Rebarbação, Produção - Moldagem, Mecânico de Manutenção ou Outro. O perfil dirige os critérios técnicos e as etapas de onboarding específicas.
+4. Abra **Recrutamento > Vagas de emprego**, selecione a vaga (ou clique **Novo**) e defina `Perfil do processo Voigt`: Administrativo, Produção - Rebarbação, Produção - Moldagem, Mecânico de Manutenção ou Outro. Nesta instância, a tela inicial do aplicativo já é a lista/painel de vagas; **Configuração > Vagas de emprego** é apenas um título de grupo do menu, não o caminho para criar vagas. O perfil dirige os critérios técnicos e as etapas de onboarding específicas.
 5. Revise os modelos em **Processo Voigt > Modelos do checklist**, **Critérios por perfil** e **Habilidades e atitudes RQ 006**. Desative ou edite itens que não sejam exigidos pela matriz/documentação aprovada. Templates iniciais são dados carregados na instalação, não cópia completa do RQ 052/TAB 01.
 
 ### 9.3 Etapas Voigt e pré-condições
@@ -299,6 +299,8 @@ O bloqueio roda no servidor ao gravar `stage_id`. Não existe uma ordem rígida 
 
 Este roteiro foi organizado na ordem em que os registros precisam existir. Faça primeiro a configuração (uma vez por base); depois use o caso fictício abaixo para percorrer o fluxo de ponta a ponta.
 
+**Como ler os caminhos:** clique no ícone de nove pontos (seletor de aplicativos) para abrir cada aplicativo. Os nomes abaixo correspondem à interface pt_BR observada na base Voigt (Odoo 20). O nome **Definições** identifica o aplicativo; **Configurações gerais** é uma seção dentro dele. “Vagas de emprego” é a tela inicial do aplicativo Recrutamento. Alguns menus técnicos, como **Estágios**, só aparecem com modo desenvolvedor ativado. A documentação oficial do Odoo também descreve a tela inicial de Recrutamento como o painel de vagas e explica que estágios podem ser associados a vagas específicas; a interface local foi conferida para registrar os rótulos exatos desta base. ([documentação Odoo: Recrutamento](https://www.odoo.com/documentation/20.0/applications/hr/recruitment.html))
+
 > **Dados de treinamento:** o nome do candidato e os dados operacionais abaixo são fictícios. Não use dados reais de candidatos em uma base de demonstração. A faixa salarial é uma referência textual, pois os documentos consultados não definem um valor fixo vigente.
 
 ### 10.1 Preparar usuários e permissões
@@ -307,7 +309,8 @@ Para o teste completo, use o usuário **Administrator** do Odoo, que pertence a 
 
 Essa exceção é para administração/teste: um usuário com `base.group_system` exerce privilégios amplos sobre o Odoo. No processo real, use pessoas distintas como requisitante, aprovador do setor, diretoria e Saúde Ocupacional, conforme a matriz aprovada. Usuários comuns continuam bloqueados de aprovar a própria solicitação e de registrar aptidão sem o grupo ocupacional.
 
-- **Breadcrumb:** `Configurações > Usuários e Empresas > Usuários > Administrator`
+- **Breadcrumb:** `Seletor de aplicativos (nove pontos) > Definições > Usuários e Empresas > Usuários > Administrator`.
+- Alternativa: na página inicial de **Definições**, seção **Usuários**, clique **Gerenciar usuários** e abra **Administrator**. A documentação oficial descreve esse atalho pela seção Usuários e pelo link Gerenciar usuários. ([documentação Odoo: Usuários](https://www.odoo.com/documentation/20.0/applications/general/odoo_basics/users.html))
 - Confira os grupos **Configurações / Administração** e **Recrutamento / Manager** (o nome pode aparecer como **Voigt Recruitment Manager**). O addon carrega esse último para o usuário administrador padrão.
 - Para um usuário operacional distinto, atribua somente os grupos exigidos pelo papel: **Recruitment / User**, **Voigt Recruitment Manager**, **Voigt Occupational Health** ou **Voigt Organizational Psychologist**. Não atribua o grupo de saúde a recrutadores comuns.
 
@@ -315,17 +318,20 @@ Essa exceção é para administração/teste: um usuário com `base.group_system
 
 **Departamento**
 
-- **Breadcrumb:** `Funcionários > Configuração > Departamentos`
+- **Breadcrumb:** `Seletor de aplicativos > Funcionários > Departamentos > Novo` (ou abra um departamento existente).
 - Use um departamento existente da empresa, por exemplo **MACAHARIA** se esse for o departamento real exibido na base. Confirme que pertence à mesma empresa selecionada na solicitação. Se não existir, crie um departamento de teste vinculado à empresa Voigt. A aprovação do setor usa o gerente do departamento quando houver um gerente cadastrado.
 
 **Cargo/vaga**
 
-- **Breadcrumb:** `Recrutamento > Configuração > Cargos` (em algumas bases, a configuração de cargos fica em **Recrutamento > Configuração > Cargos/Vagas**).
+- **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Vagas de emprego > Novo`.
+- Ao abrir **Recrutamento**, esta instância mostra diretamente o painel/lista **Vagas de emprego**; use o botão **Novo** no alto à esquerda. A documentação oficial confirma que o painel principal de Recrutamento lista as posições. Não procure por **Cargos** em Configuração: esse não é o rótulo nem o caminho desta versão/interface.
 - Após aprovar a RQ 077 no passo seguinte, crie a vaga **Auxiliar de Produção - Rebarbação (Treinamento)**, associe o departamento da requisição, escolha o perfil **Auxiliar de Produção - Rebarbação**, vincule a **Solicitação RQ 077** aprovada e informe uma vaga. Para demonstrar Moldagem, use outro cargo e o perfil correspondente; não misture os dois perfis.
 
 **Estágios**
 
-- **Breadcrumb:** `Recrutamento > Configuração > Estágios`
+- **Breadcrumb:** `Seletor de aplicativos > Definições > Configurações gerais > Ferramentas de desenvolvimento > Ativar o modo de desenvolvedor`.
+- Passo a passo: abra o seletor de aplicativos (nove pontos), entre em **Definições**, abra **Configurações gerais**, role até **Ferramentas de desenvolvimento** e clique **Ativar o modo de desenvolvedor**. Volte ao seletor, abra **Recrutamento > Configuração > Estágios**. Depois de concluir a configuração, abra o ícone de ferramentas do desenvolvedor (bug) e selecione **Sair do modo de depuração**, se não precisar mais dele.
+- Por que este passo existe: na base examinada, **Estágios** é um menu técnico nativo que não fica visível no modo normal. O item **Vagas de emprego** mostrado como título no menu **Configuração** também não é um atalho para a lista de vagas.
 - Edite os estágios existentes e use o campo **Controle de passagem Voigt**. Associe as etapas às vagas Voigt pelo campo de vagas específicas quando necessário. Não crie um estágio por nome se já existir equivalente.
 - Configure a sequência de teste: uma etapa inicial sem bloqueio; etapa **Entrevista RH** com `Exige avaliação RH aprovada`; etapa **Entrevista técnica** com `Exige entrevista técnica aprovada`; etapa **Admissão/documentos** com `Exige documentos e aptidão ocupacional`; etapa **Proposta** com `Exige aprovação RQ 077, documentos e aptidão ocupacional`; etapa **Contratado** marcada com o campo nativo **Hired Stage/Etapa contratada**. A etapa contratada pode ficar sem gate; a etapa Proposta deve aplicar o gate final.
 - Os nomes acima são exemplos. Configure o campo no estágio que realmente corresponde à fase da empresa. A validação é feita ao alterar a candidatura para a etapa.
@@ -355,7 +361,7 @@ Essa exceção é para administração/teste: um usuário com `base.group_system
 
 ### 10.4 Passo 1 - criar e salvar a requisição RQ 077
 
-- **Breadcrumb:** `Recrutamento > Processo Voigt > Solicitações RQ 077 > Novo`
+- **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Processo Voigt > Solicitações RQ 077 > Novo`. A página de destino pode ter o título **Solicitações de admissão**; é o mesmo menu de requisições RQ 077.
 - Preencha os valores da tabela anterior nos campos **Empresa**, **Departamento**, **Cargo solicitado**, **Quantidade**, **Tipo de contratação**, **Motivo**, **Justificativa**, **Jornada de trabalho** e **Referência salarial**. Mantenha **Substituição** vazio para o motivo Aumento do quadro. O campo **Solicitante** vem preenchido com o usuário conectado.
 - Clique no ícone **Salvar** (nuvem/seta no formulário) ou use `Ctrl+S`. A solicitação deve ser gravada com um identificador `RQ ...` e status **Rascunho**. Agora o formulário aceita o estado inicial rascunho enviado pelo cliente Odoo. Se aparecer a validação anterior “Novas solicitações devem começar em rascunho...”, atualize o módulo para a versão corrigida (`--update=voigt_hr_recruitment`) e recarregue a página.
 - Clique **Enviar para aprovação**. O status passa para **Aguardando aprovação do setor**. Não tente preencher os campos de aprovação manualmente; eles são de auditoria e somente as ações devem gravá-los.
@@ -376,14 +382,15 @@ Se o usuário não for administrador do sistema, ele não pode aprovar a própri
 
 ### 10.6 Passo 3 - criar vaga ligada à solicitação aprovada
 
-- **Breadcrumb:** `Recrutamento > Configuração > Cargos > Novo`
+- **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Vagas de emprego > Novo`.
 - Informe **Auxiliar de Produção - Rebarbação (Treinamento)**, a empresa Voigt, o departamento da RQ, responsável de recrutamento, número de vagas `1` e perfil **Auxiliar de Produção - Rebarbação**.
 - No campo **Solicitação RQ 077**, selecione a solicitação `RQ ...` que está **Aprovada** e salve. O addon não cria a vaga automaticamente para que RH confira a correspondência entre requisição, cargo, departamento e empresa.
 - Selecione/associe essa vaga às etapas Voigt preparadas em 10.2.
 
 ### 10.7 Passo 4 - criar candidatura e confirmar checklist inicial
 
-- **Breadcrumb:** `Recrutamento > Candidaturas > Novo`
+- **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Candidaturas > Todas as candidaturas > Novo`.
+- O menu **Candidaturas** abre opções como **Por vagas**, **Por grupos de talentos** e **Todas as candidaturas**; use a última para localizar a lista geral.
 - Digite o nome fictício `Candidato Fictício Voigt - Treinamento`, selecione o cargo/vaga criado e salve. Não preencha contatos ou dados pessoais reais.
 - Abra a aba **Processo Voigt**. O sistema deve ter copiado três itens obrigatórios globais: **CPF**, **Documento oficial de identificação** e **Comprovante de endereço**, além do comprovante de escolaridade opcional. A qualificação técnica adicional é específica do perfil Mecânico.
 - Se a aba não aparecer, confira que o usuário tem **Voigt Recruitment Manager**; ela é restrita por grupo.
