@@ -161,6 +161,8 @@ A pasta contém também documentos históricos de funcionários, versões antiga
 - [Odoo 20 - ORM e herança](https://www.odoo.com/documentation/20.0/developer/reference/backend/orm.html): modelos/recordsets, extensão por `_inherit`, constraints, `Command`, operações em lote e cache.
 - [Odoo 20 - segurança](https://www.odoo.com/documentation/20.0/developer/reference/backend/security.html) e [tutorial para restringir acesso a dados](https://www.odoo.com/documentation/20.0/developer/tutorials/restrict_data_access.html): grupos, ACLs, regras, acesso a campos e validação no servidor.
 - [Odoo 20 - arquivos de dados XML](https://www.odoo.com/documentation/20.0/developer/reference/backend/data.html) e [views](https://www.odoo.com/documentation/20.0/developer/reference/user_interface/view_records.html): carga ordenada de dados, menus, ações e herança de views.
+- [Odoo 20 pt_BR - adicionar candidatos](https://www.odoo.com/documentation/20.0/pt_BR/applications/hr/recruitment/add_applicants.html): criação manual de candidaturas a partir da vaga ou do formulário geral, preenchimento padrão do cargo/recrutador pela vaga e campos disponíveis no formulário.
+- [Odoo 20 pt_BR - fluxo de recrutamento](https://www.odoo.com/documentation/20.0/pt_BR/applications/hr/recruitment/recruitment_flow.html): etapas do processo nativo e caminho da candidatura desde a entrada até a contratação.
 - [Odoo 20 - testes unitários](https://www.odoo.com/documentation/20.0/developer/tutorials/unit_tests.html) e [referência do framework de testes](https://www.odoo.com/documentation/20.0/developer/reference/backend/testing.html): organização dos testes no addon, casos transacionais, tags e execução via CLI.
 - Código local da série 20.0 usado para compatibilidade: `addons/hr_recruitment/models/hr_applicant.py`, `hr_job.py`, `hr_recruitment_stage.py`, `security/ir.access.csv`, `security/hr_recruitment_security.xml` e views do módulo nativo; também `odoo/release.py` e a configuração `.idea/runConfigurations/Voigt_Odoo_IDE.xml`. O addon declara somente `hr_recruitment` como dependência direta.
 
@@ -351,7 +353,10 @@ Essa exceção é para administração/teste: um usuário com `base.group_system
 | Referência salarial | `Faixa salarial vigente aprovada para a vaga (preencher após validação)` |
 | Substituição | Deixar vazio, pois o motivo escolhido é aumento do quadro |
 | Requisitante | Administrator (usuário conectado) |
-| Candidato | `Candidato Fictício Voigt - Treinamento` (não informe CPF, telefone, e-mail ou endereço reais) |
+| Candidato (nome para o exercício) | `Camila Andrade - Candidata Fictícia Voigt` |
+| E-mail para o exercício | `camila.andrade.treinamento@example.invalid` (endereço de teste não roteável; não envie mensagens) |
+| Telefone, CPF, endereço e currículo | Deixe vazios neste exercício; use somente dados reais fornecidos pelo candidato em processos autorizados. Não invente CPF nem use dados de uma pessoa real no banco de demonstração. |
+| Recrutador da candidatura | Usuário responsável conectado; confirme que a vaga preencheu o valor padrão correto |
 | Avaliação RH | Resultado Apto; parecer de treinamento sem dados pessoais |
 | Avaliação técnica | Perfil Rebarbação; critérios do template aplicável, evidência fictícia e resultado Apto |
 | QAE (se aplicável) | Use somente se a faixa escolaridade e revisão do questionário estiverem confirmadas; exemplo aritmético: 70/100, corte 60/100, revisão RQ 079 ou RQ 081 correspondente |
@@ -412,17 +417,32 @@ Em ambos os caminhos, retorne à lista e confirme que a vaga aparece com o depar
 
 ### 10.7 Passo 4 - criar candidatura e confirmar checklist inicial
 
-- **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Candidaturas > Todas as candidaturas > Novo`.
-- O menu **Candidaturas** abre opções como **Por vagas**, **Por grupos de talentos** e **Todas as candidaturas**; use a última para localizar a lista geral.
-- Digite o nome fictício `Candidato Fictício Voigt - Treinamento`, selecione o cargo/vaga criado e salve. Não preencha contatos ou dados pessoais reais.
-- Abra a aba **Processo Voigt**. O sistema deve ter copiado três itens obrigatórios globais: **CPF**, **Documento oficial de identificação** e **Comprovante de endereço**, além do comprovante de escolaridade opcional. A qualificação técnica adicional é específica do perfil Mecânico.
-- Se a aba não aparecer, confira que o usuário tem **Voigt Recruitment Manager**; ela é restrita por grupo.
+- O trabalho cotidiano normalmente começa com o recrutador registrando a candidatura e escolhendo a vaga aprovada. O Odoo permite criar uma candidatura pela vaga ou pela lista geral; ao partir da vaga, o cargo e o recrutador podem vir preenchidos automaticamente ([documentação oficial: adicionar candidatos](https://www.odoo.com/documentation/20.0/pt_BR/applications/hr/recruitment/add_applicants.html)).
+
+**Criar uma candidatura nova para a vaga deste processo**
+
+1. **Breadcrumb recomendado:** `Seletor de aplicativos > Recrutamento > Vagas de emprego > abrir a vaga da RQ aprovada > Novo` (na tela da vaga, **Novo** cria candidatura para essa posição).
+2. Se estiver na lista geral como na captura: `Seletor de aplicativos > Recrutamento > Candidaturas > Todas as candidaturas > Novo`. O menu **Candidaturas** abre opções como **Por vagas**, **Por grupos de talentos** e **Todas as candidaturas**. Nesta rota, escolha explicitamente no campo **Cargo/Vaga** a vaga associada à RQ que acabou de aprovar; não deixe o cargo vazio nem selecione uma posição apenas por ter nome parecido.
+3. Preencha **Candidato** com `Camila Andrade - Candidata Fictícia Voigt`, **E-mail** com `camila.andrade.treinamento@example.invalid` apenas para demonstração e **Recrutador** com a pessoa que conduzirá a seleção. O e-mail `.invalid` é fictício e não deve receber mensagens. Deixe telefone, LinkedIn e currículo vazios para o exercício. Na operação real, o recrutador registra somente dados recebidos diretamente do candidato e permitidos pela política da empresa.
+4. Confira **Cargo/Vaga**, **Empresa** e **Departamento**. Empresa/departamento podem ser preenchidos a partir da vaga; corrija somente se a RQ aprovada e a posição confirmarem outro valor. Mantenha a etapa inicial padrão **Novo** (ou o estágio inicial já configurado pela empresa) e clique em **Salvar**. Não avance a candidatura antes de executar as avaliações e completar os gates correspondentes.
+5. Abra a candidatura recém-criada, confira seu nome e cargo e abra a aba **Processo Voigt**. O addon gera para cada nova candidatura os itens ativos do checklist que sejam globais (`all`) ou correspondam ao perfil da vaga: neste exemplo, **CPF**, **Documento oficial de identificação** e **Comprovante de endereço** são obrigatórios; comprovante de escolaridade é opcional. A qualificação técnica adicional aplica-se ao perfil Mecânico.
+
+**Quando o nome já aparece entre as candidaturas existentes (como as 628 linhas da captura)**
+
+1. Na lista **Todas as candidaturas**, use a busca para procurar a pessoa antes de criar. Abra o registro e confira **Cargo/Vaga**, etapa e situação. A lista pode conter histórico de processos diferentes; o nome da pessoa, por si só, não indica que o registro pertence à vaga/RQ atual.
+2. Se houver candidatura ativa para esta mesma vaga e este mesmo processo, abra-a e continue o registro existente. Não crie outra candidatura duplicada para a mesma pessoa, vaga e processo.
+3. Se o registro encontrado for de uma vaga ou seleção antiga, não o mova para a nova vaga nem reutilize sua aba **Processo Voigt**: avaliações, documentos e histórico pertencem àquela candidatura. Após confirmar que a nova RQ/posição foi aprovada e que a pessoa pode participar deste processo, crie uma candidatura nova pelo passo anterior, selecione a vaga atual e use os dados atualizados que o próprio candidato fornecer. Assim, a nova candidatura terá sua própria etapa, checklist e avaliações; a antiga permanece como histórico.
+4. Se houver mais de um registro ativo para a mesma pessoa e vaga, interrompa o cadastro e peça ao responsável de RH para identificar o registro correto. Não recuse, arquive, mescle nem apague duplicidades durante este tutorial.
+
+O usuário com papel **Recrutamento / User** pode cadastrar candidaturas conforme seus acessos. A aba **Processo Voigt** é restrita ao grupo **Voigt Recruitment Manager**; portanto, no exercício ponta a ponta, use Administrator (configurado para o tutorial) ou peça a um Voigt Manager para executar os passos Voigt. A documentação oficial descreve o cadastro manual de candidatura na vaga e a lista de todas as candidaturas como caminhos nativos do Odoo ([Adicionar candidatos](https://www.odoo.com/documentation/20.0/pt_BR/applications/hr/recruitment/add_applicants.html), [lista de candidaturas recusadas/todas](https://www.odoo.com/documentation/20.0/applications/hr/recruitment/refuse_applicant.html)).
+
+- Se a aba **Processo Voigt** não aparecer, confira que o usuário conectado tem **Voigt Recruitment Manager**; a aba é restrita por grupo.
 
 ### 10.8 Passo 5 - registrar e aprovar avaliações
 
 **Avaliação de RH**
 
-- **Breadcrumb:** `Recrutamento > Candidaturas > abrir Candidato Fictício... > Processo Voigt > Avaliações`
+- **Breadcrumb:** `Recrutamento > Candidaturas > abrir Camila Andrade - Candidata Fictícia Voigt > Processo Voigt > Avaliações`
 - Adicione linha e escolha **Entrevista RH**; preencha **Avaliador**, **Data da avaliação**, **Revisão** (ex.: `PO 017 Rev. B - roteiro de treinamento`) e parecer fictício em **Parecer**. Salve a linha, abra a avaliação se necessário e clique **Marcar apto**.
 - Mova a candidatura para a etapa **Entrevista RH** configurada com gate. A alteração deve ser aceita. Se tentar antes de marcar Apto, o Odoo deve bloquear a mudança.
 
@@ -440,7 +460,7 @@ Em ambos os caminhos, retorne à lista e confirme que a vaga aparece com o depar
 
 **Checklist**
 
-- **Breadcrumb:** `Recrutamento > Candidaturas > abrir Candidato Fictício... > Processo Voigt > Checklist de admissão`
+- **Breadcrumb:** `Recrutamento > Candidaturas > abrir Camila Andrade - Candidata Fictícia Voigt > Processo Voigt > Checklist de admissão`
 - Para **CPF**, **Documento oficial de identificação** e **Comprovante de endereço**, altere o campo **Estado** de Não solicitado para **Recebido** e salve. Em seguida, em cada linha, clique **Verificar**. Confira **Verificado por** e **Verificado em** preenchidos. Não precisa anexar evidências reais para este exercício.
 - Se um documento obrigatório realmente não se aplicar, somente um Voigt Manager deve usar **Dispensar** após informar motivo. Não dispense itens apenas para passar no tutorial.
 

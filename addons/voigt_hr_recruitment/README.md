@@ -157,6 +157,8 @@ Depois da aprovação da RQ, primeiro confira o painel **Recrutamento > Vagas de
 
 Cadastre cada candidatura usando o fluxo nativo e associe-a à vaga. O addon cria automaticamente os itens ativos do checklist que sejam globais (`all`) ou do perfil da vaga. O usuário ainda deve registrar avaliações e evidências; o addon não importa currículos ou preenche pareceres.
 
+Antes de cadastrar, pesquise o nome na lista de candidaturas. Se já existir candidatura ativa para a mesma vaga/processo, continue nela. Se houver apenas registros históricos de outra vaga ou seleção, crie uma nova candidatura para a vaga atualmente aprovada e preserve os registros antigos: cada candidatura tem seu próprio estágio, checklist e avaliações. A aba **Processo Voigt** exige o grupo **Voigt Recruitment Manager**; recrutadores com acesso padrão podem cadastrar a candidatura e encaminhá-la ao responsável Voigt. O relatório de implementação, seção 10.7, contém um exemplo fictício e o procedimento passo a passo para os dois casos.
+
 ### 3. Registrar avaliações e resultados
 
 Com usuário Voigt Manager, abra a aba **Processo Voigt** do candidato e adicione avaliações em **Avaliações**. Selecione RH, técnica, diretoria, QAE 01, QAE 02, organizacional ou experiência e confirme avaliador, data e revisão.
