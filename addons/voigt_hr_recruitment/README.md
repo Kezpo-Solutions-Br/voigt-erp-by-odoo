@@ -153,7 +153,7 @@ Alterações materiais em uma solicitação já aprovada retornam a solicitaçã
 
 ### 2. Criar a vaga e associar candidatos
 
-Depois da aprovação da RQ, crie a vaga pelo aplicativo Recrutamento, vincule a **Solicitação RQ 077** aprovada, configure empresa/departamento/responsável e selecione o perfil Voigt. Publique conforme o procedimento da empresa.
+Depois da aprovação da RQ, primeiro confira o painel **Recrutamento > Vagas de emprego**. Se já existir posição compatível, abra-a pelo botão **Configurar** e associe a **Solicitação RQ 077** aprovada; confira empresa, departamento e perfil antes de salvar. Se não houver posição correspondente, use **Novo** para criar a vaga e associe a RQ aprovada no mesmo campo. Não duplique vagas existentes nem substitua vínculo com outra RQ sem validação de RH. O campo de vínculo guarda uma requisição por vaga e não ajusta automaticamente a quantidade de vagas. O tutorial do relatório detalha os dois caminhos na seção 10.6.
 
 Cadastre cada candidatura usando o fluxo nativo e associe-a à vaga. O addon cria automaticamente os itens ativos do checklist que sejam globais (`all`) ou do perfil da vaga. O usuário ainda deve registrar avaliações e evidências; o addon não importa currículos ou preenche pareceres.
 

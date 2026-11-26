@@ -342,7 +342,7 @@ Essa exceção é para administração/teste: um usuário com `base.group_system
 |---|---|
 | Empresa | METALURGICA VOIGT LTDA (ou a empresa Voigt selecionada na base) |
 | Departamento | MACAHARIA, se existir e for a área da vaga; caso contrário, o departamento de teste vinculado à empresa |
-| Cargo solicitado | Auxiliar de Produção - Rebarbação |
+| Cargo solicitado | Auxiliar de Produção - Rebarbação (use a descrição que corresponde ao cargo real solicitado) |
 | Quantidade | 1 |
 | Tipo de contratação | Efetivo |
 | Motivo | Aumento do quadro |
@@ -358,6 +358,8 @@ Essa exceção é para administração/teste: um usuário com `base.group_system
 | Documentos | CPF, Documento oficial de identificação e Comprovante de endereço: Recebido e depois Verificado. São itens fictícios de checklist; não anexe documentos reais neste cenário. |
 | Aptidão | Registrar resultado Apto somente como decisão de demonstração; nunca digitar diagnóstico, exame ou nota clínica |
 | Treinamento RQ 006 | Treinamentos gerais e requisitos do posto marcados como concluídos apenas no cenário de simulação |
+
+**Escolha da vaga para associar à RQ:** no painel da base espelhada podem existir vagas como **AUX. DE PRODUÇÃO** e **AUX. DE PRODUÇÃO** vinculadas a departamentos diferentes ou com configuração própria. O nome parecido sozinho não prova que a vaga serve para a requisição. Antes de seguir, compare cargo solicitado, empresa, departamento, perfil Voigt e situação/quantidade da vaga. Use uma vaga existente se esses dados forem compatíveis com a RQ aprovada; se nenhuma corresponder, siga o caminho de nova vaga em 10.6.2. No exemplo de MACAHARIA, a vaga **AUX. DE PRODUÇÃO** pode ser reaproveitada somente se RH confirmar que ela representa a posição de Rebarbação solicitada. Caso contrário, use o caminho de criação. Este tutorial usa uma vaga para a RQ fictícia; uma requisição aprovada pode estar vinculada a mais de uma posição, se o escopo aprovado assim exigir. Cada posição, porém, pode apontar para apenas uma RQ.
 
 ### 10.4 Passo 1 - criar e salvar a requisição RQ 077
 
@@ -380,12 +382,33 @@ Essa exceção é para administração/teste: um usuário com `base.group_system
 
 Se o usuário não for administrador do sistema, ele não pode aprovar a própria requisição nem aprovar as duas etapas como a mesma pessoa. Associe um gestor ao departamento para a aprovação setorial ou use o fluxo de usuários designados.
 
-### 10.6 Passo 3 - criar vaga ligada à solicitação aprovada
+### 10.6 Passo 3 - associar a RQ 077 a uma vaga
 
-- **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Vagas de emprego > Novo`.
-- Informe **Auxiliar de Produção - Rebarbação (Treinamento)**, a empresa Voigt, o departamento da RQ, responsável de recrutamento, número de vagas `1` e perfil **Auxiliar de Produção - Rebarbação**.
-- No campo **Solicitação RQ 077**, selecione a solicitação `RQ ...` que está **Aprovada** e salve. O addon não cria a vaga automaticamente para que RH confira a correspondência entre requisição, cargo, departamento e empresa.
-- Selecione/associe essa vaga às etapas Voigt preparadas em 10.2.
+O painel **Vagas de emprego** mostra as posições cadastradas. O botão **Configurar** em cada cartão abre essa vaga para edição; **Novo** cria outra posição. O Odoo permite editar uma posição existente ou criar uma nova a partir desse painel ([documentação oficial de Cargos](https://www.odoo.com/documentation/20.0/pt_BR/applications/hr/recruitment/new_job.html)). Para a vaga deste exemplo, siga um dos caminhos abaixo. Não crie uma vaga duplicada só para conseguir associar a solicitação. Se a RQ aprovada cobrir mais de uma posição, repita a associação para cada vaga compatível.
+
+#### 10.6.1 Caminho A - reaproveitar vaga existente
+
+Use este caminho quando já existir uma vaga com empresa, departamento e perfil compatíveis com a RQ 077 aprovada. A vaga mostrada na captura como **AUX. DE PRODUÇÃO** é um exemplo a conferir, não uma escolha automática.
+
+1. **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Vagas de emprego`.
+2. Se necessário, limpe os filtros de empresa/departamento ou use a busca no topo para localizar a vaga pelo nome. A captura mostra o filtro **MACAHARIA** aplicado e somente `1-2 / 2`; portanto, ela não representa todas as vagas da base. Clique em **Tudo** na seção Departamento para ampliar os resultados, ou ajuste a busca.
+3. Na linha/cartão da posição apropriada, clique **Configurar**. Não clique em **Novo** neste caminho.
+4. Confira o nome, a empresa e o departamento. Defina **Perfil do processo Voigt** de acordo com a atividade real: **Auxiliar de Produção - Rebarbação** somente para uma posição de Rebarbação; use Moldagem, Mecânico ou Administrativo apenas quando corresponderem ao trabalho solicitado.
+5. No campo **Solicitação RQ 077**, selecione a RQ `RQ ...` aprovada. Confira que ela corresponde à mesma empresa/departamento e ao cargo. Salve.
+6. Se a posição já estiver associada a outra requisição, pare e confirme com RH qual solicitação deve ser vinculada. O campo do addon armazena uma requisição por vaga; não substitua um vínculo existente sem autorização e sem avaliar o histórico. A quantidade aprovada na RQ também não atualiza automaticamente a quantidade de recrutamento da vaga: confira a capacidade e ajuste-a somente com aprovação de RH.
+7. Associe a vaga às etapas Voigt preparadas em 10.2, se a configuração por vaga específica for usada.
+
+#### 10.6.2 Caminho B - criar uma nova vaga
+
+Use este caminho somente se a posição necessária ainda não existir ou se RH confirmou que a vaga existente não representa o cargo/departamento/perfil da RQ.
+
+1. **Breadcrumb:** `Seletor de aplicativos > Recrutamento > Vagas de emprego > Novo`.
+2. Informe **Auxiliar de Produção - Rebarbação (Treinamento)**, empresa Voigt, departamento aprovado na RQ e responsável de recrutamento. Configure o número de vagas conforme a quantidade aprovada e validada por RH; para este exemplo, use `1`.
+3. Defina **Perfil do processo Voigt = Auxiliar de Produção - Rebarbação**. O nome e o perfil devem representar o trabalho real e a RQ; não use o perfil de Rebarbação para uma vaga de Moldagem.
+4. No campo **Solicitação RQ 077**, selecione a RQ `RQ ...` em estado **Aprovada**. Salve a vaga. O addon não cria posições automaticamente: essa conferência é deliberada para RH validar cargo, departamento, empresa e quantidade.
+5. Associe a vaga às etapas Voigt preparadas em 10.2, se a configuração por vaga específica for usada.
+
+Em ambos os caminhos, retorne à lista e confirme que a vaga aparece com o departamento/empresa esperados. Depois continue para 10.7. Se o campo **Solicitação RQ 077** não estiver visível, abra o formulário por **Configurar** ou **Novo** (não permaneça apenas no cartão do painel) e confirme que o addon está atualizado e instalado.
 
 ### 10.7 Passo 4 - criar candidatura e confirmar checklist inicial
 
